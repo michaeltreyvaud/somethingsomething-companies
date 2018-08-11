@@ -194,7 +194,7 @@
           "Ref": "CompaniesResourceProxy"
         },
         "HttpMethod": "ANY",
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "AWS_IAM",
         "MethodResponses": [
           {
             "StatusCode": "200"
@@ -217,7 +217,7 @@
     "CompaniesOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "AWS_IAM",
         "RestApiId": {
           "Ref": "CompaniesRootAPIGateway"
         },
