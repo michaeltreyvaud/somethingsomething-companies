@@ -130,7 +130,10 @@
         "Description": "API for managing companies",
         "Environment": {
           "Variables": {
-            "NODE_ENV": "production"
+            "NODE_ENV": "production",
+            "TABLE_NAME": {
+              "Ref": "CompanyTable"
+            }
           }
         },
         "FunctionName": "CompaniesLambda",
@@ -264,7 +267,9 @@
       ],
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
-        "RestApiId": { "Ref" : "CompaniesRootAPIGateway" },
+        "RestApiId": {
+          "Ref": "CompaniesRootAPIGateway"
+        },
         "StageName": "dev"
       }
     }
