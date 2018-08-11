@@ -1,0 +1,272 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Infrastructre to store company information within the system",
+  "Parameters": {
+    "CompanyTableReadUnits": {
+      "Description": "Provisioned read throughput",
+      "Type": "Number",
+      "Default": "5",
+      "MinValue": "5",
+      "MaxValue": "10",
+      "ConstraintDescription": "must be between 5 and 10"
+    },
+    "CompanyTableWriteUnits": {
+      "Description": "Provisioned write throughput",
+      "Type": "Number",
+      "Default": "10",
+      "MinValue": "5",
+      "MaxValue": "10",
+      "ConstraintDescription": "must be between 5 and 10"
+    }
+  },
+  "Resources": {
+    "CompanyTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "Companies",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "name",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "name",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": {
+            "Ref": "CompanyTableReadUnits"
+          },
+          "WriteCapacityUnits": {
+            "Ref": "CompanyTableWriteUnits"
+          }
+        }
+      }
+    },
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "CompaniesLambdaRole",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "LambdaPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "ManagedPolicyName": "CompaniesLambdaPolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CompaniesLambda"
+                },
+                {
+                  "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CompaniesLambda*:*"
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Companies"
+                }
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "LambdaRole"
+          }
+        ]
+      }
+    },
+    "CompaniesLambda": {
+      "DependsOn": [
+        "LambdaRole",
+        "LambdaPolicy"
+      ],
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "servisbot",
+          "S3Key": "r4BlhCU3wZO2V6cpiAHZau5d/hello-world.zip"
+        },
+        "Description": "API for managing companies",
+        "Environment": {
+          "Variables": {
+            "NODE_ENV": "production"
+          }
+        },
+        "FunctionName": "CompaniesLambda",
+        "Handler": "src/handlers/api.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs8.10",
+        "Timeout": 30
+      }
+    },
+    "CompaniesLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CompaniesLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*"
+        }
+      }
+    },
+    "CompaniesRootAPIGateway": {
+      "DependsOn": "CompaniesLambda",
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "CompaniesAPI",
+        "Description": "Api Gateway for the companies micro service"
+      }
+    },
+    "CompaniesResourceProxy": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "CompaniesRootAPIGateway",
+            "RootResourceId"
+          ]
+        },
+        "RestApiId": {
+          "Ref": "CompaniesRootAPIGateway"
+        },
+        "PathPart": "{proxy+}"
+      }
+    },
+    "CompaniesMethods": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "CompaniesRootAPIGateway"
+        },
+        "ResourceId": {
+          "Ref": "CompaniesResourceProxy"
+        },
+        "HttpMethod": "ANY",
+        "AuthorizationType": "NONE",
+        "MethodResponses": [
+          {
+            "StatusCode": "200"
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompaniesLambda.Arn}/invocations"
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200"
+            }
+          ]
+        }
+      }
+    },
+    "CompaniesOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "CompaniesRootAPIGateway"
+        },
+        "ResourceId": {
+          "Ref": "CompaniesResourceProxy"
+        },
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ],
+          "PassthroughBehavior": "WHEN_NO_MATCH",
+          "RequestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "Type": "MOCK"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "ApiGatewayDeployment": {
+      "DependsOn": [
+        "CompaniesResourceProxy",
+        "CompaniesMethods"
+      ],
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": { "Ref" : "CompaniesRootAPIGateway" },
+        "StageName": "dev"
+      }
+    }
+  }
+}
