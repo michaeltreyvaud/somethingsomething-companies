@@ -6,7 +6,7 @@
       "Description": "The name of the Company",
       "Type": "String",
       "MinLength": 3,
-      "AllowedPattern" : "[a-zA-Z0-9]+"
+      "AllowedPattern": "[a-zA-Z0-9]+"
     }
   },
   "Resources": {
@@ -58,6 +58,19 @@
                   "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda*:*"
                 }
               ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "apigateway:POST",
+                "apigateway:GetResources",
+                "apigateway:DELETE"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": "*"
+                }
+              ]
             }
           ]
         },
@@ -76,8 +89,8 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "S3Bucket": "servisbot",
-          "S3Key": "r4BlhCU3wZO2V6cpiAHZau5d/hello-world.zip"
+          "S3Bucket": "somethingsomething-company-bucket",
+          "S3Key": "helloWorld.zip"
         },
         "Description": "API lambda for specific company",
         "Environment": {
@@ -115,7 +128,9 @@
     "CompanyRootAPIGateway": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": { "Fn::Sub": "${CompanyName}Api" },
+        "Name": {
+          "Fn::Sub": "${CompanyName}Api"
+        },
         "Description": "Api Gateway for a specific Company"
       }
     },

@@ -94,6 +94,60 @@
             {
               "Effect": "Allow",
               "Action": [
+                "cloudformation:CreateStack"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:GetFunction",
+                "lambda:CreateFunction",
+                "lambda:GetFunctionConfiguration",
+                "lambda:DeleteFunction",
+                "lambda:AddPermission"
+              ],
+              "Resource": [
+                "*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "apigateway:POST",
+                "apigateway:GET",
+                "apigateway:PUT",
+                "apigateway:DELETE"
+              ],
+              "Resource": [
+                "*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:ListPolicyVersions",
+                "iam:AttachRolePolicy",
+                "iam:CreatePolicy",
+                "iam:GetPolicy",
+                "iam:GetRole",
+                "iam:CreateRole",
+                "iam:DeleteRole",
+                "iam:DetachRolePolicy",
+                "iam:DeletePolicy",
+                "iam:PassRole"
+              ],
+              "Resource": [
+                "*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
                 "dynamodb:Scan",
                 "dynamodb:Query",
                 "dynamodb:GetItem",
@@ -124,8 +178,8 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "S3Bucket": "servisbot",
-          "S3Key": "r4BlhCU3wZO2V6cpiAHZau5d/hello-world.zip"
+          "S3Bucket": "somethingsomething-company-bucket",
+          "S3Key": "helloWorld.zip"
         },
         "Description": "API for managing companies",
         "Environment": {

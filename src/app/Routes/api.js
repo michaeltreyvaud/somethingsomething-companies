@@ -52,7 +52,7 @@ module.exports = () => {
         await Dynamo.put(dbParams);
         const cfParams = {
           StackName: `${name}Stack`,
-          Capabilities: 'CAPABILITY_NAMED_IAM',
+          Capabilities: ['CAPABILITY_NAMED_IAM'],
           Parameters: [
             {
               ParameterKey: 'CompanyName',

@@ -24,13 +24,12 @@ module.exports = () => {
         TemplateURL: _params.TemplateURL,
         TimeoutInMinutes: _params.TimeoutInMinutes,
       };
-      return cloudformation.createStack(params, (_createErr, data) => {
-        if (_createErr) {
-          console.log('Error Creating Stack : ', _createErr);
-          throw _createErr;
-        }
-        console.log('Stack Created', data);
-        return data;
+      return cloudformation.createStack(params).promise().then((_data) => {
+        console.log('Stack Created', _data);
+        return _data;
+      }).catch((_createErr) => {
+        console.log('Error Creating Stack : ', _createErr);
+        throw _createErr;
       });
     },
   };
