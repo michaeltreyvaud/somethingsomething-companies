@@ -1,55 +1,21 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Infrastructre to store company information within the system",
+  "Description": "Infrastructre for a specific Company",
   "Parameters": {
-    "CompanyTableReadUnits": {
-      "Description": "Provisioned read throughput",
-      "Type": "Number",
-      "Default": "5",
-      "MinValue": "5",
-      "MaxValue": "10",
-      "ConstraintDescription": "must be between 5 and 10"
-    },
-    "CompanyTableWriteUnits": {
-      "Description": "Provisioned write throughput",
-      "Type": "Number",
-      "Default": "10",
-      "MinValue": "5",
-      "MaxValue": "10",
-      "ConstraintDescription": "must be between 5 and 10"
+    "CompanyName": {
+      "Description": "The name of the Company",
+      "Type": "String",
+      "MinLength": 3,
+      "AllowedPattern" : "[a-zA-Z0-9]+"
     }
   },
   "Resources": {
-    "CompanyTable": {
-      "Type": "AWS::DynamoDB::Table",
-      "Properties": {
-        "TableName": "Companies",
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "name",
-            "AttributeType": "S"
-          }
-        ],
-        "KeySchema": [
-          {
-            "AttributeName": "name",
-            "KeyType": "HASH"
-          }
-        ],
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": {
-            "Ref": "CompanyTableReadUnits"
-          },
-          "WriteCapacityUnits": {
-            "Ref": "CompanyTableWriteUnits"
-          }
-        }
-      }
-    },
     "LambdaRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "RoleName": "CompaniesLambdaRole",
+        "RoleName": {
+          "Fn::Sub": "${CompanyName}ApiLambdaRole"
+        },
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -71,7 +37,9 @@
     "LambdaPolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
-        "ManagedPolicyName": "CompaniesLambdaPolicy",
+        "ManagedPolicyName": {
+          "Fn::Sub": "${CompanyName}ApiLambdaPolicy"
+        },
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -84,26 +52,10 @@
               ],
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CompaniesLambda"
+                  "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda"
                 },
                 {
-                  "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CompaniesLambda*:*"
-                }
-              ]
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
-              ],
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Companies"
+                  "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda*:*"
                 }
               ]
             }
@@ -116,7 +68,7 @@
         ]
       }
     },
-    "CompaniesLambda": {
+    "CompanyLambda": {
       "DependsOn": [
         "LambdaRole",
         "LambdaPolicy"
@@ -127,16 +79,15 @@
           "S3Bucket": "servisbot",
           "S3Key": "r4BlhCU3wZO2V6cpiAHZau5d/hello-world.zip"
         },
-        "Description": "API for managing companies",
+        "Description": "API lambda for specific company",
         "Environment": {
           "Variables": {
-            "NODE_ENV": "production",
-            "TABLE_NAME": {
-              "Ref": "CompanyTable"
-            }
+            "NODE_ENV": "production"
           }
         },
-        "FunctionName": "CompaniesLambda",
+        "FunctionName": {
+          "Fn::Sub": "${CompanyName}ApiLambda"
+        },
         "Handler": "src/handlers/api.handler",
         "Role": {
           "Fn::GetAtt": [
@@ -148,11 +99,11 @@
         "Timeout": 30
       }
     },
-    "CompaniesLambdaInvokePermission": {
+    "CompanyLambdaInvokePermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "CompaniesLambda"
+          "Ref": "CompanyLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -161,37 +112,36 @@
         }
       }
     },
-    "CompaniesRootAPIGateway": {
-      "DependsOn": "CompaniesLambda",
+    "CompanyRootAPIGateway": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "CompaniesAPI",
-        "Description": "Api Gateway for the companies micro service"
+        "Name": { "Fn::Sub": "${CompanyName}Api" },
+        "Description": "Api Gateway for a specific Company"
       }
     },
-    "CompaniesResourceProxy": {
+    "CompanyResourceProxy": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
           "Fn::GetAtt": [
-            "CompaniesRootAPIGateway",
+            "CompanyRootAPIGateway",
             "RootResourceId"
           ]
         },
         "RestApiId": {
-          "Ref": "CompaniesRootAPIGateway"
+          "Ref": "CompanyRootAPIGateway"
         },
         "PathPart": "{proxy+}"
       }
     },
-    "CompaniesMethods": {
+    "CompanyMethods": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "CompaniesRootAPIGateway"
+          "Ref": "CompanyRootAPIGateway"
         },
         "ResourceId": {
-          "Ref": "CompaniesResourceProxy"
+          "Ref": "CompanyResourceProxy"
         },
         "HttpMethod": "ANY",
         "AuthorizationType": "AWS_IAM",
@@ -204,7 +154,7 @@
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompaniesLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyLambda.Arn}/invocations"
           },
           "IntegrationResponses": [
             {
@@ -214,15 +164,15 @@
         }
       }
     },
-    "CompaniesOptions": {
+    "CompanyOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "AuthorizationType": "AWS_IAM",
         "RestApiId": {
-          "Ref": "CompaniesRootAPIGateway"
+          "Ref": "CompanyRootAPIGateway"
         },
         "ResourceId": {
-          "Ref": "CompaniesResourceProxy"
+          "Ref": "CompanyResourceProxy"
         },
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -262,14 +212,14 @@
     },
     "ApiGatewayDeployment": {
       "DependsOn": [
-        "CompaniesResourceProxy",
-        "CompaniesMethods",
-        "CompaniesOptions"
+        "CompanyResourceProxy",
+        "CompanyMethods",
+        "CompanyOptions"
       ],
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
-          "Ref": "CompaniesRootAPIGateway"
+          "Ref": "CompanyRootAPIGateway"
         },
         "StageName": "dev"
       }

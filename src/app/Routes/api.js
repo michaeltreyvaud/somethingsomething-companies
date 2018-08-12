@@ -1,6 +1,7 @@
 const Dynamo = require('../Lib/Dynamo')();
-
+const Cloudformation = require('../Lib/Cloudformation')();
 const ObjectSchemas = require('./schemas');
+const companyInfrastructure = require('../../../cloudformation/companyInfrastucture.json');
 
 module.exports = () => {
   const api = {
@@ -49,8 +50,22 @@ module.exports = () => {
       };
       try {
         await Dynamo.put(dbParams);
+        const cfParams = {
+          StackName: `${name}Stack`,
+          Capabilities: 'CAPABILITY_NAMED_IAM',
+          Parameters: [
+            {
+              ParameterKey: 'CompanyName',
+              ParameterValue: name,
+            },
+          ],
+          //  ResourceTypes: _params.ResourceTypes, - TODO security down the line
+          TemplateBody: JSON.stringify(companyInfrastructure),
+        };
+        await Cloudformation.createStack(cfParams);
         return Item;
       } catch (_err) {
+        console.log('Error creating company', _err);
         throw _err;
       }
     },
