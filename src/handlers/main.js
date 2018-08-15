@@ -6,15 +6,18 @@ const MainApp = require('../app');
 const Utils = require('../app/Utils');
 const Dynamo = require('../app/Lib/Dynamo');
 const Cloudformation = require('../app/Lib/Cloudformation');
+const Organizations = require('../app/Lib/Organizations');
 
 const Validation = new Validator();
 const SSDynamo = new Dynamo.SSDynamo(AWS);
 const SSCloudformation = new Cloudformation.SSCloudFormation(AWS);
+const SSOrganizations = new Organizations.SSOrganizations(AWS);
 const createDependencies = () => ({
   Utils,
   Validation,
   SSDynamo,
   SSCloudformation,
+  SSOrganizations,
 });
 
 const App = new MainApp.App(createDependencies());

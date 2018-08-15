@@ -1,6 +1,6 @@
 class SSOrganizations {
   constructor(AWS) {
-    this.Organizations = new AWS.Organizations({ apiVersion: '2016-11-28' });
+    this.Organizations = new AWS.Organizations({ apiVersion: '2016-11-28', region: 'us-east-1' });
   }
 
   /**

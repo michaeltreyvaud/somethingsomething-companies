@@ -148,6 +148,20 @@
             {
               "Effect": "Allow",
               "Action": [
+                "organizations:CreateAccount",
+              ],
+              "Resource": ["*"]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateServiceLinkedRole",
+              ],
+              "Resource": ["*"]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
                 "dynamodb:Scan",
                 "dynamodb:Query",
                 "dynamodb:GetItem",

@@ -1,6 +1,6 @@
 class SSCloudFormation {
   constructor(AWS) {
-    this.CloudFormation = new AWS.CloudFormation({ apiVersion: '2010-05-15' });
+    this.CloudFormation = new AWS.CloudFormation();
   }
 
   /**

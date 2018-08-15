@@ -4,10 +4,11 @@ const companyInfrastructure = require('../../../cloudformation/companyInfrastuct
 class Company {
   constructor(dependencies) {
     const {
-      SSDynamo, SSCloudformation, Validation, Utils,
+      SSDynamo, SSCloudformation, Validation, Utils, SSOrganizations,
     } = dependencies;
     this.SSDynamo = SSDynamo;
     this.SSCloudformation = SSCloudformation;
+    this.SSOrganizations = SSOrganizations;
     this.Validation = Validation;
     this.Utils = Utils;
   }
@@ -33,7 +34,7 @@ class Company {
 
   async create(body) {
     const {
-      SSDynamo, SSCloudformation, Validation, Utils,
+      SSDynamo, SSCloudformation, Validation, Utils, SSOrganizations
     } = this;
     console.log('Creating Company', body);
     if (!Validation.validate(body, ObjectSchemas.CreateCompany).valid) {
@@ -74,7 +75,18 @@ class Company {
         //  ResourceTypes: _params.ResourceTypes, - TODO security down the line
         TemplateBody: JSON.stringify(companyInfrastructure),
       };
-      await SSCloudformation.createStack(cfParams);
+      const params = {
+        AccountName: `${name}-Account`,
+        Email: email,
+      };
+      try {
+        await SSOrganizations.createAccount(params);
+      } catch (_err) {
+        console.log('Error Creating Organization', _err);
+        await this.delete({ name });
+        throw _err;
+      }
+      //  await SSCloudformation.createStack(cfParams);
       return Item;
     } catch (_err) {
       console.log('Error creating company', _err);
