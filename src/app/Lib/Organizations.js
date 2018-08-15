@@ -1,8 +1,5 @@
-// eslint-disable-next-line
-const AWS = require('aws-sdk');
-
 class SSOrganizations {
-  constructor() {
+  constructor(AWS) {
     this.Organizations = new AWS.Organizations({ apiVersion: '2016-11-28' });
   }
 
@@ -21,10 +18,10 @@ class SSOrganizations {
     };
 
     return Organizations.createAccount(params).promise().then((_data) => {
-      console.log('Created Account', _data);
+      console.log('CreateAccount Success : ', _data);
       return _data;
     }).catch((_createErr) => {
-      console.log('Create Account Error: ', _createErr);
+      console.log('CreateAccount Fail : ', _createErr);
       throw _createErr;
     });
   }

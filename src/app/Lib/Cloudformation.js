@@ -1,8 +1,5 @@
-// eslint-disable-next-line
-const AWS = require('aws-sdk');
-
 class SSCloudFormation {
-  constructor() {
+  constructor(AWS) {
     this.CloudFormation = new AWS.CloudFormation({ apiVersion: '2010-05-15' });
   }
 

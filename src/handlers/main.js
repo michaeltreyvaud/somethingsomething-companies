@@ -8,8 +8,8 @@ const Dynamo = require('../app/Lib/Dynamo');
 const Cloudformation = require('../app/Lib/Cloudformation');
 
 const Validation = new Validator();
-const SSDynamo = new Dynamo.SSDynamo();
-const SSCloudformation = new Cloudformation.SSCloudformation();
+const SSDynamo = new Dynamo.SSDynamo(AWS);
+const SSCloudformation = new Cloudformation.SSCloudFormation(AWS);
 const createDependencies = () => ({
   Utils,
   Validation,
@@ -17,7 +17,8 @@ const createDependencies = () => ({
   SSCloudformation,
 });
 
-const createApp = () => new MainApp.App(createDependencies());
+const App = new MainApp.App(createDependencies());
+const createApp = () => App.getApp();
 
 exports.handler = (event, context) => {
   const server = AwsServerlessExpress.createServer(createApp());

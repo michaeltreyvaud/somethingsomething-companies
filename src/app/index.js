@@ -6,15 +6,15 @@ const CompanyRouter = require('./Routers/CompanyRouter');
 class App {
   constructor(dependencies) {
     this.app = Express();
-    this.CR = new CompanyRouter.Router(dependencies);
-    const { app, CR } = this;
+    this.companies = new CompanyRouter.Router(dependencies);
+    const { app, companies } = this;
     app.disable('x-powered-by');
     app.use(cors());
     app.use(BodyParser.raw());
     app.use(BodyParser.json());
     app.use(BodyParser.urlencoded({ extended: true }));
 
-    app.use('/companies', CR.getRouter());
+    app.use('/companies', companies.getRouter());
     app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
   }
 

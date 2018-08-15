@@ -191,7 +191,7 @@
           }
         },
         "FunctionName": "CompaniesLambda",
-        "Handler": "src/handlers/api.handler",
+        "Handler": "src/handlers/main.handler",
         "Role": {
           "Fn::GetAtt": [
             "LambdaRole",
