@@ -1,19 +1,27 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const CompanyRouter = require('./Routes/company');
+const CompanyRouter = require('./Routers/CompanyRouter');
 
-module.exports = (dependencies) => {
-  const app = Express();
+class App {
+  constructor(dependencies) {
+    this.app = Express();
+    this.CR = new CompanyRouter.Router(dependencies);
+    const { app, CR } = this;
+    app.disable('x-powered-by');
+    app.use(cors());
+    app.use(BodyParser.raw());
+    app.use(BodyParser.json());
+    app.use(BodyParser.urlencoded({ extended: true }));
 
-  app.disable('x-powered-by');
-  app.use(cors());
-  app.use(BodyParser.raw());
-  app.use(BodyParser.json());
-  app.use(BodyParser.urlencoded({ extended: true }));
+    app.use('/companies', CR.getRouter());
+    app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
+  }
 
-  app.use('/companies', CompanyRouter(dependencies));
+  getApp() {
+    const { app } = this;
+    return app;
+  }
+}
 
-  app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
-  return app;
-};
+exports.App = App;
