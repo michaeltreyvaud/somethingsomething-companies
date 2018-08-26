@@ -1,27 +1,23 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const CompanyRouter = require('./Routers/CompanyRouter');
+const CompanyRouter = require('../service/routers/CompanyRouter');
+const AuthRouter = require('../service/routers/AuthRouter');
 
-class App {
-  constructor(dependencies) {
-    this.app = Express();
-    this.companies = new CompanyRouter.Router(dependencies);
-    const { app, companies } = this;
-    app.disable('x-powered-by');
-    app.use(cors());
-    app.use(BodyParser.raw());
-    app.use(BodyParser.json());
-    app.use(BodyParser.urlencoded({ extended: true }));
+const App = (dependencies) => {
+  const app = Express();
 
-    app.use('/companies', companies.getRouter());
-    app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
-  }
+  app.disable('x-powered-by');
+  app.use(cors());
+  app.use(BodyParser.raw());
+  app.use(BodyParser.json());
+  app.use(BodyParser.urlencoded({ extended: true }));
 
-  getApp() {
-    const { app } = this;
-    return app;
-  }
-}
+  app.use('/company', CompanyRouter(dependencies));
+  app.use('/auth', AuthRouter(dependencies));
+  app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
 
-exports.App = App;
+  return app;
+};
+
+module.exports = App;

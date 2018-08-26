@@ -1,0 +1,279 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Core Infrastructre for a specific Company
+Parameters:
+  CompanyName:
+    Description: The name of the Company
+    Type: String
+    MinLength: 3
+    AllowedPattern: "[a-zA-Z0-9]+"
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: "${CompanyName}ApiLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  LambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName:
+        Fn::Sub: "${CompanyName}ApiLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda
+          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda*:*
+        - Effect: Allow
+          Action:
+          - apigateway:POST
+          - apigateway:GetResources
+          - apigateway:DELETE
+          Resource:
+          - Fn::Sub: "*"
+      Roles:
+      - Ref: LambdaRole
+  CompanyRoutingLambda:
+    DependsOn:
+    - LambdaRole
+    - LambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: API lambda for specific company
+      Environment:
+        Variables:
+          NODE_ENV: production
+      FunctionName:
+        Fn::Sub: "${CompanyName}ApiLambda"
+      Handler: src/companyRoutingLambda/main.handler
+      Role:
+        Fn::GetAtt:
+        - LambdaRole
+        - Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  CompanyRoutingLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Ref: CompanyRoutingLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  CompanyRootAPIGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name:
+        Fn::Sub: "${CompanyName}Api"
+      Description: Api Gateway for a specific Company
+  CompanyResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+        - CompanyRootAPIGateway
+        - RootResourceId
+      RestApiId:
+        Ref: CompanyRootAPIGateway
+      PathPart: "{proxy+}"
+  CompanyMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId:
+        Ref: CompanyRootAPIGateway
+      ResourceId:
+        Ref: CompanyResourceProxy
+      HttpMethod: ANY
+      AuthorizationType: AWS_IAM
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  CompanyOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: AWS_IAM
+      RestApiId:
+        Ref: CompanyRootAPIGateway
+      ResourceId:
+        Ref: CompanyResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'POST'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  ApiGatewayDeployment:
+    DependsOn:
+    - CompanyResourceProxy
+    - CompanyMethods
+    - CompanyOptions
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: CompanyRootAPIGateway
+      StageName: dev
+  CompanyUserPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: !Sub ${CompanyName}UserPool
+      AutoVerifiedAttributes:
+        - email
+      MfaConfiguration: "OFF"
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        InviteMessageTemplate:
+          EmailSubject: SomethingSomething - Account Created
+          EmailMessage: !Sub "<html>\
+            <body>\
+            <p>Hi,</p>\
+            <p>Your new SomethingSomething account has been set up. When you first login, you will be asked to reset your password.</p>\
+            <br/>\
+            <p>Username: {username}</p>\
+            <p>Organization: ${CompanyName}</p>\
+            <p>Temporary Password: {####}</p>\
+            <br/>\
+            <p>Login using this link: <a href=\"https://google.com\">Login/a><p>\
+            <br/>\
+            <p>Regards</p>\
+            <p>SomethingSomething Team</p>\
+            </body>\
+            </html>"
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+        - Name: firstname
+          AttributeDataType: String
+          Mutable: true
+          Required: false
+        - Name: lastname
+          AttributeDataType: String
+          Mutable: true
+          Required: false
+        - Name: phonenumber
+          AttributeDataType: Number
+          Mutable: true
+          Required: false
+      EmailVerificationSubject: SomethingSomething - Password Reset
+      EmailVerificationMessage: "<html>\
+        <body>\
+        <p>Hi,</p>\
+        <p>A password reset has been requested for this account. If you did not request a password reset, please ignore this message.</p>\
+        <br/>\
+        <p>To reset your password, please enter the following code into the verification code prompt: {####}</p>\
+        <br/>\
+        <p>Regards</p>\
+        <p>SomethingSomething Team</p>\
+        </body>\
+        </html>"
+  CompanyUserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: !Sub ${CompanyName}UserPoolClient
+      GenerateSecret: false
+      UserPoolId: !Ref CompanyUserPool
+  CompanyIdentityPool:
+    Type: "AWS::Cognito::IdentityPool"
+    Properties:
+      IdentityPoolName: !Sub ${CompanyName}IdentityPool
+      AllowUnauthenticatedIdentities: false
+      CognitoIdentityProviders:
+        - ClientId: !Ref CompanyUserPoolClient
+          ProviderName: !GetAtt CompanyUserPool.ProviderName
+  CompanyAuthenticatedRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref CompanyIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
+      Policies:
+        - PolicyName: !Sub ${CompanyName}AuthenticatedPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:Get*
+                Resource: "*"
+  CompanyUnAuthenticatedRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref CompanyIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": unauthenticated
+      Policies:
+        - PolicyName: !Sub ${CompanyName}UnAuthenticatedPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:Get*
+                Resource: "*"
+  CompanyIdentityPoolRoleMapping:
+    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+    Properties:
+      IdentityPoolId: !Ref CompanyIdentityPool
+      Roles:
+        authenticated: !GetAtt CompanyAuthenticatedRole.Arn
+        unauthenticated: !GetAtt CompanyUnAuthenticatedRole.Arn
