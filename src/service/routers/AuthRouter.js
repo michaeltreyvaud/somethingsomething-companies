@@ -1,14 +1,18 @@
 const Express = require('express');
+const AuthController = require('../controllers/AuthController');
 
 const AuthRouter = (dependencies) => {
   const router = Express.Router({ mergeParams: true });
-  const { AuthApi } = dependencies;
-  router.post('/login', AuthApi.login);
-  router.post('/signup', AuthApi.signup);
-  router.post('/confirm', AuthApi.confirm);
-  router.post('/forgot', AuthApi.forgot);
-  router.post('/resend', AuthApi.resend);
-  router.post('/confirmForgotPassword', AuthApi.confirmForgotPassword);
+  const { Logger, SSCognito } = dependencies;
+  const controller = new AuthController(Logger, SSCognito);
+
+  router.post('/login', controller.login);
+  router.post('/signup', controller.signUp);
+  router.post('/confirm', controller.confirm);
+  router.post('/forgot', controller.forgot);
+  router.post('/resend', controller.resend);
+  router.post('/confirmForgotPassword', controller.confirmForgotPassword);
+  router.post('/challenge', controller.challenge);
 
   return router;
 };

@@ -1,5 +1,3 @@
-const shortid = require('shortid');
-
 class SSCognito {
   constructor(Logger, Cognito) {
     this.Logger = Logger;
@@ -7,25 +5,15 @@ class SSCognito {
   }
 
   //  Create a user as admin
-  async adminCreateUser(userName, email) {
+  async adminCreateUser(email) {
     const { Logger, Cognito } = this;
     Logger.info('adminCreateUser');
-    Logger.debug(`adminCreateUser with userName: ${userName} and email: ${email}`);
-    const emailData = {
-      Name: 'email',
-      Value: email,
-    };
-    const tempPassword = shortid.generate();
+    Logger.debug(`adminCreateUser with email: ${email}`);
     const params = {
       UserPoolId: process.env.USER_POOL_ID,
-      Username: userName,
-      TemporaryPassword: tempPassword,
-      UserAttributes: [emailData],
+      Username: email,
     };
-    return Cognito.adminCreateUser(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.adminCreateUser(params).promise();
   }
 
   //  Confirm a users account as admin
@@ -35,6 +23,8 @@ class SSCognito {
     const params = {
       UserPoolId: process.env.USER_POOL_ID,
       Username: userName,
+      MessageAction: 'RESEND',
+      DesiredDeliveryMediums: 'EMAIL',
     };
     return Cognito.adminConfirmSignUp(params).promise().then((_data) => {
       console.log('update me');
@@ -99,22 +89,19 @@ class SSCognito {
   }
 
   //  Initiates the authentication flow, as admin
-  async adminInitiateAuth(userName, password) {
+  async adminInitiateAuth(email, password) {
     const { Logger, Cognito } = this;
-    Logger.info(`adminInitiateAuth with userName: ${userName}`);
+    Logger.info(`adminInitiateAuth with email: ${email}`);
     const params = {
       AuthFlow: 'ADMIN_NO_SRP_AUTH',
       ClientId: process.env.APP_CLIENT_ID,
       UserPoolId: process.env.USER_POOL_ID,
       AuthParameters: {
-        USERNAME: userName,
+        USERNAME: email,
         PASSWORD: password,
       },
     };
-    return Cognito.adminInitiateAuth(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.adminInitiateAuth(params).promise();
   }
 
   //  Reset a users password as admin
@@ -125,10 +112,24 @@ class SSCognito {
       UserPoolId: process.env.USER_POOL_ID,
       Username: userName,
     };
-    return Cognito.adminResetUserPassword(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.adminResetUserPassword(params).promise();
+  }
+
+  //  Respond to an auth challenge
+  async adminRespondToAuthChallenge(session, email, password) {
+    const { Logger, Cognito } = this;
+    Logger.info(`adminRespondToAuthChallenge with email: ${email}`);
+    const params = {
+      ChallengeName: 'NEW_PASSWORD_REQUIRED',
+      ClientId: process.env.APP_CLIENT_ID,
+      UserPoolId: process.env.USER_POOL_ID,
+      Session: session,
+      ChallengeResponses: {
+        NEW_PASSWORD: password,
+        USERNAME: email,
+      },
+    };
+    return Cognito.adminRespondToAuthChallenge(params).promise();
   }
 
   //  Global signout as admin
@@ -185,10 +186,7 @@ class SSCognito {
       ConfirmationCode: confirmationCode,
       Username: userName,
     };
-    return Cognito.confirmSignUp(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.confirmSignUp(params).promise();
   }
 
   //  Deletes a user from the user pool
@@ -245,23 +243,15 @@ class SSCognito {
   }
 
   //  Register a user
-  async signUp(userName, email, password) {
+  async signUp(email, password) {
     const { Logger, Cognito } = this;
-    Logger.info(`signUp with userName : ${userName} and Email Address ${email}`);
-    const emailData = {
-      Name: 'email',
-      Value: email,
-    };
+    Logger.info(`signUp : ${email}`);
     const params = {
       ClientId: process.env.APP_CLIENT_ID,
       Password: password,
-      Username: userName,
-      UserAttributes: [emailData],
+      Username: email,
     };
-    return Cognito.signUp(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.signUp(params).promise();
   }
 
   //  Resend user confirmation code

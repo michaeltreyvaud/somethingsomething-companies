@@ -44,6 +44,11 @@ Resources:
           - apigateway:DELETE
           Resource:
           - Fn::Sub: "*"
+        - Effect: Allow
+          Action:
+          - cognito-idp:*
+          Resource:
+          - Fn::Sub: "*"
       Roles:
       - Ref: LambdaRole
   CompanyRoutingLambda:
@@ -59,6 +64,8 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
+          APP_CLIENT_ID: !Ref CompanyUserPoolClient
+          USER_POOL_ID: !Ref CompanyUserPool
       FunctionName:
         Fn::Sub: "${CompanyName}ApiLambda"
       Handler: src/companyRoutingLambda/main.handler
@@ -158,6 +165,7 @@ Resources:
       AutoVerifiedAttributes:
         - email
       MfaConfiguration: "OFF"
+      UsernameAttributes: ["email"]
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
         InviteMessageTemplate:
@@ -212,6 +220,7 @@ Resources:
       ClientName: !Sub ${CompanyName}UserPoolClient
       GenerateSecret: false
       UserPoolId: !Ref CompanyUserPool
+      ExplicitAuthFlows: ["ADMIN_NO_SRP_AUTH"]
   CompanyIdentityPool:
     Type: "AWS::Cognito::IdentityPool"
     Properties:
