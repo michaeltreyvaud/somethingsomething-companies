@@ -12,6 +12,14 @@ class SSCognito {
     const params = {
       UserPoolId: process.env.USER_POOL_ID,
       Username: email,
+      ForceAliasCreation: true,
+      UserAttributes: [{
+        Name: 'email',
+        Value: email,
+      }, {
+        Name: 'email_verified',
+        Value: 'true',
+      }],
     };
     return Cognito.adminCreateUser(params).promise();
   }
@@ -116,7 +124,7 @@ class SSCognito {
   }
 
   //  Respond to an auth challenge
-  async adminRespondToAuthChallenge(session, email, password) {
+  async passwordChallenge(session, email, password) {
     const { Logger, Cognito } = this;
     Logger.info(`adminRespondToAuthChallenge with email: ${email}`);
     const params = {
@@ -162,19 +170,16 @@ class SSCognito {
   }
 
   //  Confirms a new Password
-  async confirmForgotPassword(userName, confirmationCode, password) {
+  async confirmNewPassword(email, confirmationCode, password) {
     const { Logger, Cognito } = this;
-    Logger.info(`confirmForgotPassword with confirmationCode: ${confirmationCode} and userName: ${userName}`);
+    Logger.info('confirmNewPassword');
     const params = {
       ClientId: process.env.APP_CLIENT_ID,
       ConfirmationCode: confirmationCode,
       Password: password,
-      Username: userName,
+      Username: email,
     };
-    return Cognito.confirmForgotPassword(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.confirmForgotPassword(params).promise();
   }
 
   //  Confirms a user account
@@ -202,18 +207,16 @@ class SSCognito {
     });
   }
 
-  //  Send code to reset Password
-  async forgotPassword(userName) {
+  //  Create a user as admin
+  async forgotPassword(email) {
     const { Logger, Cognito } = this;
-    Logger.info(`forgotPassword with userName: ${userName}`);
+    Logger.info('forgotPassword');
+    Logger.debug(`forgotPassword with email: ${email}`);
     const params = {
       ClientId: process.env.APP_CLIENT_ID,
-      Username: userName,
+      Username: email,
     };
-    return Cognito.forgotPassword(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.forgotPassword(params).promise();
   }
 
   //  Get user info
@@ -255,17 +258,14 @@ class SSCognito {
   }
 
   //  Resend user confirmation code
-  async resendConfirmationCode(userName) {
+  async resendConfirmationCode(email) {
     const { Logger, Cognito } = this;
-    Logger.info(`resendConfirmationCode with userName : ${userName}`);
+    Logger.info('resendConfirmationCode');
     const params = {
       ClientId: process.env.APP_CLIENT_ID,
-      Username: userName,
+      Username: email,
     };
-    return Cognito.resendConfirmationCode(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.resendConfirmationCode(params).promise();
   }
 }
 

@@ -8,11 +8,9 @@ const AuthRouter = (dependencies) => {
 
   router.post('/login', controller.login);
   router.post('/signup', controller.signUp);
-  router.post('/confirm', controller.confirm);
-  router.post('/forgot', controller.forgot);
-  router.post('/resend', controller.resend);
-  router.post('/confirmForgotPassword', controller.confirmForgotPassword);
-  router.post('/challenge', controller.challenge);
+  router.post('/forgotPassword', controller.forgotPassword);
+  router.post('/confirmNewPassword', controller.confirmNewPassword);
+  router.post('/passwordChallenge', controller.passwordChallenge);
 
   return router;
 };
