@@ -78,37 +78,35 @@ Resources:
   CompanyRoutingLambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName:
-        Ref: CompanyRoutingLambda
+      FunctionName: !Ref CompanyRoutingLambda
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn:
         Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
-  CompanyRootAPIGateway:
-    Type: AWS::ApiGateway::RestApi
+  CompanyRootApi:
+    Type: "AWS::ApiGateway::RestApi"
     Properties:
-      Name:
-        Fn::Sub: "${CompanyName}Api"
+      Name: !Sub "${CompanyName}Api"
       Description: Api Gateway for a specific Company
-  CompanyResourceProxy:
+  AuthResource:
     Type: AWS::ApiGateway::Resource
     Properties:
-      ParentId:
-        Fn::GetAtt:
-        - CompanyRootAPIGateway
-        - RootResourceId
-      RestApiId:
-        Ref: CompanyRootAPIGateway
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: auth
+  AuthResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref AuthResource
+      RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
-  CompanyMethods:
+  AuthMethods:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId:
-        Ref: CompanyRootAPIGateway
-      ResourceId:
-        Ref: CompanyResourceProxy
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref AuthResourceProxy
       HttpMethod: ANY
-      AuthorizationType: AWS_IAM
+      AuthorizationType: NONE
       MethodResponses:
       - StatusCode: '200'
       Integration:
@@ -118,21 +116,19 @@ Resources:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
-  CompanyOptions:
+  AuthOptions:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: AWS_IAM
-      RestApiId:
-        Ref: CompanyRootAPIGateway
-      ResourceId:
-        Ref: CompanyResourceProxy
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref AuthResourceProxy
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
         - StatusCode: '200'
           ResponseParameters:
             method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-            method.response.header.Access-Control-Allow-Methods: "'POST'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
             method.response.header.Access-Control-Allow-Origin: "'*'"
           ResponseTemplates:
             application/json: ''
@@ -150,13 +146,12 @@ Resources:
           method.response.header.Access-Control-Allow-Origin: false
   ApiGatewayDeployment:
     DependsOn:
-    - CompanyResourceProxy
-    - CompanyMethods
-    - CompanyOptions
+    - AuthResource
+    - AuthOptions
+    - AuthMethods
     Type: AWS::ApiGateway::Deployment
     Properties:
-      RestApiId:
-        Ref: CompanyRootAPIGateway
+      RestApiId: !Ref CompanyRootApi
       StageName: dev
   CompanyUserPool:
     Type: "AWS::Cognito::UserPool"
