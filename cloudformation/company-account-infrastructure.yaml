@@ -105,7 +105,13 @@ Resources:
     Properties:
       ParentId: !Ref AuthResource
       RestApiId: !Ref CompanyRootApi
-      PathPart: forgotPassword
+      PathPart: forgot
+  AuthChallengeResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref AuthResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: challenge
   AuthLoginMethods:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -127,6 +133,22 @@ Resources:
     Properties:
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref AuthForgotPasswordResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  AuthChallengeMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref AuthChallengeResource
       HttpMethod: POST
       AuthorizationType: NONE
       MethodResponses:
@@ -172,6 +194,34 @@ Resources:
       AuthorizationType: NONE
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref AuthForgotPasswordResource
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  AuthChallengeOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref AuthChallengeResource
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
@@ -266,6 +316,9 @@ Resources:
     - AuthForgotPasswordResource
     - AuthForgotPasswordMethods
     - AuthForgotPasswordOptions
+    - AuthChallengeResource
+    - AuthChallengeMethods
+    - AuthChallengeOptions
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi

@@ -9,9 +9,9 @@ const AuthRouter = (dependencies) => {
   router.post('/validate', controller.validate);
   router.post('/login', controller.login);
   router.post('/signup', controller.signUp);
-  router.post('/forgotPassword', controller.forgotPassword);
+  router.post('/forgot', controller.forgot);
   router.post('/confirmNewPassword', controller.confirmNewPassword);
-  router.post('/passwordChallenge', controller.passwordChallenge);
+  router.post('/challenge', controller.challenge);
 
   return router;
 };

@@ -7,9 +7,9 @@ class AuthController {
     this.Validator = AuthValidator;
     this.login = this.login.bind(this);
     this.signUp = this.signUp.bind(this);
-    this.forgotPassword = this.forgotPassword.bind(this);
+    this.forgot = this.forgot.bind(this);
     this.confirmNewPassword = this.confirmNewPassword.bind(this);
-    this.passwordChallenge = this.passwordChallenge.bind(this);
+    this.challenge = this.challenge.bind(this);
   }
 
   //  Attempt to log the user in
@@ -43,7 +43,7 @@ class AuthController {
   }
 
   //  User forgot their password
-  async forgotPassword(req, res, next) {
+  async forgot(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('forgot');
@@ -73,7 +73,7 @@ class AuthController {
   }
 
   //  When the user is forced to reset their password
-  async passwordChallenge(req, res, next) {
+  async challenge(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('challenge');
