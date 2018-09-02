@@ -86,6 +86,17 @@ class AuthController {
       return next(_err);
     }
   }
+
+  //  Validates users tokens
+  async validate(req, res, next) {
+    const { Logger } = this;
+    Logger.info('validate');
+    try {
+      return res.status(200).json({ hello: 'world' });
+    } catch (_err) {
+      return next(_err);
+    }
+  }
 }
 
 module.exports = AuthController;

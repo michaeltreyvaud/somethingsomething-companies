@@ -5,22 +5,32 @@ class SSCognito {
   }
 
   //  Create a user as admin
-  async adminCreateUser(email) {
+  async adminCreateUser(email, opts = {}) {
     const { Logger, Cognito } = this;
     Logger.info('adminCreateUser');
     Logger.debug(`adminCreateUser with email: ${email}`);
-    const params = {
+    let params = {
       UserPoolId: process.env.USER_POOL_ID,
       Username: email,
       ForceAliasCreation: true,
-      UserAttributes: [{
-        Name: 'email',
-        Value: email,
-      }, {
-        Name: 'email_verified',
-        Value: 'true',
-      }],
     };
+    if (opts.MessageAction === 'RESEND') {
+      params = {
+        ...params,
+        MessageAction: 'RESEND',
+      };
+    } else {
+      params = {
+        ...params,
+        UserAttributes: [{
+          Name: 'email',
+          Value: email,
+        }, {
+          Name: 'email_verified',
+          Value: 'true',
+        }],
+      };
+    }
     return Cognito.adminCreateUser(params).promise();
   }
 
@@ -216,7 +226,12 @@ class SSCognito {
       ClientId: process.env.APP_CLIENT_ID,
       Username: email,
     };
-    return Cognito.forgotPassword(params).promise();
+    return Cognito.forgotPassword(params).promise()
+      .then(data => data)
+      .catch(async (_err) => {
+        if (_err.code === 'NotAuthorizedException') return this.adminCreateUser(email, { MessageAction: 'RESEND' });
+        throw _err;
+      });
   }
 
   //  Get user info

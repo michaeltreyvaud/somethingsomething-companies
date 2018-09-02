@@ -6,6 +6,7 @@ const AuthRouter = (dependencies) => {
   const { Logger, SSCognito } = dependencies;
   const controller = new AuthController(Logger, SSCognito);
 
+  router.post('/validate', controller.validate);
   router.post('/login', controller.login);
   router.post('/signup', controller.signUp);
   router.post('/forgotPassword', controller.forgotPassword);
