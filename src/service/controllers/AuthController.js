@@ -10,6 +10,7 @@ class AuthController {
     this.forgot = this.forgot.bind(this);
     this.confirmNewPassword = this.confirmNewPassword.bind(this);
     this.challenge = this.challenge.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   //  Attempt to log the user in
@@ -89,10 +90,11 @@ class AuthController {
 
   //  Validates users tokens
   async validate(req, res, next) {
+    //  TODO: Do some actual validation?
     const { Logger } = this;
     Logger.info('validate');
     try {
-      return res.status(200).json({ hello: 'world' });
+      return res.status(200).json({});
     } catch (_err) {
       return next(_err);
     }

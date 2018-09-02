@@ -270,8 +270,7 @@ Resources:
   AuthOptions:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: "COGNITO_USER_POOLS"
-      AuthorizerId: !Ref ApiGatewayAuthorizer
+      AuthorizationType: NONE
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref AuthResourceProxy
       HttpMethod: OPTIONS
