@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Core Infrastructre for a something something"
+Parameters:
+  WebBucketName:
+    Description: "Name of the bucket hosting the react app"
+    Type: String
+    Default: "somethingsomething-web-bucket"
+Resources:
+  WebBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub "${WebBucketName}"
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+          - "Authorization"
+          AllowedMethods:
+          - "GET"
+          AllowedOrigins:
+          - "*"
+      WebsiteConfiguration:
+        IndexDocument: "index.html"
+        ErrorDocument: "index.html"

@@ -18,8 +18,7 @@ Resources:
   AuthLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName:
-        Fn::Sub: "${CompanyName}AuthLambdaRole"
+      RoleName: !Sub "${CompanyName}AuthLambdaRole"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -32,8 +31,7 @@ Resources:
   AuthLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName:
-        Fn::Sub: "${CompanyName}AuthLambdaPolicy"
+      ManagedPolicyName: !Sub "${CompanyName}AuthLambdaPolicy"
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -43,27 +41,26 @@ Resources:
           - logs:CreateLogStream
           - logs:PutLogEvents
           Resource:
-          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}AuthLambda
-          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}AuthLambda*:*
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}AuthLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}AuthLambda*:*
         - Effect: Allow
           Action:
           - apigateway:POST
           - apigateway:GetResources
           - apigateway:DELETE
           Resource:
-          - Fn::Sub: "*"
+          - !Sub "*"
         - Effect: Allow
           Action:
           - cognito-idp:*
           Resource:
-          - Fn::Sub: "*"
+          - !Sub "*"
       Roles:
-      - Ref: AuthLambdaRole
+      - !Ref AuthLambdaRole
   FridgeLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName:
-        Fn::Sub: "${CompanyName}FridgeLambdaRole"
+      RoleName: !Sub "${CompanyName}FridgeLambdaRole"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -76,8 +73,7 @@ Resources:
   FridgeLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName:
-        Fn::Sub: "${CompanyName}FridgeLambdaPolicy"
+      ManagedPolicyName: !Sub "${CompanyName}FridgeLambdaPolicy"
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -102,7 +98,7 @@ Resources:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable/*
       Roles:
-      - Ref: FridgeLambdaRole
+      - !Ref FridgeLambdaRole
   AuthLambda:
     DependsOn:
     - AuthLambdaRole
@@ -118,8 +114,7 @@ Resources:
           NODE_ENV: production
           APP_CLIENT_ID: !Ref CompanyUserPoolClient
           USER_POOL_ID: !Ref CompanyUserPool
-      FunctionName:
-        Fn::Sub: "${CompanyName}AuthLambda"
+      FunctionName: !Sub "${CompanyName}AuthLambda"
       Handler: src/AuthLambda/main.handler
       Role: !GetAtt AuthLambdaRole.Arn
       Runtime: nodejs8.10
@@ -145,8 +140,7 @@ Resources:
         Variables:
           NODE_ENV: production
           FRIDGE_TABLE: !Ref CompanyFridgeTable
-      FunctionName:
-        Fn::Sub: "${CompanyName}FridgeLambda"
+      FunctionName: !Sub "${CompanyName}FridgeLambda"
       Handler: src/FridgeLambda/main.handler
       Role: !GetAtt FridgeLambdaRole.Arn
       Runtime: nodejs8.10
@@ -211,8 +205,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthForgotPasswordMethods:
@@ -227,8 +220,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthChallengeMethods:
@@ -243,8 +235,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   FridgeMethods:
@@ -259,8 +250,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FridgeLambda.Arn}/invocations
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FridgeLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthLoginOptions:
@@ -394,8 +384,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthOptions:
