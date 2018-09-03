@@ -6,12 +6,20 @@ Parameters:
     Type: String
     MinLength: 3
     AllowedPattern: "[a-zA-Z0-9]+"
+  CompanyFridgeTableReadThroughput:
+    Description: The Fridge table read throughput
+    Type: String
+    Default: '5'
+  CompanyFridgeTableWriteThroughput:
+    Description: The Fridge table write throughput
+    Type: String
+    Default: '5'
 Resources:
-  LambdaRole:
+  AuthLambdaRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
-        Fn::Sub: "${CompanyName}ApiLambdaRole"
+        Fn::Sub: "${CompanyName}AuthLambdaRole"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -21,11 +29,11 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
-  LambdaPolicy:
+  AuthLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       ManagedPolicyName:
-        Fn::Sub: "${CompanyName}ApiLambdaPolicy"
+        Fn::Sub: "${CompanyName}AuthLambdaPolicy"
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -35,8 +43,8 @@ Resources:
           - logs:CreateLogStream
           - logs:PutLogEvents
           Resource:
-          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda
-          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ApiLambda*:*
+          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}AuthLambda
+          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}AuthLambda*:*
         - Effect: Allow
           Action:
           - apigateway:POST
@@ -50,39 +58,106 @@ Resources:
           Resource:
           - Fn::Sub: "*"
       Roles:
-      - Ref: LambdaRole
-  CompanyRoutingLambda:
+      - Ref: AuthLambdaRole
+  FridgeLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: "${CompanyName}FridgeLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  FridgeLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName:
+        Fn::Sub: "${CompanyName}FridgeLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FridgeLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FridgeLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable/*
+      Roles:
+      - Ref: FridgeLambdaRole
+  AuthLambda:
     DependsOn:
-    - LambdaRole
-    - LambdaPolicy
+    - AuthLambdaRole
+    - AuthLambdaPolicy
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket: somethingsomething-company-bucket
         S3Key: helloWorld.zip
-      Description: API lambda for specific company
+      Description: Company Auth Lambda
       Environment:
         Variables:
           NODE_ENV: production
           APP_CLIENT_ID: !Ref CompanyUserPoolClient
           USER_POOL_ID: !Ref CompanyUserPool
       FunctionName:
-        Fn::Sub: "${CompanyName}ApiLambda"
-      Handler: src/companyRoutingLambda/main.handler
-      Role:
-        Fn::GetAtt:
-        - LambdaRole
-        - Arn
+        Fn::Sub: "${CompanyName}AuthLambda"
+      Handler: src/AuthLambda/main.handler
+      Role: !GetAtt AuthLambdaRole.Arn
       Runtime: nodejs8.10
       Timeout: 30
-  CompanyRoutingLambdaInvokePermission:
+  AuthLambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !Ref CompanyRoutingLambda
+      FunctionName: !Ref AuthLambda
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FridgeLambda:
+    DependsOn:
+    - FridgeLambdaRole
+    - FridgeLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Fridge Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          FRIDGE_TABLE: !Ref CompanyFridgeTable
+      FunctionName:
+        Fn::Sub: "${CompanyName}FridgeLambda"
+      Handler: src/FridgeLambda/main.handler
+      Role: !GetAtt FridgeLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  FridgeLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref FridgeLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
   CompanyRootApi:
     Type: "AWS::ApiGateway::RestApi"
     Properties:
@@ -112,6 +187,18 @@ Resources:
       ParentId: !Ref AuthResource
       RestApiId: !Ref CompanyRootApi
       PathPart: challenge
+  FridgeResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: fridge
+  FridgeResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref FridgeResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   AuthLoginMethods:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -125,7 +212,7 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthForgotPasswordMethods:
@@ -141,7 +228,7 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthChallengeMethods:
@@ -157,7 +244,23 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  FridgeMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FridgeResourceProxy
+      HttpMethod: POST
+      AuthorizationType: AWS_IAM
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FridgeLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthLoginOptions:
@@ -244,6 +347,34 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
+  FridgeOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FridgeResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
   AuthResourceProxy:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -264,7 +395,7 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyRoutingLambda.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthOptions:
@@ -318,6 +449,10 @@ Resources:
     - AuthChallengeResource
     - AuthChallengeMethods
     - AuthChallengeOptions
+    - FridgeResource
+    - FridgeMethods
+    - FridgeMethods
+    - FridgeResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
@@ -450,3 +585,24 @@ Resources:
       Roles:
         authenticated: !GetAtt CompanyAuthenticatedRole.Arn
         unauthenticated: !GetAtt CompanyUnAuthenticatedRole.Arn
+  CompanyFridgeTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FridgeTable
+      AttributeDefinitions:
+      -
+        AttributeName: "name"
+        AttributeType: "S"
+      -
+        AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      -
+        AttributeName: "id"
+        KeyType: "HASH"
+      -
+        AttributeName: "name"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFridgeTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFridgeTableWriteThroughput
