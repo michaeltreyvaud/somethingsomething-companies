@@ -49,12 +49,12 @@ Resources:
           - apigateway:GetResources
           - apigateway:DELETE
           Resource:
-          - !Sub "*"
+          - "*"
         - Effect: Allow
           Action:
           - cognito-idp:*
           Resource:
-          - !Sub "*"
+          - "*"
       Roles:
       - !Ref AuthLambdaRole
   FridgeLambdaRole:
@@ -580,18 +580,12 @@ Resources:
       TableName: !Sub ${CompanyName}FridgeTable
       AttributeDefinitions:
       -
-        AttributeName: "name"
-        AttributeType: "S"
-      -
         AttributeName: "id"
         AttributeType: "S"
       KeySchema:
       -
         AttributeName: "id"
         KeyType: "HASH"
-      -
-        AttributeName: "name"
-        KeyType: "RANGE"
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFridgeTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFridgeTableWriteThroughput
