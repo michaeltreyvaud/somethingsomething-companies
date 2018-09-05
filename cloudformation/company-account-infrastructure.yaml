@@ -244,7 +244,8 @@ Resources:
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref FridgeResourceProxy
       HttpMethod: POST
-      AuthorizationType: AWS_IAM
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
       MethodResponses:
       - StatusCode: '200'
       Integration:
