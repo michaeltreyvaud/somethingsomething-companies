@@ -14,7 +14,6 @@ class FridgeController {
     this.list = this.list.bind(this);
   }
 
-  //  TODO - validation
   async describe(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName,
@@ -35,7 +34,6 @@ class FridgeController {
     }
   }
 
-  //  TODO - validation and uniquness
   async create(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName,
@@ -44,11 +42,12 @@ class FridgeController {
     Logger.info('create');
     try {
       Validator.validateCreateRequest(body);
-      const { name } = body;
+      const { name, description } = body;
       const date = Date.now();
       const Item = {
         id: shortid.generate(),
         name,
+        description,
         createdAt: date,
         updatedAt: date,
       };
@@ -75,7 +74,6 @@ class FridgeController {
     }
   }
 
-  //  TODO: Validation
   async delete(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName,
