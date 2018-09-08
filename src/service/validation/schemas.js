@@ -34,6 +34,13 @@ const freezer = {
   },
 };
 
+const management = {
+  team: {
+    NAME: Joi.string().required().error(new Error('Invalid name supplied')),
+    DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
+  },
+};
+
 const schemas = {
   EMAIL: Joi.string().email().required().error(new Error('Invalid email supplied')),
   PASSWORD: Joi.string().required().error(new Error('Invalid password supplied')),
@@ -41,6 +48,7 @@ const schemas = {
   CONFIRMATION_CODE: Joi.string().required().error(new Error('Invalid confirmationCode supplied')),
   fridge,
   freezer,
+  management,
 };
 
 module.exports = schemas;

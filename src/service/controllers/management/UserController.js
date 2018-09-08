@@ -1,33 +1,53 @@
-const ManagementValidator = require('../../validation/ManagementValidator');
+const UserValidator = require('../../validation/UserValidator');
 
-class TeamController {
+class UserController {
   constructor(Logger, Cognito) {
     this.Logger = Logger;
     this.Cognito = Cognito;
-    this.Validator = ManagementValidator;
-    this.createTeam = this.createTeam.bind(this);
-    this.describeTeam = this.describeTeam.bind(this);
-    this.updateTeam = this.updateTeam.bind(this);
-    this.deleteTeam = this.deleteTeam.bind(this);
-    this.listTeam = this.listTeam.bind(this);
+    this.Validator = UserValidator;
+    this.create = this.create.bind(this);
+    this.describe = this.describe.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
+    this.list = this.list.bind(this);
   }
 
   //  TODO: Validation
   async create(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('createTeam');
+    Logger.info('create');
     try {
-      Validator.validateCreateTeamRequest(body);
-      const { name, description } = body;
-      const response = await Cognito.createGroup(name, description);
-      const item = {};
-      if (response.Group) {
-        const { GroupName, Description } = response.Group;
-        item.name = GroupName;
-        item.description = Description;
-      }
-      return res.status(200).json(item);
+      Validator.validateCreateRequest(body);
+      const {
+        email, firstName, lastName,
+        phoneNumber, position, team,
+        authorization,
+      } = body;
+      const attributes = [{
+        Name: 'given_name',
+        Value: firstName,
+      }, {
+        Name: 'family_name',
+        Value: lastName,
+      }, {
+        Name: 'phone_number',
+        Value: phoneNumber,
+      }, {
+        Name: 'custom:position',
+        Value: position,
+      }, {
+        Name: 'custom:team',
+        Value: team,
+      }, {
+        Name: 'custom:authorization',
+        Value: authorization,
+      }];
+      const options = {
+        UserAttributes: attributes,
+      };
+      const response = await Cognito.adminCreateUser(email, options);
+      return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
     }
@@ -37,18 +57,12 @@ class TeamController {
   async describe(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('describeTeam');
+    Logger.info('describe');
     try {
-      Validator.validateDescribeTeamRequest(body);
-      const { name } = body;
-      const response = await Cognito.getGroup(name);
-      const item = {};
-      if (response.Group) {
-        const { GroupName, Description } = response.Group;
-        item.name = GroupName;
-        item.description = Description;
-      }
-      return res.status(200).json(item);
+      Validator.validateDescribeRequest(body);
+      const { userName } = body;
+      const response = await Cognito.adminGetUser(userName);
+      return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
     }
@@ -58,9 +72,9 @@ class TeamController {
   async update(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('updateTeam');
+    Logger.info('update');
     try {
-      Validator.validateUpdateTeamRequest(body);
+      Validator.validateUpdateRequest(body);
       const { name, description } = body;
       const response = await Cognito.updateGroup(name, description);
       const item = {};
@@ -79,11 +93,11 @@ class TeamController {
   async delete(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('deleteTeam');
+    Logger.info('delete');
     try {
-      Validator.validateDeleteTeamRequest(body);
-      const { name } = body;
-      await Cognito.deleteGroup(name);
+      Validator.validateDeleteRequest(body);
+      const { userName } = body;
+      await Cognito.adminDeleteUser(userName);
       return res.status(200).json({});
     } catch (_err) {
       return next(_err);
@@ -93,10 +107,10 @@ class TeamController {
   async list(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('listTeam');
+    Logger.info('list');
     try {
-      Validator.validateListTeamRequest(body);
-      const response = await Cognito.listGroups();
+      Validator.validateListRequest(body);
+      const response = await Cognito.listUsers();
       return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
@@ -104,4 +118,4 @@ class TeamController {
   }
 }
 
-module.exports = TeamController;
+module.exports = UserController;

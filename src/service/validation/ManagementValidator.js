@@ -10,19 +10,34 @@ const FreezerValidator = {
     }
   },
   validateCreateTeamRequest(params) {
-    //this.validate(params, schema);
+    const schema = Joi.object().keys({
+      name: schemas.management.team.NAME,
+      description: schemas.management.team.DESCRIPTION,
+    });
+    this.validate(params, schema);
   },
   validateDescribeTeamRequest(params) {
-    //this.validate(params, schema);
+    const schema = Joi.object().keys({
+      name: schemas.management.team.NAME,
+    });
+    this.validate(params, schema);
   },
   validateUpdateTeamRequest(params) {
-    //this.validate(params, schema);
+    const schema = Joi.object().keys({
+      name: schemas.management.team.NAME,
+      description: schemas.management.team.DESCRIPTION,
+    });
+    this.validate(params, schema);
   },
   validateDeleteTeamRequest(params) {
-    //this.validate(params, schema);
+    const schema = Joi.object().keys({
+      name: schemas.management.team.NAME,
+    });
+    this.validate(params, schema);
   },
   validateListTeamRequest(params) {
-    //this.validate(params, schema);
+    const schema = Joi.object().keys({});
+    this.validate(params, schema);
   },
 };
 

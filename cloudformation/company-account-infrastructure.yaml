@@ -752,16 +752,16 @@ Resources:
           AttributeDataType: String
           Mutable: false
           Required: true
-        - Name: firstname
+        - Name: team
           AttributeDataType: String
           Mutable: true
           Required: false
-        - Name: lastname
+        - Name: position
           AttributeDataType: String
           Mutable: true
           Required: false
-        - Name: phonenumber
-          AttributeDataType: Number
+        - Name: authorization
+          AttributeDataType: String
           Mutable: true
           Required: false
       EmailVerificationSubject: SomethingSomething - Password Reset

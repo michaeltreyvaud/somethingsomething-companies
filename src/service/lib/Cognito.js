@@ -13,6 +13,7 @@ class SSCognito {
       UserPoolId: process.env.USER_POOL_ID,
       Username: email,
       ForceAliasCreation: true,
+      DesiredDeliveryMediums: ['EMAIL'],
     };
     if (opts.MessageAction === 'RESEND') {
       params = {
@@ -20,15 +21,17 @@ class SSCognito {
         MessageAction: 'RESEND',
       };
     } else {
+      const attributes = [{
+        Name: 'email',
+        Value: email,
+      }, {
+        Name: 'email_verified',
+        Value: 'true',
+      }];
+      const additional = opts.UserAttributes || [];
       params = {
         ...params,
-        UserAttributes: [{
-          Name: 'email',
-          Value: email,
-        }, {
-          Name: 'email_verified',
-          Value: 'true',
-        }],
+        UserAttributes: [...attributes, ...additional],
       };
     }
     return Cognito.adminCreateUser(params).promise();
@@ -58,10 +61,7 @@ class SSCognito {
       UserPoolId: process.env.USER_POOL_ID,
       Username: userName,
     };
-    return Cognito.adminDeleteUser(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.adminDeleteUser(params).promise();
   }
 
   //  Disable a user as admin
@@ -100,10 +100,17 @@ class SSCognito {
       UserPoolId: process.env.USER_POOL_ID,
       Username: userName,
     };
-    return Cognito.adminGetUser(params).promise().then((_data) => {
-      console.log('update me');
-      return _data;
-    });
+    return Cognito.adminGetUser(params).promise();
+  }
+
+  //  TODO: Pagination?
+  async listUsers() {
+    const { Logger, Cognito } = this;
+    Logger.info('listUsers');
+    const params = {
+      UserPoolId: process.env.USER_POOL_ID,
+    };
+    return Cognito.listUsers(params).promise();
   }
 
   //  Initiates the authentication flow, as admin
