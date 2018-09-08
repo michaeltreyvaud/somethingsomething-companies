@@ -2,9 +2,10 @@ const shortid = require('shortid');
 const FridgeValidator = require('../validation/FridgeValidator');
 
 class FridgeController {
-  constructor(Logger, DocumentClient) {
+  constructor(Logger, DocumentClient, CompanyName, TableName) {
     this.Logger = Logger;
-    this.TableName = process.env.FRIDGE_TABLE; //  TODO - inject
+    this.CompanyName = CompanyName;
+    this.TableName = TableName;
     this.DocumentClient = DocumentClient;
     this.Validator = FridgeValidator;
     this.describe = this.describe.bind(this);
@@ -16,7 +17,7 @@ class FridgeController {
 
   async describe(req, res, next) {
     const {
-      Logger, Validator, DocumentClient, TableName,
+      Logger, Validator, DocumentClient, TableName, CompanyName,
     } = this;
     const { body } = req;
     Logger.info('describe');
@@ -25,7 +26,7 @@ class FridgeController {
       const { id } = body;
       const dbParams = {
         TableName,
-        Key: { id },
+        Key: { company: CompanyName, id },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -36,7 +37,8 @@ class FridgeController {
 
   async create(req, res, next) {
     const {
-      Logger, Validator, DocumentClient, TableName,
+      Logger, Validator, DocumentClient,
+      TableName, CompanyName,
     } = this;
     const { body } = req;
     Logger.info('create');
@@ -45,6 +47,7 @@ class FridgeController {
       const { name, description } = body;
       const date = Date.now();
       const Item = {
+        company: CompanyName,
         id: shortid.generate(),
         name,
         description,
@@ -76,7 +79,8 @@ class FridgeController {
 
   async delete(req, res, next) {
     const {
-      Logger, Validator, DocumentClient, TableName,
+      Logger, Validator, DocumentClient,
+      TableName, CompanyName,
     } = this;
     const { body } = req;
     Logger.info('delete');
@@ -85,7 +89,7 @@ class FridgeController {
       const { id } = body;
       const dbParams = {
         TableName,
-        Key: { id },
+        Key: { company: CompanyName, id },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});
@@ -97,28 +101,41 @@ class FridgeController {
   //  TODO: Validation will need to update to query at some point
   async list(req, res, next) {
     const {
-      Logger, Validator, DocumentClient, TableName,
+      Logger, Validator, DocumentClient,
+      TableName, CompanyName,
     } = this;
     const { body } = req;
     Logger.info('list');
     try {
       Validator.validateListRequest(body);
-      const { from, limit } = body;
+      const { from, limit, order } = body;
       const dbParams = {
         TableName,
+        IndexName: 'byName',
         ExclusiveStartKey: from,
         Limit: limit || 50,
+        KeyConditionExpression: '#company = :company',
+        ExpressionAttributeNames: {
+          '#company': 'company',
+        },
+        ExpressionAttributeValues: {
+          ':company': CompanyName,
+        },
       };
-      const scan = async (_params, _options) => {
+      if (order) {
+        const forward = (order === 'asc');
+        dbParams.ScanIndexForward = forward;
+      }
+      const query = async (_params, _options) => {
         Logger.info('Query');
-        return DocumentClient.scan(_params).promise().then((_data) => {
+        return DocumentClient.query(_params).promise().then((_data) => {
           if (_options.paginated && _data.LastEvaluatedKey) {
             const updateParams = {
               ..._params,
               ExclusiveStartKey: _data.LastEvaluatedKey,
             };
             const newData = _data;
-            return scan(updateParams, _options)
+            return query(updateParams, _options)
               .then((nextPage) => {
                 newData.Items = newData.Items.concat(nextPage.Items);
                 newData.LastEvaluatedKey = nextPage.LastEvaluatedKey;
@@ -130,7 +147,7 @@ class FridgeController {
           return _data;
         });
       };
-      const result = await scan(dbParams, body);
+      const result = await query(dbParams, body);
       return res.status(200).json(result);
     } catch (_err) {
       return next(_err);

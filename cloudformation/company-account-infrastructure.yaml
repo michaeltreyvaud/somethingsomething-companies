@@ -140,6 +140,7 @@ Resources:
         Variables:
           NODE_ENV: production
           FRIDGE_TABLE: !Ref CompanyFridgeTable
+          COMPANY_NAME: !Ref CompanyName
       FunctionName: !Sub "${CompanyName}FridgeLambda"
       Handler: src/FridgeLambda/main.handler
       Role: !GetAtt FridgeLambdaRole.Arn
@@ -589,13 +590,26 @@ Resources:
     Properties:
       TableName: !Sub ${CompanyName}FridgeTable
       AttributeDefinitions:
-      -
-        AttributeName: "id"
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "name"
+        AttributeType: "S"
+      - AttributeName: "id"
         AttributeType: "S"
       KeySchema:
-      -
-        AttributeName: "id"
+      - AttributeName: "company"
         KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFridgeTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFridgeTableWriteThroughput
+      LocalSecondaryIndexes:
+      - IndexName: "byName"
+        KeySchema:
+        - AttributeName: "company"
+          KeyType: "HASH"
+        - AttributeName: "name"
+          KeyType: "RANGE"
+        Projection:
+          ProjectionType: "ALL"

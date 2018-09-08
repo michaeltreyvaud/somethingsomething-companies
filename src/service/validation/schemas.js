@@ -7,10 +7,13 @@ const fridge = {
     DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
     IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
     FROM: Joi.object().keys({
+      company: Joi.string().required().error(new Error('Invalid company supplied')),
       id: Joi.string().required().error(new Error('Invalid id supplied')),
+      name: Joi.string().required().error(new Error('Invalid name supplied')),
     }),
     LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
     PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+    ORDER: Joi.string().error(new Error('Invalid order supplied')),
   },
 };
 

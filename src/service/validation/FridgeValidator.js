@@ -42,6 +42,7 @@ const FridgeValidator = {
       limit: schemas.fridge.item.LIMIT,
       from: schemas.fridge.item.FROM,
       paginated: schemas.fridge.item.PAGINATED,
+      order: schemas.fridge.item.ORDER,
     });
     this.validate(params, schema);
   },
