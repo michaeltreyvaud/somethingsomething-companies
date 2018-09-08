@@ -282,6 +282,62 @@ class SSCognito {
     };
     return Cognito.resendConfirmationCode(params).promise();
   }
+
+  async createGroup(name, description) {
+    const { Logger, Cognito } = this;
+    Logger.info('createGroup');
+    Logger.debug(`createGroup with name: ${name} description: ${description}`);
+    const params = {
+      GroupName: name,
+      UserPoolId: process.env.USER_POOL_ID,
+      Description: description,
+    };
+    return Cognito.createGroup(params).promise();
+  }
+
+  async getGroup(name) {
+    const { Logger, Cognito } = this;
+    Logger.info('getGroup');
+    Logger.debug(`getGroup with name: ${name}`);
+    const params = {
+      GroupName: name,
+      UserPoolId: process.env.USER_POOL_ID,
+    };
+    return Cognito.getGroup(params).promise();
+  }
+
+  async updateGroup(name, description) {
+    const { Logger, Cognito } = this;
+    Logger.info('updateGroup');
+    Logger.debug(`getGroup with name: ${name} description: ${description}`);
+    const params = {
+      GroupName: name,
+      UserPoolId: process.env.USER_POOL_ID,
+      Description: description,
+    };
+    return Cognito.updateGroup(params).promise();
+  }
+
+  async deleteGroup(name) {
+    const { Logger, Cognito } = this;
+    Logger.info('deleteGroup');
+    Logger.debug(`getGroup with name: ${name}`);
+    const params = {
+      GroupName: name,
+      UserPoolId: process.env.USER_POOL_ID,
+    };
+    return Cognito.deleteGroup(params).promise();
+  }
+
+  //  TODO: Pagination?
+  async listGroups() {
+    const { Logger, Cognito } = this;
+    Logger.info('listGroups');
+    const params = {
+      UserPoolId: process.env.USER_POOL_ID,
+    };
+    return Cognito.listGroups(params).promise();
+  }
 }
 
 module.exports = SSCognito;
