@@ -1,10 +1,10 @@
-const AuthValidator = require('../validation/ManagementValidator');
+const ManagementValidator = require('../../validation/ManagementValidator');
 
-class ManagementController {
+class TeamController {
   constructor(Logger, Cognito) {
     this.Logger = Logger;
     this.Cognito = Cognito;
-    this.Validator = AuthValidator;
+    this.Validator = ManagementValidator;
     this.createTeam = this.createTeam.bind(this);
     this.describeTeam = this.describeTeam.bind(this);
     this.updateTeam = this.updateTeam.bind(this);
@@ -13,7 +13,7 @@ class ManagementController {
   }
 
   //  TODO: Validation
-  async createTeam(req, res, next) {
+  async create(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('createTeam');
@@ -34,7 +34,7 @@ class ManagementController {
   }
 
   //  TODO validation
-  async describeTeam(req, res, next) {
+  async describe(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('describeTeam');
@@ -55,7 +55,7 @@ class ManagementController {
   }
 
   //  TODO validation
-  async updateTeam(req, res, next) {
+  async update(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('updateTeam');
@@ -76,7 +76,7 @@ class ManagementController {
   }
 
   //  TODO: Validation
-  async deleteTeam(req, res, next) {
+  async delete(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('deleteTeam');
@@ -90,7 +90,7 @@ class ManagementController {
     }
   }
 
-  async listTeam(req, res, next) {
+  async list(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('listTeam');
@@ -104,4 +104,4 @@ class ManagementController {
   }
 }
 
-module.exports = ManagementController;
+module.exports = TeamController;
