@@ -24,12 +24,12 @@ const FridgeValidator = {
     this.validate(params, schema);
   },
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   email: schemas.EMAIL,
-    //   password: schemas.PASSWORD,
-    //   session: schemas.SESSION,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.fridge.item.ID,
+      description: schemas.fridge.item.DESCRIPTION,
+      name: schemas.fridge.item.NAME,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({

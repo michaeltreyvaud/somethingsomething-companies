@@ -66,12 +66,49 @@ class FridgeController {
   }
 
   async update(req, res, next) {
-    const { Logger, Validator, DocumentClient } = this;
+    const {
+      Logger, Validator, DocumentClient,
+      TableName, CompanyName,
+    } = this;
     const { body } = req;
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      return res.status(200).json({ hello: 'world' });
+      const { id } = body;
+      const date = Date.now();
+      let updateExpression = 'set ';
+      const expressionAttributeNames = {
+        '#updatedAt': 'updatedAt',
+        '#company': 'company',
+        '#id': 'id',
+      };
+      const expressionAttributeValues = {
+        ':updatedAt': date,
+        ':company': CompanyName,
+      };
+      updateExpression = `${updateExpression} #updatedAt = :updatedAt`;
+      delete body.id;
+      delete body.company;
+      Object.keys(body).forEach((key) => {
+        const attr = `#${key}`;
+        const val = `:${key}`;
+        updateExpression = `${updateExpression}, ${attr} = ${val}`;
+        expressionAttributeNames[attr] = key;
+        expressionAttributeValues[val] = body[key];
+      });
+      delete body.Id;
+      delete body.Organization;
+      const dbParams = {
+        TableName,
+        Key: { company: CompanyName, id },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ConditionExpression: 'attribute_exists(#id) AND #company = :company',
+        ReturnValues: 'ALL_NEW',
+      };
+      const item = await DocumentClient.update(dbParams).promise();
+      return res.status(200).json(item.Attributes || {});
     } catch (_err) {
       return next(_err);
     }
@@ -98,7 +135,6 @@ class FridgeController {
     }
   }
 
-  //  TODO: Validation will need to update to query at some point
   async list(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
