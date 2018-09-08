@@ -14,6 +14,14 @@ Parameters:
     Description: The Fridge table write throughput
     Type: String
     Default: '5'
+  CompanyFreezerTableReadThroughput:
+    Description: The Freezer table read throughput
+    Type: String
+    Default: '5'
+  CompanyFreezerTableWriteThroughput:
+    Description: The Freezer table write throughput
+    Type: String
+    Default: '5'
 Resources:
   AuthLambdaRole:
     Type: AWS::IAM::Role
@@ -99,6 +107,48 @@ Resources:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable/*
       Roles:
       - !Ref FridgeLambdaRole
+  FreezerLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}FreezerLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  FreezerLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}FreezerLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FreezerLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FreezerLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTable/*
+      Roles:
+      - !Ref FreezerLambdaRole
   AuthLambda:
     DependsOn:
     - AuthLambdaRole
@@ -153,6 +203,33 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FreezerLambda:
+    DependsOn:
+    - FreezerLambdaRole
+    - FreezerLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Freezer Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          FREEZER_TABLE: !Ref CompanyFreezerTable
+          COMPANY_NAME: !Ref CompanyName
+      FunctionName: !Sub "${CompanyName}FreezerLambda"
+      Handler: src/FreezerLambda/main.handler
+      Role: !GetAtt FreezerLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  FreezerLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref FreezerLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
   CompanyRootApi:
     Type: "AWS::ApiGateway::RestApi"
     Properties:
@@ -192,6 +269,18 @@ Resources:
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !Ref FridgeResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  FreezerResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: freezer
+  FreezerResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref FreezerResource
       RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
   AuthLoginMethods:
@@ -253,6 +342,22 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FridgeLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  FreezerMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FreezerResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FreezerLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthLoginOptions:
@@ -367,6 +472,34 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
+  FreezerOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FreezerResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
   AuthResourceProxy:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -444,6 +577,10 @@ Resources:
     - FridgeMethods
     - FridgeMethods
     - FridgeResourceProxy
+    - FreezerResource
+    - FreezerMethods
+    - FreezerMethods
+    - FreezerResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
@@ -604,6 +741,34 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFridgeTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFridgeTableWriteThroughput
+      LocalSecondaryIndexes:
+      - IndexName: "byName"
+        KeySchema:
+        - AttributeName: "company"
+          KeyType: "HASH"
+        - AttributeName: "name"
+          KeyType: "RANGE"
+        Projection:
+          ProjectionType: "ALL"
+  CompanyFreezerTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FreezerTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "name"
+        AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFreezerTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFreezerTableWriteThroughput
       LocalSecondaryIndexes:
       - IndexName: "byName"
         KeySchema:
