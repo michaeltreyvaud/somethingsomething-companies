@@ -21,3 +21,40 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: "index.html"
         ErrorDocument: "index.html"
+  CloudfrontIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "Used to access S3 Web bucket"
+  CloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - "GET"
+            - "HEAD"
+            - "OPTIONS"
+          CachedMethods:
+            - "HEAD"
+            - "GET"
+          Compress: true
+          DefaultTTL: 3600
+          ForwardedValues:
+            QueryString: false
+          MaxTTL: 86400
+          MinTTL: 0
+          TargetOriginId: !Ref WebBucket
+          ViewerProtocolPolicy : "redirect-to-https"
+        DefaultRootObject: "index.html"
+        Enabled: true
+        HttpVersion: "http2"
+        IPV6Enabled: true
+        Origins:
+          - DomainName: !GetAtt WebBucket.DomainName
+            Id: !Ref WebBucket
+            OriginPath: "/"
+            S3OriginConfig:
+              # TODO: WHat is this?
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudfrontIdentity}"
+        PriceClass: "PriceClass_All"
