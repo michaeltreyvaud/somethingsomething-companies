@@ -10,14 +10,44 @@ const AuthValidator = {
     }
   },
   validateCreateRequest(params) {
+    const schema = Joi.object().keys({
+      email: schemas.management.users.EMAIL,
+      firstName: schemas.management.users.FIRST_NAME,
+      lastName: schemas.management.users.LAST_NAME,
+      phoneNumber: schemas.management.users.PHONE_NUMBER,
+      position: schemas.management.users.POSITION,
+      team: schemas.management.users.TEAM,
+      authorization: schemas.management.users.AUTHORIZATION,
+    });
+    this.validate(params, schema);
   },
   validateDescribeRequest(params) {
+    const schema = Joi.object().keys({
+      email: schemas.management.users.EMAIL,
+    });
+    this.validate(params, schema);
   },
   validateUpdateRequest(params) {
+    const schema = Joi.object().keys({
+      email: schemas.management.users.EMAIL,
+      firstName: schemas.management.users.FIRST_NAME,
+      lastName: schemas.management.users.LAST_NAME,
+      phoneNumber: schemas.management.users.PHONE_NUMBER,
+      position: schemas.management.users.POSITION,
+      team: schemas.management.users.TEAM,
+      authorization: schemas.management.users.AUTHORIZATION,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
+    const schema = Joi.object().keys({
+      email: schemas.management.users.EMAIL,
+    });
+    this.validate(params, schema);
   },
   validateListRequest(params) {
+    const schema = Joi.object().keys({});
+    this.validate(params, schema);
   },
 };
 

@@ -39,6 +39,15 @@ const management = {
     NAME: Joi.string().required().error(new Error('Invalid name supplied')),
     DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
   },
+  users: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+    PHONE_NUMBER: Joi.string().required().error(new Error('Invalid phone number supplied')),
+    POSITION: Joi.string().required().error(new Error('Invalid position supplied')),
+    TEAM: Joi.string().required().error(new Error('Invalid team supplied')),
+    AUTHORIZATION: Joi.string().required().error(new Error('Invalid authorization supplied')),
+  },
 };
 
 const schemas = {

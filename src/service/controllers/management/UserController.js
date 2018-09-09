@@ -60,8 +60,8 @@ class UserController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { userName } = body;
-      const response = await Cognito.adminGetUser(userName);
+      const { email } = body;
+      const response = await Cognito.adminGetUser(email);
       return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
@@ -96,8 +96,8 @@ class UserController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { userName } = body;
-      await Cognito.adminDeleteUser(userName);
+      const { email } = body;
+      await Cognito.adminDeleteUser(email);
       return res.status(200).json({});
     } catch (_err) {
       return next(_err);
