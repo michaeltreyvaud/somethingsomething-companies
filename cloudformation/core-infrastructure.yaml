@@ -5,11 +5,29 @@ Parameters:
     Description: "Name of the bucket hosting the react app"
     Type: String
     Default: "somethingsomething-web-bucket"
+  RootDomainName:
+    Description: "Don't forget to attach SSL cert manually!"
+    Type: String
 Resources:
+  WebBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebBucket
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Sid: PublicReadForGetBucketObjects
+          Principal:
+            AWS:
+              - !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudfrontIdentity}"
+          Action: s3:GetObject
+          Resource: !Join ['', ['arn:aws:s3:::', !Ref 'WebBucket', /*]]
   WebBucket:
     Type: "AWS::S3::Bucket"
+    DeletionPolicy: Retain
     Properties:
       BucketName: !Sub "${WebBucketName}"
+      AccessControl: PublicRead
       CorsConfiguration:
         CorsRules:
         - AllowedHeaders:
@@ -21,15 +39,31 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: "index.html"
         ErrorDocument: "index.html"
+  CloudfrontPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: "CloudfrontPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+          - !Sub "arn:aws:s3:::${WebBucketName}/contents/*"
   CloudfrontIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: "Used to access S3 Web bucket"
   CloudfrontDistribution:
+    DependsOn:
+    - WebBucket
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
+        Aliases:
+        - !Sub "*.${RootDomainName}"
         DefaultCacheBehavior:
           AllowedMethods:
             - "GET"
@@ -49,12 +83,10 @@ Resources:
         DefaultRootObject: "index.html"
         Enabled: true
         HttpVersion: "http2"
-        IPV6Enabled: true
+        IPV6Enabled: false
         Origins:
           - DomainName: !GetAtt WebBucket.DomainName
             Id: !Ref WebBucket
-            OriginPath: "/"
             S3OriginConfig:
-              # TODO: WHat is this?
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudfrontIdentity}"
         PriceClass: "PriceClass_All"
