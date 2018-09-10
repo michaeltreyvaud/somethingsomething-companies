@@ -1,7 +1,7 @@
 const Express = require('express');
 const AuthController = require('../controllers/AuthController');
 
-const AuthRouter = (dependencies) => {
+const AuthRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
   const { Logger, SSCognito } = dependencies;
   const controller = new AuthController(Logger, SSCognito);

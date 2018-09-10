@@ -1,7 +1,7 @@
 //  eslint-disable-next-line
 const AWS = require('aws-sdk');
 const AwsServerlessExpress = require('aws-serverless-express');
-const MainApp = require('../app');
+const MainApp = require('./app');
 const Logger = require('../util/logger');
 const ErrorHandler = require('../util/ErrorHandler');
 
