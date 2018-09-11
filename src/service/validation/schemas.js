@@ -50,6 +50,21 @@ const management = {
   },
 };
 
+const company = {
+  NAME: Joi.string().required().error(new Error('Invalid name supplied')),
+  EMAIL: Joi.string().email().required().error(new Error('Invalid email supplied')),
+  FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+  LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+  PHONE: Joi.string().required().error(new Error('Invalid phone number supplied')),
+  MOBILE: Joi.string().required().error(new Error('Invalid mobile number supplied')),
+  COUNTRY: Joi.string().required().error(new Error('Invalid country supplied')),
+  CITY: Joi.string().required().error(new Error('Invalid city supplied')),
+  ADDRESS_1: Joi.string().required().error(new Error('Invalid address supplied')),
+  ADDRESS_2: Joi.string().required().error(new Error('Invalid address supplied')),
+  ADDRESS_3: Joi.string().required().error(new Error('Invalid address supplied')),
+  LOGO: Joi.string().uri().required().error(new Error('Invalid logo supplied')),
+};
+
 const schemas = {
   EMAIL: Joi.string().email().required().error(new Error('Invalid email supplied')),
   PASSWORD: Joi.string().required().error(new Error('Invalid password supplied')),
@@ -58,6 +73,7 @@ const schemas = {
   fridge,
   freezer,
   management,
+  company,
 };
 
 module.exports = schemas;

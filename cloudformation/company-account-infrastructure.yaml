@@ -22,7 +22,54 @@ Parameters:
     Description: The Freezer table write throughput
     Type: String
     Default: '5'
+  CompanyContactEmail:
+    Type: String
+  CompanyContactFirstName:
+    Type: String
+  CompanyContactLastName:
+    Type: String
+  CompanyContactPhoneNumber:
+    Type: String
+  CompanyContactMobileNumber:
+    Type: String
+  CompanyCountry:
+    Type: String
+  CompanyCity:
+    Type: String
+  CompanyAddressLine1:
+    Type: String
+    Default: ""
+  CompanyAddressLine2:
+    Type: String
+    Default: ""
+  CompanyAddressLine3:
+    Type: String
+    Default: ""
+  CompanyLogoUrl:
+    Type: String
+    Default: ""
 Resources:
+  CompanyProfileInformationSSM:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: "CompanyProfileInformation"
+      Description: "Company profile information"
+      Type: "String"
+      Value: !Sub |
+        {
+          "name": "${CompanyName}",
+          "email": "${CompanyContactEmail}",
+          "firstName": "${CompanyContactFirstName}",
+          "lastName": "${CompanyContactLastName}",
+          "phone": "${CompanyContactPhoneNumber}",
+          "mobile": "${CompanyContactMobileNumber}",
+          "country": "${CompanyCountry}",
+          "city": "${CompanyCity}",
+          "address1": "${CompanyAddressLine1}",
+          "address2": "${CompanyAddressLine2}",
+          "address3": "${CompanyAddressLine3}",
+          "logo": "${CompanyLogoUrl}"
+        }
   AuthLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -65,6 +112,69 @@ Resources:
           - "*"
       Roles:
       - !Ref AuthLambdaRole
+  CompanyLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}CompanyLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  CompanyLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}CompanyLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}CompanyLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}CompanyLambda*:*
+        - Effect: Allow
+          Action:
+          - ssm:GetParameter
+          - ssm:PutParameter
+          Resource:
+          - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${CompanyProfileInformationSSM}
+      Roles:
+      - !Ref CompanyLambdaRole
+  CompanyLambda:
+    DependsOn:
+    - CompanyLambdaRole
+    - CompanyLambdaPolicy
+    - CompanyProfileInformationSSM
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Settings Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          COMPANY_SETTINGS_SSM_PARAM: !Ref CompanyProfileInformationSSM
+      FunctionName: !Sub "${CompanyName}CompanyLambda"
+      Handler: src/CompanyLambda/main.handler
+      Role: !GetAtt CompanyLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  CompanyLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CompanyLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
   FridgeLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -370,6 +480,18 @@ Resources:
       ParentId: !Ref ManagementResource
       RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
+  CompanyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: company
+  CompanyResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref CompanyResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   AuthLoginMethods:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -461,6 +583,22 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ManagementLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  CompanyMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref CompanyResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   AuthLoginOptions:
@@ -631,6 +769,34 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
+  CompanyOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref CompanyResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
   AuthResourceProxy:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -716,6 +882,10 @@ Resources:
     - ManagementMethods
     - ManagementMethods
     - ManagementResourceProxy
+    - CompanyResource
+    - CompanyMethods
+    - CompanyMethods
+    - CompanyResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
