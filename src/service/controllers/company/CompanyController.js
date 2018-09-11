@@ -43,7 +43,7 @@ class CompanyController {
         Value,
         Overwrite: true,
       };
-      return SSM.putParameter(params).promise().then(() => res.status(200).json({}));
+      return SSM.putParameter(params).promise().then(() => res.status(200).json(body));
     } catch (_err) {
       return next(_err);
     }
