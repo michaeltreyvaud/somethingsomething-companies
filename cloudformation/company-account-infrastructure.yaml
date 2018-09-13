@@ -22,6 +22,14 @@ Parameters:
     Description: The Freezer table write throughput
     Type: String
     Default: '5'
+  CompanyFoodItemTableReadThroughput:
+    Description: The FoodItem table read throughput
+    Type: String
+    Default: '5'
+  CompanyFoodItemTableWriteThroughput:
+    Description: The FoodItem table write throughput
+    Type: String
+    Default: '5'
   CompanyContactEmail:
     Type: String
   CompanyContactFirstName:
@@ -112,6 +120,75 @@ Resources:
           - "*"
       Roles:
       - !Ref AuthLambdaRole
+  FoodItemLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}FoodItemLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  FoodItemLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}FoodItemLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FoodItemLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FoodItemLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FoodItemTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FoodItemTable/*
+      Roles:
+      - !Ref FoodItemLambdaRole
+  FoodItemLambda:
+    DependsOn:
+    - FoodItemLambdaRole
+    - FoodItemLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company FoodItem Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          FOOD_ITEM_TABLE: !Ref CompanyFoodItemTable
+          COMPANY_NAME: !Ref CompanyName
+      FunctionName: !Sub "${CompanyName}FoodItemLambda"
+      Handler: src/FoodItemLambda/main.handler
+      Role: !GetAtt FoodItemLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  FoodItemLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref FoodItemLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
   CompanyLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -444,6 +521,18 @@ Resources:
       ParentId: !Ref AuthResource
       RestApiId: !Ref CompanyRootApi
       PathPart: challenge
+  FoodItemResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: fooditem
+  FoodItemResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref FoodItemResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   FridgeResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -535,6 +624,22 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  FoodItemMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FoodItemResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FoodItemLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   FridgeMethods:
@@ -663,6 +768,34 @@ Resources:
       AuthorizationType: NONE
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref AuthChallengeResource
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  FoodItemOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FoodItemResourceProxy
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
@@ -886,6 +1019,10 @@ Resources:
     - CompanyMethods
     - CompanyMethods
     - CompanyResourceProxy
+    - FoodItemResource
+    - FoodItemMethods
+    - FoodItemMethods
+    - FoodItemResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
@@ -1080,6 +1217,34 @@ Resources:
         - AttributeName: "company"
           KeyType: "HASH"
         - AttributeName: "name"
+          KeyType: "RANGE"
+        Projection:
+          ProjectionType: "ALL"
+  CompanyFoodItemTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FoodItemTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      - AttributeName: "expiryDate"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFoodItemTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFoodItemTableWriteThroughput
+      LocalSecondaryIndexes:
+      - IndexName: "byExpiryDate"
+        KeySchema:
+        - AttributeName: "company"
+          KeyType: "HASH"
+        - AttributeName: "expiryDate"
           KeyType: "RANGE"
         Projection:
           ProjectionType: "ALL"
