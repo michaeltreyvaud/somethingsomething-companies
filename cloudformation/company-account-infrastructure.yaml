@@ -30,6 +30,22 @@ Parameters:
     Description: The FoodItem table write throughput
     Type: String
     Default: '5'
+  CompanyHotHoldingTableReadThroughput:
+    Description: The HotHolding table write throughput
+    Type: String
+    Default: '5'
+  CompanyHotHoldingTableWriteThroughput:
+    Description: The HotHolding table write throughput
+    Type: String
+    Default: '5'
+  CompanyFastCoolingTableReadThroughput:
+    Description: The FastCooling table write throughput
+    Type: String
+    Default: '5'
+  CompanyFastCoolingTableWriteThroughput:
+    Description: The FastCooling table write throughput
+    Type: String
+    Default: '5'
   CompanyContactEmail:
     Type: String
   CompanyContactFirstName:
@@ -120,6 +136,90 @@ Resources:
           - "*"
       Roles:
       - !Ref AuthLambdaRole
+  HotHoldingLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}HotHoldingLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  HotHoldingLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}HotHoldingLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}HotHoldingLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}HotHoldingLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}HotHoldingTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}HotHoldingTable/*
+      Roles:
+      - !Ref HotHoldingLambdaRole
+  FastCoolingLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}FastCoolingLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  FastCoolingLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}FastCoolingLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FastCoolingLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}FastCoolingLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FastCoolingTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FastCoolingTable/*
+      Roles:
+      - !Ref FastCoolingLambdaRole
   FoodItemLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -186,6 +286,60 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref FoodItemLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  HotHoldingLambda:
+    DependsOn:
+    - HotHoldingLambdaRole
+    - HotHoldingLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company HotHolding Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          HOT_HOLDING_TABLE: !Ref CompanyHotHoldingTable
+          COMPANY_NAME: !Ref CompanyName
+      FunctionName: !Sub "${CompanyName}HotHoldingLambda"
+      Handler: src/HotHoldingLambda/main.handler
+      Role: !GetAtt HotHoldingLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  HotHoldingLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref HotHoldingLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FastCoolingLambda:
+    DependsOn:
+    - FastCoolingLambdaRole
+    - FastCoolingLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company FastCooling Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          FAST_COOLIN_TABLE: !Ref CompanyFastCoolingTable
+          COMPANY_NAME: !Ref CompanyName
+      FunctionName: !Sub "${CompanyName}FastCoolingLambda"
+      Handler: src/FastCoolingLambda/main.handler
+      Role: !GetAtt FastCoolingLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  FastCoolingLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref FastCoolingLambda
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
@@ -533,6 +687,30 @@ Resources:
       ParentId: !Ref FoodItemResource
       RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
+  HotHoldingResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: hotholding
+  HotHoldingResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref HotHoldingResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  FastCoolingResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: fastcooling
+  FastCoolingResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref FastCoolingResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   FridgeResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -640,6 +818,38 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FoodItemLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  HotHoldingMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref HotHoldingResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HotHoldingLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  FastCoolingMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FastCoolingResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FastCoolingLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   FridgeMethods:
@@ -796,6 +1006,62 @@ Resources:
       AuthorizationType: NONE
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref FoodItemResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  HotHoldingOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref HotHoldingResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  FastCoolingOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref FastCoolingResourceProxy
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
@@ -1023,6 +1289,14 @@ Resources:
     - FoodItemMethods
     - FoodItemMethods
     - FoodItemResourceProxy
+    - HotHoldingResource
+    - HotHoldingMethods
+    - HotHoldingMethods
+    - HotHoldingResourceProxy
+    - FastCoolingResource
+    - FastCoolingMethods
+    - FastCoolingMethods
+    - FastCoolingResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
@@ -1237,3 +1511,46 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFoodItemTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFoodItemTableWriteThroughput
+      LocalSecondaryIndexes:
+      - IndexName: "byExpiryDate"
+        KeySchema:
+        - AttributeName: "company"
+          KeyType: "HASH"
+        - AttributeName: "expiryDate"
+          KeyType: "RANGE"
+        Projection:
+          ProjectionType: "ALL"
+  CompanyHotHoldingTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}HotHolding
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyHotHoldingTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyHotHoldingTableWriteThroughput
+  CompanyFastCoolingTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FastCooling
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFastCoolingTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFastCoolingTableWriteThroughput
