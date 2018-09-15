@@ -1503,6 +1503,8 @@ Resources:
         AttributeType: "S"
       - AttributeName: "createdAt"
         AttributeType: "N"
+      - AttributeName: "expiryDate"
+        AttributeType: "N"
       KeySchema:
       - AttributeName: "company"
         KeyType: "HASH"
