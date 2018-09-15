@@ -46,6 +46,14 @@ Parameters:
     Description: The FastCooling table write throughput
     Type: String
     Default: '5'
+  CompanySupplierTableReadThroughput:
+    Description: The Supplier table write throughput
+    Type: String
+    Default: '5'
+  CompanySupplierTableWriteThroughput:
+    Description: The Supplier table write throughput
+    Type: String
+    Default: '5'
   CompanyContactEmail:
     Type: String
   CompanyContactFirstName:
@@ -523,6 +531,18 @@ Resources:
           - cognito-idp:*
           Resource:
           - "*"
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SupplierTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SupplierTable/*
       Roles:
       - !Ref ManagementLambdaRole
   ManagementLambdaRole:
@@ -634,6 +654,7 @@ Resources:
           NODE_ENV: production
           APP_CLIENT_ID: !Ref CompanyUserPoolClient
           USER_POOL_ID: !Ref CompanyUserPool
+          SUPPLIER_TABLE: !Ref CompanySupplierTable
       FunctionName: !Sub "${CompanyName}ManagementLambda"
       Handler: src/ManagementLambda/main.handler
       Role: !GetAtt ManagementLambdaRole.Arn
@@ -1556,3 +1577,20 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFastCoolingTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFastCoolingTableWriteThroughput
+  CompanySupplierTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}SupplierTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "name"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "name"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanySupplierTableReadThroughput
+        WriteCapacityUnits: !Ref CompanySupplierTableWriteThroughput
