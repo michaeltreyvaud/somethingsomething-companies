@@ -1,5 +1,5 @@
 const Express = require('express');
-const SupplierListController = require('../controllers/supplierlist/SupplierListController');
+const SupplierListController = require('../controllers/management/SupplierListController');
 
 const SupplierListRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
