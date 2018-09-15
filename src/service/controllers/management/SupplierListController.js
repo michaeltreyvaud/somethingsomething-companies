@@ -15,7 +15,6 @@ class SupplierListController {
     this.list = this.list.bind(this);
   }
 
-  //Done
   async describe(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName, CompanyName,
@@ -36,7 +35,6 @@ class SupplierListController {
     }
   }
 
-  //Done
   async create(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -46,7 +44,9 @@ class SupplierListController {
     Logger.info('create');
     try {
       Validator.validateCreateRequest(body);
-      const { name, address, phoneNo, email, techContact, salesContact, questions } = body;
+      const {
+        name, address, phoneNo, email, techContact, salesContact, questions,
+      } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
@@ -61,7 +61,6 @@ class SupplierListController {
         createdAt: date,
         updatedAt: date,
       };
-      console.log(Item);
       const params = {
         Item,
         TableName,
@@ -82,7 +81,7 @@ class SupplierListController {
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { id, name } = body;
+      const { name } = body;
       const date = Date.now();
       let updateExpression = 'set ';
       const expressionAttributeNames = {
@@ -122,7 +121,6 @@ class SupplierListController {
     }
   }
 
-  //Done
   async delete(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -144,7 +142,6 @@ class SupplierListController {
     }
   }
 
-  //Done
   async list(req, res, next) {
     const {
       Logger, Validator, DocumentClient,

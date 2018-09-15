@@ -9,7 +9,8 @@ const ManagementRouter = (dependencies, environment) => {
   const { COMPANY_NAME, SUPPLIER_TABLE } = environment;
   const teamController = new TeamController(Logger, SSCognito);
   const userController = new UserController(Logger, SSCognito);
-  const supplierListController = new SupplierListController(Logger, DocumentClient, COMPANY_NAME, SUPPLIER_TABLE);
+  const supplierListController = new SupplierListController(Logger, DocumentClient,
+    COMPANY_NAME, SUPPLIER_TABLE);
 
   router.post('/team/create', teamController.create);
   router.post('/team/describe', teamController.describe);
@@ -17,11 +18,11 @@ const ManagementRouter = (dependencies, environment) => {
   router.post('/team/delete', teamController.delete);
   router.post('/team/list', teamController.list);
 
-  router.post('/users/create', userController.create);
-  router.post('/users/describe', userController.describe);
-  router.post('/users/update', userController.update);
-  router.post('/users/delete', userController.delete);
-  router.post('/users/list', userController.list);
+  router.post('/user/create', userController.create);
+  router.post('/user/describe', userController.describe);
+  router.post('/user/update', userController.update);
+  router.post('/user/delete', userController.delete);
+  router.post('/user/list', userController.list);
 
   router.post('/supplier/create', supplierListController.create);
   router.post('/supplier/describe', supplierListController.describe);

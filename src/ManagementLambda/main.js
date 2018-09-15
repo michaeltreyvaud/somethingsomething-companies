@@ -19,7 +19,7 @@ const createDependencies = () => ({
   AWS,
   ErrorHandler: ErrorHandler(Logger),
   SSCognito,
-  DocumentClient
+  DocumentClient,
 });
 const createApp = () => MainApp(createDependencies(), createEnvironment());
 

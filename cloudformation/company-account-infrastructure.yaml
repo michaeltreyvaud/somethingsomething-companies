@@ -337,7 +337,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          FAST_COOLIN_TABLE: !Ref CompanyFastCoolingTable
+          FAST_COOLING_TABLE: !Ref CompanyFastCoolingTable
           COMPANY_NAME: !Ref CompanyName
       FunctionName: !Sub "${CompanyName}FastCoolingLambda"
       Handler: src/FastCoolingLambda/main.handler

@@ -15,7 +15,6 @@ class FoodItemController {
     this.list = this.list.bind(this);
   }
 
-  //Done
   async describe(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName, CompanyName,
@@ -36,7 +35,7 @@ class FoodItemController {
     }
   }
 
-  //Done
+  // Done
   async create(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -46,7 +45,9 @@ class FoodItemController {
     Logger.info('create');
     try {
       Validator.validateCreateRequest(body);
-      const { name, batchNumber, description, expiryDate, allergens } = body;
+      const {
+        name, batchNumber, description, expiryDate, allergens,
+      } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
@@ -79,7 +80,7 @@ class FoodItemController {
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { id, createdAt } = body;
+      const { createdAt } = body;
       const date = Date.now();
       let updateExpression = 'set ';
       const expressionAttributeNames = {
@@ -119,7 +120,6 @@ class FoodItemController {
     }
   }
 
-  //Done
   async delete(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -141,7 +141,6 @@ class FoodItemController {
     }
   }
 
-  //Done
   async list(req, res, next) {
     const {
       Logger, Validator, DocumentClient,

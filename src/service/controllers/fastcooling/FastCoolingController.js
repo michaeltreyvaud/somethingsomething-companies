@@ -15,7 +15,6 @@ class FastCoolingController {
     this.list = this.list.bind(this);
   }
 
-  //Done
   async describe(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName, CompanyName,
@@ -36,7 +35,6 @@ class FastCoolingController {
     }
   }
 
-  //Done
   async create(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -46,7 +44,9 @@ class FastCoolingController {
     Logger.info('create');
     try {
       Validator.validateCreateRequest(body);
-      const { foodItem, temperature, user, captureDate, image, comments, signature } = body;
+      const {
+        foodItem, temperature, user, image, comments, signature,
+      } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
@@ -54,7 +54,6 @@ class FastCoolingController {
         foodItem,
         temperature,
         user,
-        captureDate,
         image,
         comments,
         signature,
@@ -81,7 +80,7 @@ class FastCoolingController {
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { id, createdAt } = body;
+      const { createdAt } = body;
       const date = Date.now();
       let updateExpression = 'set ';
       const expressionAttributeNames = {
@@ -121,7 +120,6 @@ class FastCoolingController {
     }
   }
 
-  //Done
   async delete(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -143,7 +141,6 @@ class FastCoolingController {
     }
   }
 
-  //Done
   async list(req, res, next) {
     const {
       Logger, Validator, DocumentClient,

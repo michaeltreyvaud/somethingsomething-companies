@@ -3,9 +3,10 @@ const FastCoolingController = require('../controllers/fastcooling/FastCoolingCon
 
 const FastCoolingRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { COMPANY_NAME, FAST_COOLIN_TABLE } = environment;
+  const { COMPANY_NAME, FAST_COOLING_TABLE } = environment;
   const { Logger, DocumentClient } = dependencies;
-  const controller = new FastCoolingController(Logger, DocumentClient, COMPANY_NAME, FAST_COOLIN_TABLE);
+  const controller = new FastCoolingController(Logger, DocumentClient,
+    COMPANY_NAME, FAST_COOLING_TABLE);
 
   router.post('/describe', controller.describe);
   router.post('/update', controller.update);
