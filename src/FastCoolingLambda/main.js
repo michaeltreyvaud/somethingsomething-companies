@@ -8,7 +8,7 @@ const ErrorHandler = require('../util/ErrorHandler');
 const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const createEnvironment = () => ({
   COMPANY_NAME: process.env.COMPANY_NAME,
-  FOOD_ITEM_TABLE: process.env.FOOD_ITEM_TABLE,
+  FAST_COOLIN_TABLE: process.env.FAST_COOLIN_TABLE,
 });
 const createDependencies = () => ({
   Logger,

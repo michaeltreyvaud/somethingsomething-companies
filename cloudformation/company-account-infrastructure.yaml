@@ -655,6 +655,7 @@ Resources:
           APP_CLIENT_ID: !Ref CompanyUserPoolClient
           USER_POOL_ID: !Ref CompanyUserPool
           SUPPLIER_TABLE: !Ref CompanySupplierTable
+          COMPANY_NAME: !Ref CompanyName
       FunctionName: !Sub "${CompanyName}ManagementLambda"
       Handler: src/ManagementLambda/main.handler
       Role: !GetAtt ManagementLambdaRole.Arn
@@ -1546,7 +1547,7 @@ Resources:
   CompanyHotHoldingTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
-      TableName: !Sub ${CompanyName}HotHolding
+      TableName: !Sub ${CompanyName}HotHoldingTable
       AttributeDefinitions:
       - AttributeName: "company"
         AttributeType: "S"
@@ -1563,7 +1564,7 @@ Resources:
   CompanyFastCoolingTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
-      TableName: !Sub ${CompanyName}FastCooling
+      TableName: !Sub ${CompanyName}FastCoolingTable
       AttributeDefinitions:
       - AttributeName: "company"
         AttributeType: "S"

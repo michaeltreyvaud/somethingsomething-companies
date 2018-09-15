@@ -1,13 +1,13 @@
 const shortid = require('shortid');
-const SupplierListValidator = require('../../validation/SupplierListValidator');
+const HotHoldingValidator = require('../../validation/HotHoldingValidator');
 
-class SupplierListController {
+class HotHoldingController {
   constructor(Logger, DocumentClient, CompanyName, TableName) {
     this.Logger = Logger;
     this.CompanyName = CompanyName;
     this.TableName = TableName;
     this.DocumentClient = DocumentClient;
-    this.Validator = SupplierListValidator;
+    this.Validator = HotHoldingValidator;
     this.describe = this.describe.bind(this);
     this.create = this.create.bind(this);
     this.update = this.update.bind(this);
@@ -24,10 +24,10 @@ class SupplierListController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { name } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, name },
+        Key: { company: CompanyName, createdAt },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -46,22 +46,21 @@ class SupplierListController {
     Logger.info('create');
     try {
       Validator.validateCreateRequest(body);
-      const { name, address, phoneNo, email, techContact, salesContact, questions } = body;
+      const { foodItem, temperature, user, captureDate, image, comments, signature } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
-        name,
-        address,
-        phoneNo,
-        email,
-        techContact,
-        salesContact,
-        questions,
+        foodItem,
+        temperature,
+        user,
+        captureDate,
+        image,
+        comments,
+        signature,
         createdAt: date,
         updatedAt: date,
       };
-      console.log(Item);
       const params = {
         Item,
         TableName,
@@ -82,7 +81,7 @@ class SupplierListController {
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { id, name } = body;
+      const { id, createdAt } = body;
       const date = Date.now();
       let updateExpression = 'set ';
       const expressionAttributeNames = {
@@ -97,7 +96,7 @@ class SupplierListController {
       updateExpression = `${updateExpression} #updatedAt = :updatedAt`;
       delete body.id;
       delete body.company;
-      delete body.name;
+      delete body.createdAt;
       delete body.updatedAt;
       Object.keys(body).forEach((key) => {
         const attr = `#${key}`;
@@ -108,7 +107,7 @@ class SupplierListController {
       });
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, name },
+        Key: { company: CompanyName, createdAt },
         UpdateExpression: updateExpression,
         ExpressionAttributeNames: expressionAttributeNames,
         ExpressionAttributeValues: expressionAttributeValues,
@@ -132,10 +131,10 @@ class SupplierListController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { name } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, name },
+        Key: { company: CompanyName, createdAt },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});
@@ -201,4 +200,4 @@ class SupplierListController {
   }
 }
 
-module.exports = SupplierListController;
+module.exports = HotHoldingController;
