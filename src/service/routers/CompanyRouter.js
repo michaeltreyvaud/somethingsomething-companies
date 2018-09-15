@@ -1,7 +1,7 @@
 const Express = require('express');
 const CompanyController = require('../controllers/company/CompanyController');
 
-const AuthRouter = (dependencies, environment) => {
+const CompanyRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
   const { COMPANY_SETTINGS_SSM_PARAM } = environment;
   const { Logger, AWS } = dependencies;
@@ -13,4 +13,4 @@ const AuthRouter = (dependencies, environment) => {
   return router;
 };
 
-module.exports = AuthRouter;
+module.exports = CompanyRouter;

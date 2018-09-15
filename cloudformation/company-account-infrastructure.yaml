@@ -1229,8 +1229,6 @@ Resources:
         AttributeType: "S"
       - AttributeName: "createdAt"
         AttributeType: "N"
-      - AttributeName: "expiryDate"
-        AttributeType: "N"
       KeySchema:
       - AttributeName: "company"
         KeyType: "HASH"
@@ -1239,12 +1237,3 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFoodItemTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFoodItemTableWriteThroughput
-      LocalSecondaryIndexes:
-      - IndexName: "byExpiryDate"
-        KeySchema:
-        - AttributeName: "company"
-          KeyType: "HASH"
-        - AttributeName: "expiryDate"
-          KeyType: "RANGE"
-        Projection:
-          ProjectionType: "ALL"

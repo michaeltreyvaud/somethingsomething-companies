@@ -1,7 +1,7 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const FoodItemRouter = require('../service/routers/FoodItemRouter');
+const SupplierListRouter = require('../service/routers/SupplierListRouter');
 
 const App = (dependencies, environment) => {
   const app = Express();
@@ -13,7 +13,7 @@ const App = (dependencies, environment) => {
   app.use(BodyParser.json());
   app.use(BodyParser.urlencoded({ extended: true }));
 
-  app.use('/fooditem', FoodItemRouter(dependencies, environment));
+  app.use('/supplierlist', SupplierListRouter(dependencies, environment));
   app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
   app.use(ErrorHandler);
   return app;

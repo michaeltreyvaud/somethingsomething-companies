@@ -96,8 +96,6 @@ class FridgeController {
         expressionAttributeNames[attr] = key;
         expressionAttributeValues[val] = body[key];
       });
-      delete body.Id;
-      delete body.Organization;
       const dbParams = {
         TableName,
         Key: { company: CompanyName, id },

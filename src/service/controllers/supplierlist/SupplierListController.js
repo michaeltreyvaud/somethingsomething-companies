@@ -1,13 +1,13 @@
 const shortid = require('shortid');
-const FreezerValidator = require('../validation/FreezerValidator');
+const FoodItemValidator = require('../../validation/FoodItemValidator');
 
-class FreezerController {
+class FoodItemController {
   constructor(Logger, DocumentClient, CompanyName, TableName) {
     this.Logger = Logger;
     this.CompanyName = CompanyName;
     this.TableName = TableName;
     this.DocumentClient = DocumentClient;
-    this.Validator = FreezerValidator;
+    this.Validator = FoodItemValidator;
     this.describe = this.describe.bind(this);
     this.create = this.create.bind(this);
     this.update = this.update.bind(this);
@@ -15,6 +15,7 @@ class FreezerController {
     this.list = this.list.bind(this);
   }
 
+  //Done
   async describe(req, res, next) {
     const {
       Logger, Validator, DocumentClient, TableName, CompanyName,
@@ -23,10 +24,10 @@ class FreezerController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -35,6 +36,7 @@ class FreezerController {
     }
   }
 
+  //Done
   async create(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -44,13 +46,16 @@ class FreezerController {
     Logger.info('create');
     try {
       Validator.validateCreateRequest(body);
-      const { name, description } = body;
+      const { name, batchNumber, description, expiryDate, allergens } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
         name,
+        batchNumber,
         description,
+        expiryDate,
+        allergens,
         createdAt: date,
         updatedAt: date,
       };
@@ -74,7 +79,7 @@ class FreezerController {
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { id } = body;
+      const { id, createdAt } = body;
       const date = Date.now();
       let updateExpression = 'set ';
       const expressionAttributeNames = {
@@ -89,6 +94,8 @@ class FreezerController {
       updateExpression = `${updateExpression} #updatedAt = :updatedAt`;
       delete body.id;
       delete body.company;
+      delete body.createdAt;
+      delete body.updatedAt;
       Object.keys(body).forEach((key) => {
         const attr = `#${key}`;
         const val = `:${key}`;
@@ -98,7 +105,7 @@ class FreezerController {
       });
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
         UpdateExpression: updateExpression,
         ExpressionAttributeNames: expressionAttributeNames,
         ExpressionAttributeValues: expressionAttributeValues,
@@ -112,6 +119,7 @@ class FreezerController {
     }
   }
 
+  //Done
   async delete(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -121,10 +129,10 @@ class FreezerController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});
@@ -133,6 +141,7 @@ class FreezerController {
     }
   }
 
+  //Done
   async list(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -145,7 +154,7 @@ class FreezerController {
       const { from, limit, order } = body;
       const dbParams = {
         TableName,
-        IndexName: 'byName',
+        // IndexName: 'byName',
         ExclusiveStartKey: from,
         Limit: limit || 50,
         KeyConditionExpression: '#company = :company',
@@ -189,4 +198,4 @@ class FreezerController {
   }
 }
 
-module.exports = FreezerController;
+module.exports = FoodItemController;
