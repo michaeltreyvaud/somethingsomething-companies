@@ -10,18 +10,21 @@ const FastCoolingValidator = {
     }
   },
   validateDescribeRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      createdAt: schemas.fastCooling.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateCreateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   name: schemas.fridge.item.NAME,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   image: schemas.fridge.item.IMAGE,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      foodItem: schemas.fastCooling.FOOD_ITEM,
+      temperature: schemas.fastCooling.TEMPERATURE,
+      user: schemas.fastCooling.USER,
+      image: schemas.fastCooling.IMAGE,
+      comments: schemas.fastCooling.COMMENTS,
+      signature: schemas.fastCooling.SIGNATURE,
+    });
+    this.validate(params, schema);
   },
   validateUpdateRequest(params) {
     // const schema = Joi.object().keys({
@@ -32,19 +35,19 @@ const FastCoolingValidator = {
     // this.validate(params, schema);
   },
   validateDeleteRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      createdAt: schemas.fastCooling.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateListRequest(params) {
-    // const schema = Joi.object().keys({
-    //   limit: schemas.fridge.item.LIMIT,
-    //   from: schemas.fridge.item.FROM,
-    //   paginated: schemas.fridge.item.PAGINATED,
-    //   order: schemas.fridge.item.ORDER,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      limit: schemas.fastCooling.item.LIMIT,
+      from: schemas.fastCooling.item.FROM,
+      paginated: schemas.fastCooling.item.PAGINATED,
+      order: schemas.fastCooling.item.ORDER,
+    });
+    this.validate(params, schema);
   },
 };
 

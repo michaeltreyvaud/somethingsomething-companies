@@ -10,18 +10,20 @@ const FoodItemValidator = {
     }
   },
   validateDescribeRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      createdAt: schemas.fooditem.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateCreateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   name: schemas.fridge.item.NAME,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   image: schemas.fridge.item.IMAGE,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      name: schemas.fooditem.NAME,
+      batchNumber: schemas.fooditem.BATCH_NUMBER,
+      description: schemas.fooditem.DESCRIPTION,
+      expiryDate: schemas.fooditem.EXPIRY_DATE,
+      allergens: schemas.fooditem.ALLERGENS,
+    });
+    this.validate(params, schema);
   },
   validateUpdateRequest(params) {
     // const schema = Joi.object().keys({
@@ -32,19 +34,19 @@ const FoodItemValidator = {
     // this.validate(params, schema);
   },
   validateDeleteRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      createdAt: schemas.fooditem.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateListRequest(params) {
-    // const schema = Joi.object().keys({
-    //   limit: schemas.fridge.item.LIMIT,
-    //   from: schemas.fridge.item.FROM,
-    //   paginated: schemas.fridge.item.PAGINATED,
-    //   order: schemas.fridge.item.ORDER,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      limit: schemas.fooditem.LIMIT,
+      from: schemas.fooditem.FROM,
+      paginated: schemas.fooditem.PAGINATED,
+      order: schemas.fooditem.ORDER,
+    });
+    this.validate(params, schema);
   },
 };
 
