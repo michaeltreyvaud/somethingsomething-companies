@@ -35,7 +35,6 @@ class FoodItemController {
     }
   }
 
-  // Done
   async create(req, res, next) {
     const {
       Logger, Validator, DocumentClient,
@@ -163,6 +162,7 @@ class FoodItemController {
         ExpressionAttributeValues: {
           ':company': CompanyName,
         },
+        ScanIndexForward: false,
       };
       if (order) {
         const forward = (order === 'asc');
