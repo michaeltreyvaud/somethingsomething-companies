@@ -42,10 +42,10 @@ const FastCoolingValidator = {
   },
   validateListRequest(params) {
     const schema = Joi.object().keys({
-      limit: schemas.fastCooling.item.LIMIT,
-      from: schemas.fastCooling.item.FROM,
-      paginated: schemas.fastCooling.item.PAGINATED,
-      order: schemas.fastCooling.item.ORDER,
+      limit: schemas.fastCooling.LIMIT,
+      from: schemas.fastCooling.FROM,
+      paginated: schemas.fastCooling.PAGINATED,
+      order: schemas.fastCooling.ORDER,
     });
     this.validate(params, schema);
   },

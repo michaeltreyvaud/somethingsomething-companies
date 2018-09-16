@@ -87,7 +87,7 @@ const fooditem = {
     celery: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
   }),
   CREATED_AT: Joi.number().required().error(new Error('Invalid expiry createdAt supplied')),
-  //TO DO - Update for actual schema
+  // TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
     id: Joi.string().required().error(new Error('Invalid id supplied')),
@@ -106,7 +106,7 @@ const hotHolding = {
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
   CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
-  //TO DO - Update for actual schema
+  // TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
     id: Joi.string().required().error(new Error('Invalid id supplied')),
@@ -125,7 +125,7 @@ const fastCooling = {
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
   CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
-  //TO DO - Update for actual schema
+  // TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
     id: Joi.string().required().error(new Error('Invalid id supplied')),
@@ -151,7 +151,7 @@ const supplierList = {
     q5: Joi.boolean().required().error(new Error('Invalid q5 supplied')),
     q6: Joi.boolean().required().error(new Error('Invalid q6 supplied')),
   }),
-  //TO DO - Update for actual schema
+  // TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
     id: Joi.string().required().error(new Error('Invalid id supplied')),
