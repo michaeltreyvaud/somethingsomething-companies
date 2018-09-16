@@ -73,7 +73,7 @@ const fooditem = {
   ALLERGENS: Joi.object().keys({
     gluten: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
     sesameSeeds: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
-    molluscs: Joi.string().required().error(new Error('Invalid allergen supplied')),
+    molluscs: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
     fish: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
     soybeans: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
     peanuts: Joi.boolean().required().error(new Error('Invalid allergen supplied')),
@@ -101,10 +101,10 @@ const fooditem = {
 const hotHolding = {
   FOOD_ITEM: Joi.number().required().error(new Error('Invalid food item supplied')),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
-  USER: Joi.string().email().error(new Error('Invalid user supplied')),
+  USER: Joi.string().email().required().error(new Error('Invalid user supplied')),
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
-  COMMENTS: Joi.string().required().error(new Error('Invalid comments supplied')),
-  SIGNATURE: Joi.string().uri().error(new Error('Invalid signature supplied')),
+  COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
+  SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
   CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
   //TO DO - Update for actual schema
   FROM: Joi.object().keys({
@@ -120,11 +120,37 @@ const hotHolding = {
 const fastCooling = {
   FOOD_ITEM: Joi.number().required().error(new Error('Invalid food item supplied')),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
-  USER: Joi.string().email().error(new Error('Invalid user supplied')),
+  USER: Joi.string().email().required().error(new Error('Invalid user supplied')),
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
-  COMMENTS: Joi.string().required().error(new Error('Invalid comments supplied')),
-  SIGNATURE: Joi.string().uri().error(new Error('Invalid signature supplied')),
+  COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
+  SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
   CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
+  //TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
+const supplierList = {
+  NAME: Joi.string().required().error(new Error('Invalid name supplied')),
+  ADDRESS: Joi.string().error(new Error('Invalid address supplied')),
+  PHONE: Joi.string().error(new Error('Invalid phone number supplied')),
+  EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+  TECH_CONTACT: Joi.string().error(new Error('Invalid tech contact name supplied')),
+  SALES_CONTACT: Joi.string().error(new Error('Invalid sales contact name supplied')),
+  QUESTIONS: Joi.object().keys({
+    q1: Joi.boolean().required().error(new Error('Invalid q1 supplied')),
+    q2: Joi.boolean().required().error(new Error('Invalid q2 supplied')),
+    q3: Joi.boolean().required().error(new Error('Invalid q3 supplied')),
+    q4: Joi.boolean().required().error(new Error('Invalid q4 supplied')),
+    q5: Joi.boolean().required().error(new Error('Invalid q5 supplied')),
+    q6: Joi.boolean().required().error(new Error('Invalid q6 supplied')),
+  }),
   //TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
@@ -148,6 +174,7 @@ const schemas = {
   fooditem,
   hotHolding,
   fastCooling,
+  supplierList,
 };
 
 module.exports = schemas;
