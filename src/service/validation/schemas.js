@@ -104,7 +104,7 @@ const hotHolding = {
   USER: Joi.string().email().error(new Error('Invalid user supplied')),
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().required().error(new Error('Invalid comments supplied')),
-  SIGNATURE: Joi.string().uri().error(new Error('Invalid image supplied')),
+  SIGNATURE: Joi.string().uri().error(new Error('Invalid signature supplied')),
   CREATED_AT: Joi.number().required().error(new Error('Invalid expiry createdAt supplied')),
   //TO DO - Update for actual schema
   FROM: Joi.object().keys({
@@ -123,7 +123,7 @@ const fastCooling = {
   USER: Joi.string().email().error(new Error('Invalid user supplied')),
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().required().error(new Error('Invalid comments supplied')),
-  SIGNATURE: Joi.string().uri().error(new Error('Invalid image supplied')),
+  SIGNATURE: Joi.string().uri().error(new Error('Invalid signature supplied')),
   CREATED_AT: Joi.number().required().error(new Error('Invalid expiry createdAt supplied')),
   //TO DO - Update for actual schema
   FROM: Joi.object().keys({
