@@ -14,8 +14,40 @@ Parameters:
     Description: The Fridge table write throughput
     Type: String
     Default: '5'
+  CompanyFridgeTaskTableReadThroughput:
+    Description: The Fridge Task table read throughput
+    Type: String
+    Default: '5'
+  CompanyFridgeTaskTableWriteThroughput:
+    Description: The Fridge Task table write throughput
+    Type: String
+    Default: '5'
+  CompanyFridgeLogTableReadThroughput:
+    Description: The Fridge Log table read throughput
+    Type: String
+    Default: '5'
+  CompanyFridgeLogTableWriteThroughput:
+    Description: The Fridge Log table write throughput
+    Type: String
+    Default: '5'
   CompanyFreezerTableReadThroughput:
     Description: The Freezer table read throughput
+    Type: String
+    Default: '5'
+  CompanyFreezerTaskTableReadThroughput:
+    Description: The Freezer Task table read throughput
+    Type: String
+    Default: '5'
+  CompanyFreezerTaskTableWriteThroughput:
+    Description: The Freezer Task table write throughput
+    Type: String
+    Default: '5'
+  CompanyFreezerLogTableReadThroughput:
+    Description: The Freezer Log table read throughput
+    Type: String
+    Default: '5'
+  CompanyFreezerLogTableWriteThroughput:
+    Description: The Freezer Log table write throughput
     Type: String
     Default: '5'
   CompanyFreezerTableWriteThroughput:
@@ -454,6 +486,10 @@ Resources:
           Resource:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTaskTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTaskTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeLogTable/*
       Roles:
       - !Ref FridgeLambdaRole
   FreezerLambdaRole:
@@ -496,6 +532,10 @@ Resources:
           Resource:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTaskTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTaskTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerLogTable/*
       Roles:
       - !Ref FreezerLambdaRole
   FreezerLambdaRole:
@@ -600,6 +640,8 @@ Resources:
           NODE_ENV: production
           FRIDGE_TABLE: !Ref CompanyFridgeTable
           COMPANY_NAME: !Ref CompanyName
+          FRIDGE_TASK_TABLE: !Ref CompanyFridgeTaskTable
+          FRIDGE_LOG_TABLE: !Ref CompanyFridgeLogTable
       FunctionName: !Sub "${CompanyName}FridgeLambda"
       Handler: src/FridgeLambda/main.handler
       Role: !GetAtt FridgeLambdaRole.Arn
@@ -627,6 +669,8 @@ Resources:
           NODE_ENV: production
           FREEZER_TABLE: !Ref CompanyFreezerTable
           COMPANY_NAME: !Ref CompanyName
+          FREEZER_TASK_TABLE: !Ref CompanyFreezerTaskTable
+          FREEZER_LOG_TABLE: !Ref CompanyFreezerLogTable
       FunctionName: !Sub "${CompanyName}FreezerLambda"
       Handler: src/FreezerLambda/main.handler
       Role: !GetAtt FreezerLambdaRole.Arn
@@ -1488,6 +1532,40 @@ Resources:
           KeyType: "RANGE"
         Projection:
           ProjectionType: "ALL"
+  CompanyFridgeTaskTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FridgeTaskTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFridgeTaskTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFridgeTaskTableWriteThroughput
+  CompanyFridgeLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FridgeLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFridgeLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFridgeLogTableWriteThroughput
   CompanyFreezerTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -1516,6 +1594,40 @@ Resources:
           KeyType: "RANGE"
         Projection:
           ProjectionType: "ALL"
+  CompanyFreezerTaskTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FreezerTaskTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFreezerTaskTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFreezerTaskTableWriteThroughput
+  CompanyFreezerLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}FreezerLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyFreezerLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFreezerLogTableWriteThroughput
   CompanyFoodItemTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
