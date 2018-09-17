@@ -1,5 +1,5 @@
 const Express = require('express');
-const AuthController = require('../controllers/AuthController');
+const AuthController = require('../controllers/auth/AuthController');
 
 const AuthRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });

@@ -1,4 +1,4 @@
-const AuthValidator = require('../validation/AuthValidator');
+const AuthValidator = require('../../validation/AuthValidator');
 
 class AuthController {
   constructor(Logger, Cognito) {

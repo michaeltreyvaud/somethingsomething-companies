@@ -1,13 +1,13 @@
 const shortid = require('shortid');
-const FridgeValidator = require('../validation/FridgeValidator');
+const FreezerValidator = require('../../validation/FreezerValidator');
 
-class FridgeController {
+class FreezerItemController {
   constructor(Logger, DocumentClient, CompanyName, TableName) {
     this.Logger = Logger;
     this.CompanyName = CompanyName;
     this.TableName = TableName;
     this.DocumentClient = DocumentClient;
-    this.Validator = FridgeValidator;
+    this.Validator = FreezerValidator;
     this.describe = this.describe.bind(this);
     this.create = this.create.bind(this);
     this.update = this.update.bind(this);
@@ -189,4 +189,4 @@ class FridgeController {
   }
 }
 
-module.exports = FridgeController;
+module.exports = FreezerItemController;
