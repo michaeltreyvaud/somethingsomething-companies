@@ -163,6 +163,7 @@ class HotHoldingController {
         ExpressionAttributeValues: {
           ':company': CompanyName,
         },
+        ScanIndexForward: false,
       };
       if (order) {
         const forward = (order === 'asc');
