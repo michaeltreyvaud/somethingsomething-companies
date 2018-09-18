@@ -10,15 +10,15 @@ class TeamController {
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
     this.list = this.list.bind(this);
+    this.users = this.users.bind(this);
   }
 
-  //  TODO: Validation
   async create(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('createTeam');
+    Logger.info('create');
     try {
-      Validator.validateCreateTeamRequest(body);
+      Validator.validateCreateRequest(body);
       const { name, description } = body;
       const response = await Cognito.createGroup(name, description);
       const item = {};
@@ -33,13 +33,12 @@ class TeamController {
     }
   }
 
-  //  TODO validation
   async describe(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('describeTeam');
+    Logger.info('describe');
     try {
-      Validator.validateDescribeTeamRequest(body);
+      Validator.validateDescribeRequest(body);
       const { name } = body;
       const response = await Cognito.getGroup(name);
       const item = {};
@@ -54,13 +53,12 @@ class TeamController {
     }
   }
 
-  //  TODO validation
   async update(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('updateTeam');
+    Logger.info('update');
     try {
-      Validator.validateUpdateTeamRequest(body);
+      Validator.validateUpdateRequest(body);
       const { name, description } = body;
       const response = await Cognito.updateGroup(name, description);
       const item = {};
@@ -75,13 +73,12 @@ class TeamController {
     }
   }
 
-  //  TODO: Validation
   async delete(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('deleteTeam');
+    Logger.info('delete');
     try {
-      Validator.validateDeleteTeamRequest(body);
+      Validator.validateDeleteRequest(body);
       const { name } = body;
       await Cognito.deleteGroup(name);
       return res.status(200).json({});
@@ -93,10 +90,24 @@ class TeamController {
   async list(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('listTeam');
+    Logger.info('list');
     try {
-      Validator.validateListTeamRequest(body);
+      Validator.validateListRequest(body);
       const response = await Cognito.listGroups();
+      return res.status(200).json(response);
+    } catch (_err) {
+      return next(_err);
+    }
+  }
+
+  async users(req, res, next) {
+    const { Logger, Cognito, Validator } = this;
+    const { body } = req;
+    Logger.info('listUsers');
+    try {
+      Validator.validateListUsersRequest(body);
+      const { name } = body;
+      const response = await Cognito.listUsersInGroup(name);
       return res.status(200).json(response);
     } catch (_err) {
       return next(_err);

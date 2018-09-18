@@ -41,7 +41,7 @@ const AuthValidator = {
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
-      email: schemas.management.users.EMAIL,
+      userName: schemas.management.users.EMAIL,
     });
     this.validate(params, schema);
   },

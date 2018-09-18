@@ -9,34 +9,40 @@ const FreezerValidator = {
       throw new SSError({ statusCode: 400, message: validationResult.error.message });
     }
   },
-  validateCreateTeamRequest(params) {
+  validateCreateRequest(params) {
     const schema = Joi.object().keys({
       name: schemas.management.team.NAME,
       description: schemas.management.team.DESCRIPTION,
     });
     this.validate(params, schema);
   },
-  validateDescribeTeamRequest(params) {
+  validateDescribeRequest(params) {
     const schema = Joi.object().keys({
       name: schemas.management.team.NAME,
     });
     this.validate(params, schema);
   },
-  validateUpdateTeamRequest(params) {
+  validateUpdateRequest(params) {
     const schema = Joi.object().keys({
       name: schemas.management.team.NAME,
       description: schemas.management.team.DESCRIPTION,
     });
     this.validate(params, schema);
   },
-  validateDeleteTeamRequest(params) {
+  validateDeleteRequest(params) {
     const schema = Joi.object().keys({
       name: schemas.management.team.NAME,
     });
     this.validate(params, schema);
   },
-  validateListTeamRequest(params) {
+  validateListRequest(params) {
     const schema = Joi.object().keys({});
+    this.validate(params, schema);
+  },
+  validateListUsersRequest(params) {
+    const schema = Joi.object().keys({
+      name: schemas.management.team.NAME,
+    });
     this.validate(params, schema);
   },
 };

@@ -345,6 +345,28 @@ class SSCognito {
     };
     return Cognito.listGroups(params).promise();
   }
+
+  //  TODO: Pagination?
+  async listUsersInGroup(name) {
+    const { Logger, Cognito } = this;
+    Logger.info('listUsersInGroup');
+    const params = {
+      GroupName: name,
+      UserPoolId: process.env.USER_POOL_ID,
+    };
+    return Cognito.listUsersInGroup(params).promise();
+  }
+
+  async adminAddUserToGroup(email, team) {
+    const { Logger, Cognito } = this;
+    Logger.info('adminAddUserToGroup');
+    const params = {
+      GroupName: team,
+      UserPoolId: process.env.USER_POOL_ID,
+      Username: email,
+    };
+    return Cognito.adminAddUserToGroup(params).promise();
+  }
 }
 
 module.exports = SSCognito;

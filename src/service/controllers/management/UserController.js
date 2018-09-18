@@ -47,6 +47,9 @@ class UserController {
         UserAttributes: attributes,
       };
       const response = await Cognito.adminCreateUser(email, options);
+      const { User } = response;
+      const { Username } = User;
+      await Cognito.adminAddUserToGroup(Username, team);
       return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
@@ -89,15 +92,14 @@ class UserController {
     }
   }
 
-  //  TODO: Validation
   async delete(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { email } = body;
-      await Cognito.adminDeleteUser(email);
+      const { userName } = body;
+      await Cognito.adminDeleteUser(userName);
       return res.status(200).json({});
     } catch (_err) {
       return next(_err);
