@@ -17,7 +17,8 @@ const ManagementRouter = (dependencies, environment) => {
   router.post('/team/update', teamController.update);
   router.post('/team/delete', teamController.delete);
   router.post('/team/list', teamController.list);
-  router.post('/team/users', teamController.users);
+  router.post('/team/user/list', teamController.userlist);
+  router.post('/team/user/delete', teamController.userdelete);
 
   router.post('/user/create', userController.create);
   router.post('/user/describe', userController.describe);

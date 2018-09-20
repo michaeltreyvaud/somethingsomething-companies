@@ -10,7 +10,8 @@ class TeamController {
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
     this.list = this.list.bind(this);
-    this.users = this.users.bind(this);
+    this.userlist = this.userlist.bind(this);
+    this.userdelete = this.userdelete.bind(this);
   }
 
   async create(req, res, next) {
@@ -100,14 +101,28 @@ class TeamController {
     }
   }
 
-  async users(req, res, next) {
+  async userlist(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
-    Logger.info('listUsers');
+    Logger.info('userlist');
     try {
       Validator.validateListUsersRequest(body);
       const { name } = body;
       const response = await Cognito.listUsersInGroup(name);
+      return res.status(200).json(response);
+    } catch (_err) {
+      return next(_err);
+    }
+  }
+
+  async userdelete(req, res, next) {
+    const { Logger, Cognito, Validator } = this;
+    const { body } = req;
+    Logger.info('userdelete');
+    try {
+      Validator.validateUserDeleteRequest(body);
+      const { name, userName } = body;
+      const response = await Cognito.adminRemoveUserFromGroup(name, userName);
       return res.status(200).json(response);
     } catch (_err) {
       return next(_err);

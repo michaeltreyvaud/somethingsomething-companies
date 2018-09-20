@@ -45,6 +45,13 @@ const FreezerValidator = {
     });
     this.validate(params, schema);
   },
+  validateUserDeleteRequest(params) {
+    const schema = Joi.object().keys({
+      name: schemas.management.team.NAME,
+      userName: schemas.management.team.NAME,
+    });
+    this.validate(params, schema);
+  },
 };
 
 module.exports = FreezerValidator;

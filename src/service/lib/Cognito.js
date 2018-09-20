@@ -367,6 +367,17 @@ class SSCognito {
     };
     return Cognito.adminAddUserToGroup(params).promise();
   }
+
+  async adminRemoveUserFromGroup(team, userName) {
+    const { Logger, Cognito } = this;
+    Logger.info('adminRemoveUserFromGroup');
+    const params = {
+      GroupName: team,
+      UserPoolId: process.env.USER_POOL_ID,
+      Username: userName,
+    };
+    return Cognito.adminRemoveUserFromGroup(params).promise();
+  }
 }
 
 module.exports = SSCognito;
