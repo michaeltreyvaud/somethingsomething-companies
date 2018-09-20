@@ -26,12 +26,15 @@ const FoodItemValidator = {
     this.validate(params, schema);
   },
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   name: schemas.fridge.item.NAME,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.fooditem.ID,
+      name: schemas.fooditem.NAME,
+      batchNumber: schemas.fooditem.BATCH_NUMBER,
+      description: schemas.fooditem.DESCRIPTION,
+      expiryDate: schemas.fooditem.EXPIRY_DATE,
+      allergens: schemas.fooditem.ALLERGENS,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({

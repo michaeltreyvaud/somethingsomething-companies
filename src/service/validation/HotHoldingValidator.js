@@ -27,12 +27,16 @@ const HotHoldingValidator = {
     this.validate(params, schema);
   },
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   name: schemas.fridge.item.NAME,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.hotHolding.ID,
+      foodItem: schemas.hotHolding.FOOD_ITEM,
+      temperature: schemas.hotHolding.TEMPERATURE,
+      user: schemas.hotHolding.USER,
+      image: schemas.hotHolding.IMAGE,
+      comments: schemas.hotHolding.COMMENTS,
+      signature: schemas.hotHolding.SIGNATURE,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({

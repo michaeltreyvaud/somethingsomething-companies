@@ -17,6 +17,61 @@ const fridge = {
   },
 };
 
+const fridgeTask = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  FRIDGE_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid fridge id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  },
+  TEAM: {
+    name: Joi.string().required().error(new Error('Invalid team name supplied')),
+  },
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+  },
+  DAY: Joi.string().required().error(new Error('Invalid day supplied')),
+  TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
+  DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+};
+
+const fridgeLog = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  FRIDGE_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid fridge id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  },
+  TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+  },
+  IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
+  COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
+  SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+};
+
 const freezer = {
   item: {
     ID: Joi.string().required().error(new Error('Invalid id supplied')),
@@ -32,6 +87,61 @@ const freezer = {
     PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
     ORDER: Joi.string().error(new Error('Invalid order supplied')),
   },
+};
+
+const freezerTask = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  FREEZER_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid freezer id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  },
+  TEAM: {
+    name: Joi.string().required().error(new Error('Invalid team name supplied')),
+  },
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+  },
+  DAY: Joi.string().required().error(new Error('Invalid day supplied')),
+  TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
+  DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+};
+
+const freezerLog = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  FREEZER_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid freezer id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  },
+  TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+  },
+  IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
+  COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
+  SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
 };
 
 const management = {
@@ -66,6 +176,7 @@ const company = {
 };
 
 const fooditem = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
   NAME: Joi.string().required().error(new Error('Invalid name supplied')),
   BATCH_NUMBER: Joi.string().required().error(new Error('Invalid batch number supplied')),
   DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
@@ -99,9 +210,14 @@ const fooditem = {
 };
 
 const hotHolding = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
   FOOD_ITEM: Joi.number().required().error(new Error('Invalid food item supplied')),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
-  USER: Joi.string().email().required().error(new Error('Invalid user supplied')),
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+  },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
@@ -118,9 +234,14 @@ const hotHolding = {
 };
 
 const fastCooling = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
   FOOD_ITEM: Joi.number().required().error(new Error('Invalid food item supplied')),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
-  USER: Joi.string().email().required().error(new Error('Invalid user supplied')),
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+  },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
@@ -137,6 +258,7 @@ const fastCooling = {
 };
 
 const supplierList = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
   NAME: Joi.string().required().error(new Error('Invalid name supplied')),
   ADDRESS: Joi.string().error(new Error('Invalid address supplied')),
   PHONE: Joi.string().error(new Error('Invalid phone number supplied')),
@@ -168,7 +290,11 @@ const schemas = {
   SESSION: Joi.string().required().error(new Error('Invalid session supplied')),
   CONFIRMATION_CODE: Joi.string().required().error(new Error('Invalid confirmationCode supplied')),
   fridge,
+  fridgeTask,
+  fridgeLog,
   freezer,
+  freezerTask,
+  freezerLog,
   management,
   company,
   fooditem,

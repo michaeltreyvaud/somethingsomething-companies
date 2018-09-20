@@ -10,44 +10,48 @@ const FridgeTaskValidator = {
     }
   },
   validateDescribeRequest(params) {
-    // const schema = Joi.object().keys({
-    //   createdAt: schemas.fastCooling.CREATED_AT,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.fridgeTask.ID,
+    });
+    this.validate(params, schema);
   },
   validateCreateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   foodItem: schemas.fastCooling.FOOD_ITEM,
-    //   temperature: schemas.fastCooling.TEMPERATURE,
-    //   user: schemas.fastCooling.USER,
-    //   image: schemas.fastCooling.IMAGE,
-    //   comments: schemas.fastCooling.COMMENTS,
-    //   signature: schemas.fastCooling.SIGNATURE,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      fridgeItem: schemas.fridgeTask.FRIDGE_ITEM,
+      team: schemas.fridgeTask.TEAM,
+      user: schemas.fridgeTask.USER,
+      day: schemas.fridgeTask.DAY,
+      time: schemas.fridgeTask.TIME,
+      description: schemas.fridgeTask.DESCRIPTION,
+    });
+    this.validate(params, schema);
   },
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   name: schemas.fridge.item.NAME,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.fridgeTask.item.ID,
+      fridgeItem: schemas.fridgeTask.FRIDGE_ITEM,
+      team: schemas.fridgeTask.TEAM,
+      user: schemas.fridgeTask.USER,
+      day: schemas.fridgeTask.DAY,
+      time: schemas.fridgeTask.TIME,
+      description: schemas.fridgeTask.DESCRIPTION,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
-    // const schema = Joi.object().keys({
-    //   createdAt: schemas.fastCooling.CREATED_AT,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.fridgeTask.ID,
+    });
+    this.validate(params, schema);
   },
   validateListRequest(params) {
-    // const schema = Joi.object().keys({
-    //   limit: schemas.fastCooling.LIMIT,
-    //   from: schemas.fastCooling.FROM,
-    //   paginated: schemas.fastCooling.PAGINATED,
-    //   order: schemas.fastCooling.ORDER,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      limit: schemas.fridgeTask.LIMIT,
+      from: schemas.fridgeTask.FROM,
+      paginated: schemas.fridgeTask.PAGINATED,
+      order: schemas.fridgeTask.ORDER,
+    });
+    this.validate(params, schema);
   },
 };
 

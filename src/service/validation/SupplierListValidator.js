@@ -28,12 +28,17 @@ const SupplierListValidator = {
     this.validate(params, schema);
   },
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   name: schemas.fridge.item.NAME,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.supplierList.item.ID,
+      name: schemas.supplierList.NAME,
+      address: schemas.supplierList.ADDRESS,
+      phoneNo: schemas.supplierList.PHONE,
+      email: schemas.supplierList.EMAIL,
+      techContact: schemas.supplierList.TECH_CONTACT,
+      salesContact: schemas.supplierList.SALES_CONTACT,
+      questions: schemas.supplierList.QUESTIONS,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
