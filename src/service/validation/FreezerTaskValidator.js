@@ -2,7 +2,7 @@ const Joi = require('joi');
 const SSError = require('../../util/SSError');
 const schemas = require('./schemas');
 
-const HotHoldingValidator = {
+const FreezerTaskValidator = {
   validate(params, schema) {
     const validationResult = Joi.validate(params, schema);
     if (validationResult.error) {
@@ -11,48 +11,48 @@ const HotHoldingValidator = {
   },
   validateDescribeRequest(params) {
     const schema = Joi.object().keys({
-      createdAt: schemas.hotHolding.CREATED_AT,
+      id: schemas.freezerTask.ID,
     });
     this.validate(params, schema);
   },
   validateCreateRequest(params) {
     const schema = Joi.object().keys({
-      foodItem: schemas.hotHolding.FOOD_ITEM,
-      temperature: schemas.hotHolding.TEMPERATURE,
-      user: schemas.hotHolding.USER,
-      image: schemas.hotHolding.IMAGE,
-      comments: schemas.hotHolding.COMMENTS,
-      signature: schemas.hotHolding.SIGNATURE,
+      freezerItem: schemas.freezerTask.FREEZER_ITEM,
+      team: schemas.freezerTask.TEAM,
+      user: schemas.freezerTask.USER,
+      day: schemas.freezerTask.DAY,
+      time: schemas.freezerTask.TIME,
+      description: schemas.freezerTask.DESCRIPTION,
     });
     this.validate(params, schema);
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.hotHolding.ID,
-      foodItem: schemas.hotHolding.FOOD_ITEM,
-      temperature: schemas.hotHolding.TEMPERATURE,
-      user: schemas.hotHolding.USER,
-      image: schemas.hotHolding.IMAGE,
-      comments: schemas.hotHolding.COMMENTS,
-      signature: schemas.hotHolding.SIGNATURE,
+      id: schemas.freezerTask.item.ID,
+      freezerItem: schemas.freezerTask.FREEZER_ITEM,
+      team: schemas.freezerTask.TEAM,
+      user: schemas.freezerTask.USER,
+      day: schemas.freezerTask.DAY,
+      time: schemas.freezerTask.TIME,
+      description: schemas.freezerTask.DESCRIPTION,
     });
     this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
-      createdAt: schemas.hotHolding.CREATED_AT,
+      id: schemas.freezerTask.ID,
     });
     this.validate(params, schema);
   },
   validateListRequest(params) {
     const schema = Joi.object().keys({
-      limit: schemas.fridge.item.LIMIT,
-      from: schemas.fridge.item.FROM,
-      paginated: schemas.fridge.item.PAGINATED,
-      order: schemas.fridge.item.ORDER,
+      limit: schemas.freezerTask.LIMIT,
+      from: schemas.freezerTask.FROM,
+      paginated: schemas.freezerTask.PAGINATED,
+      order: schemas.freezerTask.ORDER,
     });
     this.validate(params, schema);
   },
 };
 
-module.exports = HotHoldingValidator;
+module.exports = FreezerTaskValidator;

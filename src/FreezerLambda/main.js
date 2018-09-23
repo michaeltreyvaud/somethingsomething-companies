@@ -9,6 +9,8 @@ const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const createEnvironment = () => ({
   COMPANY_NAME: process.env.COMPANY_NAME,
   FREEZER_TABLE: process.env.FREEZER_TABLE,
+  FREEZER_TASK_TABLE: process.env.FREEZER_TASK_TABLE,
+  FREEZER_LOG_TABLE: process.env.FREEZER_LOG_TABLE,
 });
 const createDependencies = () => ({
   Logger,

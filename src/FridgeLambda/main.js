@@ -9,6 +9,8 @@ const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const createEnvironment = () => ({
   COMPANY_NAME: process.env.COMPANY_NAME,
   FRIDGE_TABLE: process.env.FRIDGE_TABLE,
+  FRIDGE_TASK_TABLE: process.env.FRIDGE_TASK_TABLE,
+  FRIDGE_LOG_TABLE: process.env.FRIDGE_LOG_TABLE,
 });
 const createDependencies = () => ({
   Logger,

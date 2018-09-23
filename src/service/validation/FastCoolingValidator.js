@@ -27,12 +27,16 @@ const FastCoolingValidator = {
     this.validate(params, schema);
   },
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fridge.item.ID,
-    //   description: schemas.fridge.item.DESCRIPTION,
-    //   name: schemas.fridge.item.NAME,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.fastCooling.ID,
+      foodItem: schemas.fastCooling.FOOD_ITEM,
+      temperature: schemas.fastCooling.TEMPERATURE,
+      user: schemas.fastCooling.USER,
+      image: schemas.fastCooling.IMAGE,
+      comments: schemas.fastCooling.COMMENTS,
+      signature: schemas.fastCooling.SIGNATURE,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
