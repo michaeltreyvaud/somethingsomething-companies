@@ -29,7 +29,7 @@ const fridgeTask = {
   USER: {
     EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
     FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   DAY: Joi.string().required().error(new Error('Invalid day supplied')),
   TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
@@ -42,7 +42,7 @@ const fridgeTask = {
   }),
   LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
   PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
-  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
 const fridgeLog = {
@@ -55,7 +55,7 @@ const fridgeLog = {
   USER: {
     EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
     FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
@@ -69,7 +69,7 @@ const fridgeLog = {
   }),
   LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
   PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
-  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
 const freezer = {
@@ -101,7 +101,7 @@ const freezerTask = {
   USER: {
     EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
     FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   DAY: Joi.string().required().error(new Error('Invalid day supplied')),
   TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
@@ -114,7 +114,7 @@ const freezerTask = {
   }),
   LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
   PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
-  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
 const freezerLog = {
@@ -127,7 +127,7 @@ const freezerLog = {
   USER: {
     EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
     FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
@@ -141,7 +141,7 @@ const freezerLog = {
   }),
   LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
   PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
-  ORDER: Joi.string().error(new Error('Invalid order supplied')),  
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
 const management = {
@@ -211,13 +211,16 @@ const fooditem = {
 
 const hotHolding = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  FOOD_ITEM: Joi.number().required().error(new Error('Invalid food item supplied')),
+  FOOD_ITEM: Joi.object().keys({
+    id: Joi.number().required().error(new Error('Invalid id supplied to foodItem')),
+    displayName: Joi.string().required().error(new Error('Invalid displayName supplied to foodItem')),
+  }),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
-  USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
-  },
+  USER: Joi.object().keys({
+    email: Joi.string().email().error(new Error('Invalid email supplied to user')),
+    firstName: Joi.string().required().error(new Error('Invalid firstName supplied to user')),
+    lastName: Joi.string().required().error(new Error('Invalid lastName supplied to user')),
+  }),
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
@@ -235,13 +238,16 @@ const hotHolding = {
 
 const fastCooling = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  FOOD_ITEM: Joi.number().required().error(new Error('Invalid food item supplied')),
+  FOOD_ITEM: Joi.object().keys({
+    id: Joi.number().required().error(new Error('Invalid id supplied to foodItem')),
+    displayName: Joi.string().required().error(new Error('Invalid displayName supplied to foodItem')),
+  }),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
-  USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),    
-  },
+  USER: Joi.object().keys({
+    email: Joi.string().email().error(new Error('Invalid email supplied to user')),
+    firstName: Joi.string().required().error(new Error('Invalid firstName supplied to user')),
+    lastName: Joi.string().required().error(new Error('Invalid lastName supplied to user')),
+  }),
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),

@@ -33,6 +33,7 @@ const FoodItemValidator = {
       description: schemas.fooditem.DESCRIPTION,
       expiryDate: schemas.fooditem.EXPIRY_DATE,
       allergens: schemas.fooditem.ALLERGENS,
+      createdAt: schemas.fooditem.CREATED_AT,
     });
     this.validate(params, schema);
   },
