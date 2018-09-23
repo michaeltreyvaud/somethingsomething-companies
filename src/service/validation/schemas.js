@@ -167,6 +167,7 @@ const schemas = {
   PASSWORD: Joi.string().required().error(new Error('Invalid password supplied')),
   SESSION: Joi.string().required().error(new Error('Invalid session supplied')),
   CONFIRMATION_CODE: Joi.string().required().error(new Error('Invalid confirmationCode supplied')),
+  REFRESH_TOKEN: Joi.string().required().error(new Error('Invalid refreshToken supplied')),
   fridge,
   freezer,
   management,

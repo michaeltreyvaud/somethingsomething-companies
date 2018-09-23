@@ -44,6 +44,12 @@ const AuthValidator = {
     });
     this.validate(params, schema);
   },
+  validateValidateRequest(params) {
+    const schema = Joi.object().keys({
+      refreshToken: schemas.REFRESH_TOKEN,
+    });
+    this.validate(params, schema);
+  },
 };
 
 module.exports = AuthValidator;

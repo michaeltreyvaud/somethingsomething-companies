@@ -129,6 +129,21 @@ class SSCognito {
     return Cognito.adminInitiateAuth(params).promise();
   }
 
+  //  Refresh ID Token
+  async adminRefreshToken(refreshToken) {
+    const { Logger, Cognito } = this;
+    Logger.info(`adminRefreshToken with token: ${refreshToken}`);
+    const params = {
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
+      ClientId: process.env.APP_CLIENT_ID,
+      UserPoolId: process.env.USER_POOL_ID,
+      AuthParameters: {
+        REFRESH_TOKEN: refreshToken,
+      },
+    };
+    return Cognito.adminInitiateAuth(params).promise();
+  }
+
   //  Reset a users password as admin
   async adminResetUserPassword(userName) {
     const { Logger, Cognito } = this;

@@ -90,11 +90,15 @@ class AuthController {
 
   //  Validates users tokens
   async validate(req, res, next) {
-    //  TODO: Do some actual validation?
-    const { Logger } = this;
+    const { Logger, Cognito, Validator } = this;
+    const { body } = req;
     Logger.info('validate');
     try {
-      return res.status(200).json({});
+      Validator.validateValidateRequest(body);
+      const { refreshToken } = body;
+      if (!refreshToken) return res.status(401).json({});
+      const response = await Cognito.adminRefreshToken(refreshToken);
+      return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
     }
