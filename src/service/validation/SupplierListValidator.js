@@ -29,7 +29,7 @@ const SupplierListValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.supplierList.item.ID,
+      id: schemas.supplierList.ID,
       name: schemas.supplierList.NAME,
       address: schemas.supplierList.ADDRESS,
       phoneNo: schemas.supplierList.PHONE,
