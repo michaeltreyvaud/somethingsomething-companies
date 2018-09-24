@@ -6,7 +6,9 @@ const FridgeTaskController = require('../controllers/fridge/FridgeTaskController
 const FridgeRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
   const { Logger, DocumentClient } = dependencies;
-  const { COMPANY_NAME, FRIDGE_TABLE, FRIDGE_LOG_TABLE, FRIDGE_TASK_TABLE } = environment;
+  const {
+    COMPANY_NAME, FRIDGE_TABLE, FRIDGE_LOG_TABLE, FRIDGE_TASK_TABLE,
+  } = environment;
   const fridgeItemController = new FridgeItemController(
     Logger, DocumentClient, COMPANY_NAME, FRIDGE_TABLE,
   );
@@ -15,7 +17,7 @@ const FridgeRouter = (dependencies, environment) => {
   );
   const fridgeTaskController = new FridgeTaskController(
     Logger, DocumentClient, COMPANY_NAME, FRIDGE_TASK_TABLE,
-  );    
+  );
 
   router.post('/item/describe', fridgeItemController.describe);
   router.post('/item/create', fridgeItemController.create);
@@ -28,7 +30,7 @@ const FridgeRouter = (dependencies, environment) => {
   router.post('/log/update', fridgeLogController.update);
   router.post('/log/delete', fridgeLogController.delete);
   router.post('/log/list', fridgeLogController.list);
-  
+
   router.post('/task/describe', fridgeTaskController.describe);
   router.post('/task/create', fridgeTaskController.create);
   router.post('/task/update', fridgeTaskController.update);

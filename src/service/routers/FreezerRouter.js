@@ -6,7 +6,9 @@ const FreezerTaskController = require('../controllers/freezer/FreezerTaskControl
 const FreezerRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
   const { Logger, DocumentClient } = dependencies;
-  const { COMPANY_NAME, FREEZER_TABLE, FREEZER_LOG_TABLE, FREEZER_TASK_TABLE } = environment;
+  const {
+    COMPANY_NAME, FREEZER_TABLE, FREEZER_LOG_TABLE, FREEZER_TASK_TABLE,
+  } = environment;
   const freezerItemController = new FreezerItemController(
     Logger, DocumentClient, COMPANY_NAME, FREEZER_TABLE,
   );
@@ -15,7 +17,7 @@ const FreezerRouter = (dependencies, environment) => {
   );
   const freezerTaskController = new FreezerTaskController(
     Logger, DocumentClient, COMPANY_NAME, FREEZER_TASK_TABLE,
-  );  
+  );
 
   router.post('/item/describe', freezerItemController.describe);
   router.post('/item/create', freezerItemController.create);
@@ -28,7 +30,7 @@ const FreezerRouter = (dependencies, environment) => {
   router.post('/log/update', freezerLogController.update);
   router.post('/log/delete', freezerLogController.delete);
   router.post('/log/list', freezerLogController.list);
-  
+
   router.post('/task/describe', freezerTaskController.describe);
   router.post('/task/create', freezerTaskController.create);
   router.post('/task/update', freezerTaskController.update);

@@ -260,6 +260,68 @@ Resources:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FastCoolingTable/*
       Roles:
       - !Ref FastCoolingLambdaRole
+  UserLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}UserLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  UserLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}UserLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}UserLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}UserLambda*:*
+        - Effect: Allow
+          Action:
+          - cognito-idp:*
+          Resource:
+          - "*"
+      Roles:
+      - !Ref UserLambdaRole
+  UserLambda:
+    DependsOn:
+    - UserLambdaRole
+    - UserLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company User Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          APP_CLIENT_ID: !Ref CompanyUserPoolClient
+          USER_POOL_ID: !Ref CompanyUserPool
+      FunctionName: !Sub "${CompanyName}UserLambda"
+      Handler: src/UserLambda/main.handler
+      Role: !GetAtt UserLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  UserLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref UserLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
   FoodItemLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -759,6 +821,18 @@ Resources:
       ParentId: !Ref FoodItemResource
       RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
+  UserResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: user
+  UserResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref UserResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   HotHoldingResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -905,6 +979,22 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FoodItemLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  UserMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref UserResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   HotHoldingMethods:
@@ -1121,6 +1211,34 @@ Resources:
       AuthorizationType: NONE
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref FoodItemResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  UserOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref UserResourceProxy
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
@@ -1415,6 +1533,10 @@ Resources:
     - FastCoolingMethods
     - FastCoolingMethods
     - FastCoolingResourceProxy
+    - UserResource
+    - UserMethods
+    - UserMethods
+    - UserResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
