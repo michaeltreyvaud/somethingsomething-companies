@@ -96,7 +96,6 @@ class SupplierListController {
       updateExpression = `${updateExpression} #updatedAt = :updatedAt`;
       delete body.id;
       delete body.company;
-      delete body.name;
       delete body.updatedAt;
       Object.keys(body).forEach((key) => {
         const attr = `#${key}`;
