@@ -1,4 +1,4 @@
-const UserValidator = require('../../validation/UserValidator');
+const UserValidator = require('../../validation/User/UserValidator');
 
 class UserController {
   constructor(Logger, Cognito) {
@@ -13,10 +13,14 @@ class UserController {
     const { body } = req;
     Logger.info('update');
     try {
-      // Validator.validateLoginRequest(body);
-      // const { email, password } = body;
-      // const response = await Cognito.adminInitiateAuth(email, password);
-      return res.status(200).json({ hello: 'wolrd' });
+      Validator.validateUpdateRequest(body);
+      const {
+        userName, firstName, lastName, phoneNumber,
+      } = body;
+      const response = await Cognito.adminUpdateUserAttributes(
+        userName, firstName, lastName, phoneNumber,
+      );
+      return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
     }

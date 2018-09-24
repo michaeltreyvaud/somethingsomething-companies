@@ -393,6 +393,26 @@ class SSCognito {
     };
     return Cognito.adminRemoveUserFromGroup(params).promise();
   }
+
+  async adminUpdateUserAttributes(userName, firstName, lastName, phoneNumber) {
+    const { Logger, Cognito } = this;
+    Logger.info('adminUpdateUserAttributes');
+    const params = {
+      UserAttributes: [{
+        Name: 'given_name',
+        Value: firstName,
+      }, {
+        Name: 'family_name',
+        Value: lastName,
+      }, {
+        Name: 'phone_number',
+        Value: phoneNumber,
+      }],
+      UserPoolId: process.env.USER_POOL_ID,
+      Username: userName,
+    };
+    return Cognito.adminUpdateUserAttributes(params).promise();
+  }
 }
 
 module.exports = SSCognito;
