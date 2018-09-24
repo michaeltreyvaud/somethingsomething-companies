@@ -17,10 +17,9 @@ class UserController {
       const {
         userName, firstName, lastName, phoneNumber,
       } = body;
-      const response = await Cognito.adminUpdateUserAttributes(
-        userName, firstName, lastName, phoneNumber,
-      );
-      return res.status(200).json(response);
+      await Cognito.adminUpdateUserAttributes(userName, firstName, lastName, phoneNumber);
+      const updatedItems = { firstName, lastName, phoneNumber };
+      return res.status(200).json(updatedItems);
     } catch (_err) {
       return next(_err);
     }
