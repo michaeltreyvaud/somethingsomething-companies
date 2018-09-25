@@ -290,6 +290,44 @@ const supplierList = {
   ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
+const trainingLog = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  FROM_DATE: Joi.number().required().error(new Error('Invalid from date supplied')),
+  TO_DATE: Joi.number().required().error(new Error('Invalid to date supplied')),
+  TRAINING_TYPE: Joi.string().required().error(new Error('Invalid training type supplied')),
+  CERTIFICATION: Joi.string().uri().required().error(new Error('Invalid certification supplied')),
+  DETAILS: Joi.string().error(new Error('Invalid details section supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid expiry createdAt supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
+const medicalLog = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  FROM_DATE: Joi.number().required().error(new Error('Invalid from date supplied')),
+  TO_DATE: Joi.number().required().error(new Error('Invalid to date supplied')),
+  ILLNESS_TYPE: Joi.string().required().error(new Error('Invalid training type supplied')),
+  CERTIFICATION: Joi.string().uri().required().error(new Error('Invalid certification supplied')),
+  DETAILS: Joi.string().error(new Error('Invalid details section supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid expiry createdAt supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
 const schemas = {
   EMAIL: Joi.string().email().required().error(new Error('Invalid email supplied')),
   PASSWORD: Joi.string().required().error(new Error('Invalid password supplied')),
@@ -308,6 +346,8 @@ const schemas = {
   hotHolding,
   fastCooling,
   supplierList,
+  trainingLog,
+  medicalLog,  
 };
 
 module.exports = schemas;
