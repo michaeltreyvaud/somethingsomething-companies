@@ -10,47 +10,48 @@ const TrainingLogValidator = {
     }
   },
   validateDescribeRequest(params) {
-    // const schema = Joi.object().keys({
-    //   createdAt: schemas.fooditem.CREATED_AT,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      createdAt: schemas.trainingLog.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateCreateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   name: schemas.fooditem.NAME,
-    //   batchNumber: schemas.fooditem.BATCH_NUMBER,
-    //   description: schemas.fooditem.DESCRIPTION,
-    //   expiryDate: schemas.fooditem.EXPIRY_DATE,
-    //   allergens: schemas.fooditem.ALLERGENS,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      fromDate: schemas.trainingLog.FROM_DATE,
+      toDate: schemas.trainingLog.TO_DATE,
+      trainingType: schemas.trainingLog.TRAINING_TYPE,
+      certification: schemas.trainingLog.CERTIFICATION,
+      details: schemas.trainingLog.DETAILS,
+    });
+    this.validate(params, schema);
   },
+
   validateUpdateRequest(params) {
-    // const schema = Joi.object().keys({
-    //   id: schemas.fooditem.ID,
-    //   name: schemas.fooditem.NAME,
-    //   batchNumber: schemas.fooditem.BATCH_NUMBER,
-    //   description: schemas.fooditem.DESCRIPTION,
-    //   expiryDate: schemas.fooditem.EXPIRY_DATE,
-    //   allergens: schemas.fooditem.ALLERGENS,
-    //   createdAt: schemas.fooditem.CREATED_AT,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      id: schemas.trainingLog.ID,
+      fromDate: schemas.trainingLog.FROM_DATE,
+      toDate: schemas.trainingLog.TO_DATE,
+      trainingType: schemas.trainingLog.TRAINING_TYPE,
+      certification: schemas.trainingLog.CERTIFICATION,
+      details: schemas.trainingLog.DETAILS,
+      createdAt: schemas.trainingLog.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateDeleteRequest(params) {
-    // const schema = Joi.object().keys({
-    //   createdAt: schemas.fooditem.CREATED_AT,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      createdAt: schemas.trainingLog.CREATED_AT,
+    });
+    this.validate(params, schema);
   },
   validateListRequest(params) {
-    // const schema = Joi.object().keys({
-    //   limit: schemas.fooditem.LIMIT,
-    //   from: schemas.fooditem.FROM,
-    //   paginated: schemas.fooditem.PAGINATED,
-    //   order: schemas.fooditem.ORDER,
-    // });
-    // this.validate(params, schema);
+    const schema = Joi.object().keys({
+      limit: schemas.trainingLog.LIMIT,
+      from: schemas.trainingLog.FROM,
+      paginated: schemas.trainingLog.PAGINATED,
+      order: schemas.trainingLog.ORDER,
+    });
+    this.validate(params, schema);
   },
 };
 
