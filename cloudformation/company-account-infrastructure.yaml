@@ -86,6 +86,22 @@ Parameters:
     Description: The Supplier table write throughput
     Type: String
     Default: '5'
+  CompanyUserMedicalLogTableReadThroughput:
+    Description: The User Medical Log table write throughput
+    Type: String
+    Default: '5'
+  CompanyUserMedicalLogTableWriteThroughput:
+    Description: The User Medical Log table write throughput
+    Type: String
+    Default: '5'
+  CompanyUserTrainingLogTableReadThroughput:
+    Description: The User Training Log table write throughput
+    Type: String
+    Default: '5'
+  CompanyUserTrainingLogTableWriteThroughput:
+    Description: The User Training Log table write throughput
+    Type: String
+    Default: '5'
   CompanyContactEmail:
     Type: String
   CompanyContactFirstName:
@@ -290,6 +306,20 @@ Resources:
           - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}UserLambda*:*
         - Effect: Allow
           Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}UserMedicalLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}UserMedicalLogTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}UserTrainingLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}UserTrainingLogTable/*
+        - Effect: Allow
+          Action:
           - cognito-idp:*
           Resource:
           - "*"
@@ -310,6 +340,8 @@ Resources:
           NODE_ENV: production
           APP_CLIENT_ID: !Ref CompanyUserPoolClient
           USER_POOL_ID: !Ref CompanyUserPool
+          USER_MEDICAL_LOG_TABLE: !Ref CompanyUserMedicalLogTable
+          USER_TRANING_LOG_TABLE: !Ref CompanyUserTrainingLogTable
       FunctionName: !Sub "${CompanyName}UserLambda"
       Handler: src/UserLambda/main.handler
       Role: !GetAtt UserLambdaRole.Arn
@@ -1881,3 +1913,37 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanySupplierTableReadThroughput
         WriteCapacityUnits: !Ref CompanySupplierTableWriteThroughput
+  CompanyUserTrainingLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}UserTrainingLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyUserTrainingLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyUserTrainingLogTableWriteThroughput
+  CompanyUserMedicalLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}UserMedicalLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyUserMedicalLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyUserMedicalLogTableWriteThroughput
