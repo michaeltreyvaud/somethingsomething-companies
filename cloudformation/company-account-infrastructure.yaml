@@ -342,6 +342,7 @@ Resources:
           USER_POOL_ID: !Ref CompanyUserPool
           USER_MEDICAL_LOG_TABLE: !Ref CompanyUserMedicalLogTable
           USER_TRANING_LOG_TABLE: !Ref CompanyUserTrainingLogTable
+          COMPANY_NAME: !Ref CompanyName
       FunctionName: !Sub "${CompanyName}UserLambda"
       Handler: src/UserLambda/main.handler
       Role: !GetAtt UserLambdaRole.Arn
