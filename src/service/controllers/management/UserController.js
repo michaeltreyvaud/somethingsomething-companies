@@ -71,22 +71,29 @@ class UserController {
     }
   }
 
-  //  TODO validation
   async update(req, res, next) {
     const { Logger, Cognito, Validator } = this;
     const { body } = req;
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { name, description } = body;
-      const response = await Cognito.updateGroup(name, description);
-      const item = {};
-      if (response.Group) {
-        const { GroupName, Description } = response.Group;
-        item.name = GroupName;
-        item.description = Description;
-      }
-      return res.status(200).json(item);
+      const {
+        userName, firstName, lastName, phoneNumber,
+        position, team, authorization,
+      } = body;
+      await Cognito.adminUpdateAllUserAttributes(
+        userName, firstName, lastName, phoneNumber, position, team, authorization,
+      );
+      const updatedItems = {
+        userName,
+        firstName,
+        lastName,
+        phoneNumber,
+        position,
+        team,
+        authorization,
+      };
+      return res.status(200).json(updatedItems);
     } catch (_err) {
       return next(_err);
     }

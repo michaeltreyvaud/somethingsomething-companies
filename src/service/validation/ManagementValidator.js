@@ -2,7 +2,7 @@ const Joi = require('joi');
 const SSError = require('../../util/SSError');
 const schemas = require('./schemas');
 
-const FreezerValidator = {
+const ManagementValidator = {
   validate(params, schema) {
     const validationResult = Joi.validate(params, schema);
     if (validationResult.error) {
@@ -54,4 +54,4 @@ const FreezerValidator = {
   },
 };
 
-module.exports = FreezerValidator;
+module.exports = ManagementValidator;

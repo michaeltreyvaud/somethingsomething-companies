@@ -150,6 +150,7 @@ const management = {
     DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
   },
   users: {
+    USER_NAME: Joi.string().required().error(new Error('Invalid userName supplied')),
     EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
     FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
     LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
@@ -347,7 +348,7 @@ const schemas = {
   fastCooling,
   supplierList,
   trainingLog,
-  medicalLog,  
+  medicalLog,
 };
 
 module.exports = schemas;

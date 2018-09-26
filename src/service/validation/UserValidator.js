@@ -29,6 +29,7 @@ const AuthValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
+      userName: schemas.management.users.USER_NAME,
       email: schemas.management.users.EMAIL,
       firstName: schemas.management.users.FIRST_NAME,
       lastName: schemas.management.users.LAST_NAME,

@@ -413,6 +413,37 @@ class SSCognito {
     };
     return Cognito.adminUpdateUserAttributes(params).promise();
   }
+
+  async adminUpdateAllUserAttributes(
+    userName, firstName, lastName, phoneNumber, position, team, authorization,
+  ) {
+    const { Logger, Cognito } = this;
+    Logger.info('adminUpdateAllUserAttributes');
+    const params = {
+      UserAttributes: [{
+        Name: 'given_name',
+        Value: firstName,
+      }, {
+        Name: 'family_name',
+        Value: lastName,
+      }, {
+        Name: 'phone_number',
+        Value: phoneNumber,
+      }, {
+        Name: 'custom:position',
+        Value: position,
+      }, {
+        Name: 'custom:team',
+        Value: team,
+      }, {
+        Name: 'custom:authorization',
+        Value: authorization,
+      }],
+      UserPoolId: process.env.USER_POOL_ID,
+      Username: userName,
+    };
+    return Cognito.adminUpdateUserAttributes(params).promise();
+  }
 }
 
 module.exports = SSCognito;
