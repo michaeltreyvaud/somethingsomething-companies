@@ -1,12 +1,11 @@
 const Express = require('express');
-const HotHoldingController = require('../controllers/hotholding/HotHoldingController');
+const ReportController = require('../controllers/report/ReportController');
 
-const HotHoldingRouter = (dependencies, environment) => {
+const ReportRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { COMPANY_NAME, HOT_HOLDING_TABLE } = environment;
+  const { COMPANY_NAME, REPORT_TABLE } = environment;
   const { Logger, DocumentClient } = dependencies;
-  const controller = new HotHoldingController(Logger, DocumentClient,
-    COMPANY_NAME, HOT_HOLDING_TABLE);
+  const controller = new ReportController(Logger, DocumentClient, COMPANY_NAME, REPORT_TABLE);
 
   router.post('/describe', controller.describe);
   router.post('/update', controller.update);
@@ -17,4 +16,4 @@ const HotHoldingRouter = (dependencies, environment) => {
   return router;
 };
 
-module.exports = HotHoldingRouter;
+module.exports = ReportRouter;

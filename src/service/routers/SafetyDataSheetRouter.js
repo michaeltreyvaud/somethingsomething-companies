@@ -1,12 +1,11 @@
 const Express = require('express');
-const HotHoldingController = require('../controllers/hotholding/HotHoldingController');
+const SafetyDatasheetController = require('../controllers/safetydatasheet/SafetyDatasheetController');
 
-const HotHoldingRouter = (dependencies, environment) => {
+const SafetyDatasheetRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { COMPANY_NAME, HOT_HOLDING_TABLE } = environment;
+  const { COMPANY_NAME, DATA_SHEET_TABLE } = environment;
   const { Logger, DocumentClient } = dependencies;
-  const controller = new HotHoldingController(Logger, DocumentClient,
-    COMPANY_NAME, HOT_HOLDING_TABLE);
+  const controller = new SafetyDatasheetController(Logger, DocumentClient, COMPANY_NAME, DATA_SHEET_TABLE);
 
   router.post('/describe', controller.describe);
   router.post('/update', controller.update);
@@ -17,4 +16,4 @@ const HotHoldingRouter = (dependencies, environment) => {
   return router;
 };
 
-module.exports = HotHoldingRouter;
+module.exports = SafetyDatasheetRouter;
