@@ -1,7 +1,7 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const PestManagementRouter = require('../service/routers/PestManagementRouter');
+const PestManagementRouter = require('./routers/PestManagementRouter');
 
 const App = (dependencies, environment) => {
   const app = Express();

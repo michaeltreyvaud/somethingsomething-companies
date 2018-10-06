@@ -1,7 +1,7 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const FoodItemRouter = require('../service/routers/FoodItemRouter');
+const FoodItemRouter = require('./routers/FoodItemRouter');
 
 const App = (dependencies, environment) => {
   const app = Express();

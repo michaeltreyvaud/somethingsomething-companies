@@ -1,7 +1,7 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const CleaningRouter = require('../service/routers/CleaningRouter');
+const CleaningRouter = require('./routers/CleaningRouter');
 
 const App = (dependencies, environment) => {
   const app = Express();

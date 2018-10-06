@@ -1,7 +1,7 @@
 const Express = require('express');
 const cors = require('cors');
 const BodyParser = require('body-parser');
-const SafetyDataSheetRouter = require('../service/routers/SafetyDataSheetRouter');
+const SafetyDataSheetRouter = require('./routers/SafetyDataSheetRouter');
 
 const App = (dependencies, environment) => {
   const app = Express();
