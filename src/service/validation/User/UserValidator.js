@@ -18,6 +18,7 @@ const AuthValidator = {
       team: Joi.string().required().error(new Error('Invalid team supplied')),
       authorization: Joi.string().required().error(new Error('Invalid authorization supplied')),
       userName: Joi.string().required().error(new Error('Invalid userName supplied')),
+      signature: Joi.string().dataUri().error(new Error('Invalid signature supplied')),
     });
     this.validate(params, schema);
   },

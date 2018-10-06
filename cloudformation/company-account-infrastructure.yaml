@@ -150,6 +150,9 @@ Resources:
           "address3": "${CompanyAddressLine3}",
           "logo": "${CompanyLogoUrl}"
         }
+  CompanyBucket:
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: Retain
   AuthLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -185,6 +188,11 @@ Resources:
           - apigateway:DELETE
           Resource:
           - "*"
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+          - !Join ["", [!GetAtt CompanyBucket.Arn, "/*"]]
         - Effect: Allow
           Action:
           - cognito-idp:*
@@ -320,6 +328,11 @@ Resources:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}UserTrainingLogTable/*
         - Effect: Allow
           Action:
+          - s3:PutObject
+          Resource:
+          - !Join ["", [!GetAtt CompanyBucket.Arn, "/*"]]
+        - Effect: Allow
+          Action:
           - cognito-idp:*
           Resource:
           - "*"
@@ -343,6 +356,7 @@ Resources:
           USER_MEDICAL_LOG_TABLE: !Ref CompanyUserMedicalLogTable
           USER_TRANING_LOG_TABLE: !Ref CompanyUserTrainingLogTable
           COMPANY_NAME: !Ref CompanyName
+          COMPANY_BUCKET: !Ref CompanyBucket
       FunctionName: !Sub "${CompanyName}UserLambda"
       Handler: src/UserLambda/main.handler
       Role: !GetAtt UserLambdaRole.Arn
@@ -708,6 +722,7 @@ Resources:
           NODE_ENV: production
           APP_CLIENT_ID: !Ref CompanyUserPoolClient
           USER_POOL_ID: !Ref CompanyUserPool
+          COMPANY_BUCKET: !Ref CompanyBucket
       FunctionName: !Sub "${CompanyName}AuthLambda"
       Handler: src/AuthLambda/main.handler
       Role: !GetAtt AuthLambdaRole.Arn

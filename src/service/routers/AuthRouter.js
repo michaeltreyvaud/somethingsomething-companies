@@ -3,8 +3,9 @@ const AuthController = require('../controllers/auth/AuthController');
 
 const AuthRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { Logger, SSCognito } = dependencies;
-  const controller = new AuthController(Logger, SSCognito);
+  const { Logger, SSCognito, S3 } = dependencies;
+  const { COMPANY_BUCKET } = environment;
+  const controller = new AuthController(Logger, SSCognito, S3, COMPANY_BUCKET);
 
   router.post('/validate', controller.validate);
   router.post('/login', controller.login);

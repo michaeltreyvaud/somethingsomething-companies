@@ -394,7 +394,10 @@ class SSCognito {
     return Cognito.adminRemoveUserFromGroup(params).promise();
   }
 
-  async adminUpdateUserAttributes(userName, firstName, lastName, phoneNumber) {
+  async adminUpdateUserAttributes(
+    userName, firstName, lastName,
+    phoneNumber, signature,
+  ) {
     const { Logger, Cognito } = this;
     Logger.info('adminUpdateUserAttributes');
     const params = {
@@ -407,6 +410,9 @@ class SSCognito {
       }, {
         Name: 'phone_number',
         Value: phoneNumber,
+      }, {
+        Name: 'custom:signature',
+        Value: signature,
       }],
       UserPoolId: process.env.USER_POOL_ID,
       Username: userName,

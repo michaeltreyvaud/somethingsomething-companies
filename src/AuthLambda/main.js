@@ -8,13 +8,17 @@ const ErrorHandler = require('../util/ErrorHandler');
 
 const awsCognito = new AWS.CognitoIdentityServiceProvider();
 const SSCognito = new Cognito(Logger, awsCognito);
+const S3 = new AWS.S3();
 
-const createEnvironment = () => ({});
+const createEnvironment = () => ({
+  COMPANY_BUCKET: process.env.COMPANY_BUCKET,
+});
 const createDependencies = () => ({
   Logger,
   AWS,
   SSCognito,
   ErrorHandler: ErrorHandler(Logger),
+  S3,
 });
 const createApp = () => MainApp(createDependencies(), createEnvironment());
 
