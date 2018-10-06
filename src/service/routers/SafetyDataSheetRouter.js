@@ -3,9 +3,9 @@ const SafetyDatasheetController = require('../controllers/safetydatasheet/Safety
 
 const SafetyDatasheetRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { COMPANY_NAME, DATA_SHEET_TABLE } = environment;
+  const { COMPANY_NAME, SAFETY_TABLE } = environment;
   const { Logger, DocumentClient } = dependencies;
-  const controller = new SafetyDatasheetController(Logger, DocumentClient, COMPANY_NAME, DATA_SHEET_TABLE);
+  const controller = new SafetyDatasheetController(Logger, DocumentClient, COMPANY_NAME, SAFETY_TABLE);
 
   router.post('/describe', controller.describe);
   router.post('/update', controller.update);

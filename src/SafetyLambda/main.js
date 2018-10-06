@@ -8,7 +8,7 @@ const ErrorHandler = require('../util/ErrorHandler');
 const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const createEnvironment = () => ({
   COMPANY_NAME: process.env.COMPANY_NAME,
-  PEST_MANAGEMENT_TABLE: process.env.PEST_MANAGEMENT_TABLE,
+  SAFETY_TABLE: process.env.SAFETY_TABLE,
 });
 const createDependencies = () => ({
   Logger,

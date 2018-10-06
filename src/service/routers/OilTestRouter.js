@@ -1,6 +1,6 @@
 const Express = require('express');
-//TO DO
-//const FreezerItemController = require('../controllers/oiltest/FreezerItemController');
+// TO DO
+// const FreezerItemController = require('../controllers/oiltest/FreezerItemController');
 const OilLogController = require('../controllers/oiltest/OilLogController');
 const OilTaskController = require('../controllers/oiltest/OilTaskController');
 
@@ -8,16 +8,16 @@ const OilTestRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
   const { Logger, DocumentClient } = dependencies;
   const {
-    COMPANY_NAME, OILTEST_TABLE, OILTEST_LOG_TABLE, OILTEST_TASK_TABLE,
+    COMPANY_NAME, OIL_TABLE, OIL_TASK_TABLE, OIL_LOG_TABLE,
   } = environment;
   // const freezerItemController = new FreezerItemController(
   //   Logger, DocumentClient, COMPANY_NAME, OILTEST_TABLE,
   // );
   const OilLogController = new OilLogController(
-    Logger, DocumentClient, COMPANY_NAME, OILTEST_LOG_TABLE,
+    Logger, DocumentClient, COMPANY_NAME, OIL_LOG_TABLE,
   );
   const OilTaskController = new OilTaskController(
-    Logger, DocumentClient, COMPANY_NAME, OILTEST_TASK_TABLE,
+    Logger, DocumentClient, COMPANY_NAME, OIL_TASK_TABLE,
   );
 
   // router.post('/item/describe', freezerItemController.describe);

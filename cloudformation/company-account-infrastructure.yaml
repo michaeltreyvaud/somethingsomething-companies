@@ -102,6 +102,78 @@ Parameters:
     Description: The User Training Log table write throughput
     Type: String
     Default: '5'
+  CompanyCleaningTableReadThroughput:
+    Description: The User Cleaning table read throughput
+    Type: String
+    Default: '5'
+  CompanyCleaningTableWriteThroughput:
+    Description: The User Cleaning table write throughput
+    Type: String
+    Default: '5'
+  CompanyCleaningTaskTableReadThroughput:
+    Description: The User CleaningTask table read throughput
+    Type: String
+    Default: '5'
+  CompanyCleaningTaskTableWriteThroughput:
+    Description: The User CleaningTask table write throughput
+    Type: String
+    Default: '5'
+  CompanyCleaningLogTableReadThroughput:
+    Description: The User CleaningLog table read throughput
+    Type: String
+    Default: '5'
+  CompanyCleaningLogTableWriteThroughput:
+    Description: The User CleaningLog table write throughput
+    Type: String
+    Default: '5'
+  CompanyOilTableReadThroughput:
+    Description: The User Oil table read throughput
+    Type: String
+    Default: '5'
+  CompanyOilTableWriteThroughput:
+    Description: The User Oil table write throughput
+    Type: String
+    Default: '5'
+  CompanyOilTaskTableReadThroughput:
+    Description: The User OilTask table read throughput
+    Type: String
+    Default: '5'
+  CompanyOilTaskTableWriteThroughput:
+    Description: The User OilTask table write throughput
+    Type: String
+    Default: '5'
+  CompanyOilLogTableReadThroughput:
+    Description: The User OilLog table read throughput
+    Type: String
+    Default: '5'
+  CompanyOilLogTableWriteThroughput:
+    Description: The User OilLog table write throughput
+    Type: String
+    Default: '5'
+  CompanyReportTableReadThroughput:
+    Description: The User Report table read throughput
+    Type: String
+    Default: '5'
+  CompanyReportTableWriteThroughput:
+    Description: The User Report table write throughput
+    Type: String
+    Default: '5'
+  CompanyPestTableReadThroughput:
+    Description: The User Pest table read throughput
+    Type: String
+    Default: '5'
+  CompanyPestTableWriteThroughput:
+    Description: The User Pest table write throughput
+    Type: String
+    Default: '5'
+  CompanySafetyTableReadThroughput:
+    Description: The User Safety table read throughput
+    Type: String
+    Default: '5'
+  CompanySafetyTableWriteThroughput:
+    Description: The User Safety table write throughput
+    Type: String
+    Default: '5'
   CompanyContactEmail:
     Type: String
   CompanyContactFirstName:
@@ -242,6 +314,254 @@ Resources:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}HotHoldingTable/*
       Roles:
       - !Ref HotHoldingLambdaRole
+  CleaningLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}CleaningLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  CleaningLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}CleaningLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}CleaningLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}CleaningLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CleaningTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CleaningTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CleaningLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CleaningLogTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CleaningTaskTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CleaningTaskTable/*
+      Roles:
+      - !Ref CleaningLambdaRole
+  OilLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}OilLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  OilLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}OilLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}OilLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}OilLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}OilTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}OilTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}OilLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}OilLogTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}OilTaskTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}OilTaskTable/*
+      Roles:
+      - !Ref OilLambdaRole
+  PestLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}PestLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  PestLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}PestLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}PestLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}PestLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}PestTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}PestTable/*
+      Roles:
+      - !Ref PestLambdaRole
+  ReportsLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}ReportsLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  ReportsLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}ReportsLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ReportsLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ReportsLambda*:*
+      Roles:
+      - !Ref ReportsLambdaRole
+  ReportLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}ReportLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  ReportLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}ReportLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ReportLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ReportLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}ReportTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}ReportTable/*
+      Roles:
+      - !Ref ReportLambdaRole
+  SafetyLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}SafetyLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  SafetyLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}SafetyLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}SafetyLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}SafetyLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyTable/*
+      Roles:
+      - !Ref SafetyLambdaRole
   FastCoolingLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -465,6 +785,121 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  CleaningLambda:
+    DependsOn:
+    - CleaningLambdaRole
+    - CleaningLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Cleaning Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          COMPANY_NAME: !Ref CompanyName
+          CLEANING_TABLE: !Ref CompanyCleaningTable
+          CLEANING_LOG_TABLE: !Ref CompanyCleaningLogTable
+          CLEANING_TASK_TABLE: !Ref CompanyCleaningTaskTable
+      FunctionName: !Sub "${CompanyName}CleaningLambda"
+      Handler: src/CleaningLambda/main.handler
+      Role: !GetAtt CleaningLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  CleaningLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CleaningLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  OilLambda:
+    DependsOn:
+    - OilLambdaRole
+    - OilLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Oil Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          HOT_HOLDING_TABLE: !Ref CompanyOilTable
+          COMPANY_NAME: !Ref CompanyName
+          OIL_TABLE: !Ref CompanyOilTable
+          OIL_TASK_TABLE: !Ref CompanyOilTaskTable
+          OIL_LOG_TABLE: !Ref CompanyOilLogTable
+      FunctionName: !Sub "${CompanyName}OilLambda"
+      Handler: src/OilLambda/main.handler
+      Role: !GetAtt OilLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  OilLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref OilLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  PestLambda:
+    DependsOn:
+    - PestLambdaRole
+    - PestLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Pest Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          HOT_HOLDING_TABLE: !Ref CompanyPestTable
+          COMPANY_NAME: !Ref CompanyName
+          PEST_TABLE: !Ref CompanyPestTable
+      FunctionName: !Sub "${CompanyName}PestLambda"
+      Handler: src/PestLambda/main.handler
+      Role: !GetAtt PestLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  PestLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PestLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  SafetyLambda:
+    DependsOn:
+    - SafetyLambdaRole
+    - SafetyLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Safety Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          HOT_HOLDING_TABLE: !Ref CompanySafetyTable
+          COMPANY_NAME: !Ref CompanyName
+          SAFETY_TABLE: !Ref CompanySafetyTable
+      FunctionName: !Sub "${CompanyName}SafetyLambda"
+      Handler: src/SafetyLambda/main.handler
+      Role: !GetAtt SafetyLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  SafetyLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref SafetyLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
   FastCoolingLambda:
     DependsOn:
     - FastCoolingLambdaRole
@@ -489,6 +924,34 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref FastCoolingLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  ReportLambda:
+    DependsOn:
+    - ReportLambdaRole
+    - ReportLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Report Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          HOT_HOLDING_TABLE: !Ref CompanyReportTable
+          COMPANY_NAME: !Ref CompanyName
+          REPORT_TABLE: !Ref CompanyReportTable
+      FunctionName: !Sub "${CompanyName}ReportLambda"
+      Handler: src/ReportLambda/main.handler
+      Role: !GetAtt ReportLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  ReportLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ReportLambda
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
@@ -899,6 +1362,66 @@ Resources:
       ParentId: !Ref HotHoldingResource
       RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
+  CleaningResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: cleaning
+  CleaningResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref CleaningResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  OilResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: oil
+  OilResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref OilResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  PestResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: pest
+  PestResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref PestResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  ReportResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: report
+  ReportResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ReportResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  SafetyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: safety
+  SafetyResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref SafetyResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   FastCoolingResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -1065,6 +1588,86 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HotHoldingLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  CleaningMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref CleaningResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CleaningLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  OilMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref OilResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OilLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  PestMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref PestResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PestLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  ReportMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref ReportResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ReportLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  SafetyMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref SafetyResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SafetyLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   FastCoolingMethods:
@@ -1343,6 +1946,146 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
+  CleaningOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref CleaningResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  OilOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref OilResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  PestOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref PestResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  ReportOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref ReportResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  SafetyOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref SafetyResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
   FastCoolingOptions:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -1591,6 +2334,26 @@ Resources:
     - UserMethods
     - UserMethods
     - UserResourceProxy
+    - CleaningResource
+    - CleaningMethods
+    - CleaningMethods
+    - CleaningResourceProxy
+    - OilResource
+    - OilMethods
+    - OilMethods
+    - OilResourceProxy
+    - PestResource
+    - PestMethods
+    - PestMethods
+    - PestResourceProxy
+    - ReportResource
+    - ReportMethods
+    - ReportMethods
+    - ReportResourceProxy
+    - SafetyResource
+    - SafetyMethods
+    - SafetyMethods
+    - SafetyResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
@@ -1973,3 +2736,156 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyUserMedicalLogTableReadThroughput
         WriteCapacityUnits: !Ref CompanyUserMedicalLogTableWriteThroughput
+  CompanyCleaningTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}CleaningTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyCleaningTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyCleaningTableWriteThroughput
+  CompanyCleaningTaskTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}CleaningTaskTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyCleaningTaskTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyCleaningTaskTableWriteThroughput
+  CompanyCleaningLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}CleaningLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyCleaningLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyCleaningLogTableWriteThroughput
+  CompanyOilTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}OilTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyOilTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyOilTableWriteThroughput
+  CompanyOilTaskTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}OilTaskTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyOilTaskTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyOilTaskTableWriteThroughput
+  CompanyOilLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}OilLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyOilLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyOilLogTableWriteThroughput
+  CompanyReportTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}ReportTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyReportTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyReportTableWriteThroughput
+  CompanyPestTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}PestTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyPestTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyPestTableWriteThroughput
+  CompanySafetyTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}SafetyTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanySafetyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanySafetyTableWriteThroughput

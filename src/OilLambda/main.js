@@ -8,9 +8,9 @@ const ErrorHandler = require('../util/ErrorHandler');
 const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const createEnvironment = () => ({
   COMPANY_NAME: process.env.COMPANY_NAME,
-  OILTEST_TABLE: process.env.OILTEST_TABLE,
-  OILTEST_TASK_TABLE: process.env.OILTEST_TASK_TABLE,
-  OILTEST_LOG_TABLE: process.env.OILTEST_LOG_TABLE,
+  OIL_TABLE: process.env.OIL_TABLE,
+  OIL_TASK_TABLE: process.env.OIL_TASK_TABLE,
+  OIL_LOG_TABLE: process.env.OIL_LOG_TABLE,
 });
 const createDependencies = () => ({
   Logger,

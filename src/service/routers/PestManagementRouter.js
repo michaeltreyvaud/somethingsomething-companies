@@ -3,9 +3,9 @@ const PestManagementController = require('../controllers/pestmanagement/PestMana
 
 const PestManagementRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { COMPANY_NAME, PEST_MANAGEMENT_TABLE } = environment;
+  const { COMPANY_NAME, PEST_TABLE } = environment;
   const { Logger, DocumentClient } = dependencies;
-  const controller = new PestManagementController(Logger, DocumentClient, COMPANY_NAME, PEST_MANAGEMENT_TABLE);
+  const controller = new PestManagementController(Logger, DocumentClient, COMPANY_NAME, PEST_TABLE);
 
   router.post('/describe', controller.describe);
   router.post('/update', controller.update);
