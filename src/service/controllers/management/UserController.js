@@ -93,6 +93,7 @@ class UserController {
         team,
         authorization,
       };
+      await Cognito.adminAddUserToGroup(userName, team);
       return res.status(200).json(updatedItems);
     } catch (_err) {
       return next(_err);
