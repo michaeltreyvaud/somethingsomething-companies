@@ -689,6 +689,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  UserLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "UserLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref UserLambda]]
   FoodItemLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -758,6 +764,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FoodItemLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "FoodItemLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref FoodItemLambda]]
   HotHoldingLambda:
     DependsOn:
     - HotHoldingLambdaRole
@@ -785,6 +797,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  HotHoldingLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "HotHoldingLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref HotHoldingLambda]]
   CleaningLambda:
     DependsOn:
     - CleaningLambdaRole
@@ -814,6 +832,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  CleaningLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "CleaningLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref CleaningLambda]]
   OilLambda:
     DependsOn:
     - OilLambdaRole
@@ -844,6 +868,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  OilLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "OilLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref OilLambda]]
   PestLambda:
     DependsOn:
     - PestLambdaRole
@@ -872,6 +902,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  PestLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "PestLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref PestLambda]]
   SafetyLambda:
     DependsOn:
     - SafetyLambdaRole
@@ -900,6 +936,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  SafetyLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "SafetyLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref SafetyLambda]]
   FastCoolingLambda:
     DependsOn:
     - FastCoolingLambdaRole
@@ -927,6 +969,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FastCoolingLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "FastCoolingLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref FastCoolingLambda]]
   ReportLambda:
     DependsOn:
     - ReportLambdaRole
@@ -955,6 +1003,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  ReportLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "ReportLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref ReportLambda]]
   CompanyLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -1018,6 +1072,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  CompanyLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "CompanyLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref CompanyLambda]]
   FridgeLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -1203,6 +1263,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  AuthLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "AuthLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref AuthLambda]]
   FridgeLambda:
     DependsOn:
     - FridgeLambdaRole
@@ -1232,6 +1298,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FridgeLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "FridgeLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref FridgeLambda]]
   FreezerLambda:
     DependsOn:
     - FreezerLambdaRole
@@ -1261,6 +1333,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  FreezerLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "FreezerLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref FreezerLambda]]
   ManagementLambda:
     DependsOn:
     - ManagementLambdaRole
@@ -1291,6 +1369,12 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  ManagementLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "ManagementLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref ManagementLambda]]
   CompanyRootApi:
     Type: "AWS::ApiGateway::RestApi"
     Properties:
