@@ -18,13 +18,30 @@ class AuthController {
 
   //  Attempt to log the user in
   async login(req, res, next) {
-    const { Logger, Cognito, Validator } = this;
+    const {
+      Logger, Cognito, Validator,
+      S3, S3Bucket,
+    } = this;
     const { body } = req;
     Logger.info('login');
     try {
       Validator.validateLoginRequest(body);
       const { email, password } = body;
       const response = await Cognito.adminInitiateAuth(email, password);
+      const { AuthenticationResult } = response;
+      if (AuthenticationResult) {
+        const { IdToken } = AuthenticationResult;
+        const decodedToken = jwtDecode(IdToken);
+        const signatureKey = decodedToken['custom:signature'];
+        if (signatureKey) {
+          const params = {
+            Bucket: S3Bucket,
+            Key: signatureKey,
+          };
+          const signatureObject = await S3.getObject(params).promise();
+          response.signature = `data:image/jpeg;base64,${signatureObject.Body.toString('base64')}`;
+        }
+      }
       return res.status(200).json(response);
     } catch (_err) {
       return next(_err);
