@@ -692,6 +692,11 @@ Resources:
           Resource:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SupplierTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SupplierTable/*
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+          - !Join ["", [!GetAtt CompanyBucket.Arn, "/*"]]
       Roles:
       - !Ref ManagementLambdaRole
   ManagementLambdaRole:
@@ -810,6 +815,7 @@ Resources:
           USER_POOL_ID: !Ref CompanyUserPool
           SUPPLIER_TABLE: !Ref CompanySupplierTable
           COMPANY_NAME: !Ref CompanyName
+          COMPANY_BUCKET: !Ref CompanyBucket
       FunctionName: !Sub "${CompanyName}ManagementLambda"
       Handler: src/ManagementLambda/main.handler
       Role: !GetAtt ManagementLambdaRole.Arn

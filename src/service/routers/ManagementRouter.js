@@ -5,10 +5,12 @@ const SupplierListController = require('../controllers/management/SupplierListCo
 
 const ManagementRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { Logger, SSCognito, DocumentClient } = dependencies;
-  const { COMPANY_NAME, SUPPLIER_TABLE } = environment;
+  const {
+    Logger, SSCognito, DocumentClient, S3,
+  } = dependencies;
+  const { COMPANY_NAME, SUPPLIER_TABLE, COMPANY_BUCKET } = environment;
   const teamController = new TeamController(Logger, SSCognito);
-  const userController = new UserController(Logger, SSCognito);
+  const userController = new UserController(Logger, SSCognito, S3, COMPANY_BUCKET);
   const supplierListController = new SupplierListController(Logger, DocumentClient,
     COMPANY_NAME, SUPPLIER_TABLE);
 

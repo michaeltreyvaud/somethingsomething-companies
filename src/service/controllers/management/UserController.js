@@ -1,10 +1,12 @@
 const UserValidator = require('../../validation/UserValidator');
 
 class UserController {
-  constructor(Logger, Cognito) {
+  constructor(Logger, Cognito, S3, S3Bucket) {
     this.Logger = Logger;
     this.Cognito = Cognito;
     this.Validator = UserValidator;
+    this.S3 = S3;
+    this.S3Bucket = S3Bucket;
     this.create = this.create.bind(this);
     this.describe = this.describe.bind(this);
     this.update = this.update.bind(this);
@@ -115,13 +117,49 @@ class UserController {
   }
 
   async list(req, res, next) {
-    const { Logger, Cognito, Validator } = this;
+    const {
+      Logger, Cognito, Validator,
+      S3, S3Bucket,
+    } = this;
     const { body } = req;
     Logger.info('list');
     try {
       Validator.validateListRequest(body);
       const response = await Cognito.listUsers();
-      return res.status(200).json(response);
+      const { Users } = response;
+      const users = await Promise.all(Users.map(async (user) => {
+        const attributes = user.Attributes;
+        const findValue = (field) => {
+          let value;
+          attributes.forEach((attribute) => {
+            if (attribute.Name === field) {
+              value = attribute.Value;
+            }
+          });
+          return value;
+        };
+        const User = {
+          userName: user.Username,
+          email: findValue('email'),
+          firstName: findValue('given_name'),
+          lastName: findValue('family_name'),
+          phoneNumber: findValue('phone_number'),
+          position: findValue('custom:position'),
+          team: findValue('custom:team'),
+          authorization: findValue('custom:authorization'),
+        };
+        const signatureKey = findValue('custom:signature');
+        if (signatureKey) {
+          const params = {
+            Bucket: S3Bucket,
+            Key: signatureKey,
+          };
+          const signatureObject = await S3.getObject(params).promise();
+          User.signature = `data:image/jpeg;base64,${signatureObject.Body.toString('base64')}`;
+        }
+        return User;
+      }));
+      return res.status(200).json({ users });
     } catch (_err) {
       return next(_err);
     }
