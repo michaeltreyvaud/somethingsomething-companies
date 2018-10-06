@@ -398,6 +398,132 @@ const safetyDatasheet = {
   ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
+const CleaningTask = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  CLEANING_LOCATION: {
+    id: Joi.string().required().error(new Error('Invalid cleaning location id supplied')),
+    name: Joi.string().required().error(new Error('Invalid cleaning location name supplied')),
+  },
+  CLEANING_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid cleaning item id supplied')),
+    name: Joi.string().required().error(new Error('Invalid cleaning item name supplied')),
+  },
+  TEAM: {
+    name: Joi.string().required().error(new Error('Invalid team name supplied')),
+  },
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+  },
+  DAY: Joi.string().required().error(new Error('Invalid day supplied')),
+  TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
+  DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
+const CleaningLog = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  CLEANING_LOCATION: {
+    id: Joi.string().required().error(new Error('Invalid cleaning location id supplied')),
+    name: Joi.string().required().error(new Error('Invalid cleaning location name supplied')),
+  },
+  CLEANING_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid cleaning item id supplied')),
+    name: Joi.string().required().error(new Error('Invalid cleaning item name supplied')),
+  },
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid user email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid user first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid user last name supplied')),
+  },
+  IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
+  COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
+  SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
+  STATUS: Joi.string().error(new Error('Invalid status supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
+const OilTestTask = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  OILTEST_LOCATION: {
+    id: Joi.string().required().error(new Error('Invalid Oil location id supplied')),
+    name: Joi.string().required().error(new Error('Invalid Oil location name supplied')),
+  },
+  OILTEST_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid Oil item id supplied')),
+    name: Joi.string().required().error(new Error('Invalid Oil item name supplied')),
+  },
+  TEAM: {
+    name: Joi.string().required().error(new Error('Invalid team name supplied')),
+  },
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+  },
+  DAY: Joi.string().required().error(new Error('Invalid day supplied')),
+  TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
+  DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
+const OilTestLog = {
+  ID: Joi.string().required().error(new Error('Invalid id supplied')),
+  OILTEST_LOCATION: {
+    id: Joi.string().required().error(new Error('Invalid Oil location id supplied')),
+    name: Joi.string().required().error(new Error('Invalid Oil location name supplied')),
+  },
+  OILTEST_ITEM: {
+    id: Joi.string().required().error(new Error('Invalid Oil item id supplied')),
+    name: Joi.string().required().error(new Error('Invalid Oil item name supplied')),
+  },
+  USER: {
+    EMAIL: Joi.string().email().error(new Error('Invalid user email supplied')),
+    FIRST_NAME: Joi.string().required().error(new Error('Invalid user first name supplied')),
+    LAST_NAME: Joi.string().required().error(new Error('Invalid user last name supplied')),
+  },
+  IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
+  COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
+  SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
+  STATUS: Joi.string().error(new Error('Invalid status supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
+  // TO DO - Update for actual schema
+  FROM: Joi.object().keys({
+    company: Joi.string().required().error(new Error('Invalid company supplied')),
+    id: Joi.string().required().error(new Error('Invalid id supplied')),
+    name: Joi.string().required().error(new Error('Invalid name supplied')),
+  }),
+  LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
+  PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
+  ORDER: Joi.string().error(new Error('Invalid order supplied')),
+};
+
 const schemas = {
   EMAIL: Joi.string().email().required().error(new Error('Invalid email supplied')),
   PASSWORD: Joi.string().required().error(new Error('Invalid password supplied')),
@@ -421,6 +547,10 @@ const schemas = {
   pestManagement,
   report,
   safetyDatasheet,
+  CleaningLog,
+  CleaningTask,
+  OilTestLog,
+  OilTestTask
 };
 
 module.exports = schemas;
