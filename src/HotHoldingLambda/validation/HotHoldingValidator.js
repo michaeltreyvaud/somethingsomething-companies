@@ -72,10 +72,10 @@ const HotHoldingValidator = {
   },
   validateListRequest(params) {
     const schema = Joi.object().keys({
-      limit: schemas.fridge.item.LIMIT,
-      from: schemas.fridge.item.FROM,
-      paginated: schemas.fridge.item.PAGINATED,
-      order: schemas.fridge.item.ORDER,
+      limit: schemas.LIMIT,
+      from: schemas.FROM,
+      paginated: schemas.PAGINATED,
+      order: schemas.ORDER,
     });
     this.validate(params, schema);
   },
