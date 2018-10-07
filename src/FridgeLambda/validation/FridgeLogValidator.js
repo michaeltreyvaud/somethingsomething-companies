@@ -5,13 +5,13 @@ const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
   FRIDGE_ITEM: {
     id: Joi.string().required().error(new Error('Invalid fridge id supplied')),
-    name: Joi.string().required().error(new Error('Invalid name supplied')),
+    displayName: Joi.string().required().error(new Error('Invalid name supplied')),
   },
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
   USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+    email: Joi.string().email().error(new Error('Invalid email supplied')),
+    firstName: Joi.string().required().error(new Error('Invalid first name supplied')),
+    lastName: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),

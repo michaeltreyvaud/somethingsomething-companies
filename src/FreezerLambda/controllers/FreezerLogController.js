@@ -82,39 +82,20 @@ class FreezerLogController {
       Validator.validateUpdateRequest(body);
       const { createdAt } = body;
       const date = Date.now();
-      let updateExpression = 'set ';
-      const expressionAttributeNames = {
-        '#updatedAt': 'updatedAt',
-        '#company': 'company',
-        '#id': 'id',
-      };
-      const expressionAttributeValues = {
-        ':updatedAt': date,
-        ':company': CompanyName,
-      };
-      updateExpression = `${updateExpression} #updatedAt = :updatedAt`;
-      delete body.id;
-      delete body.company;
-      delete body.createdAt;
-      delete body.updatedAt;
-      Object.keys(body).forEach((key) => {
-        const attr = `#${key}`;
-        const val = `:${key}`;
-        updateExpression = `${updateExpression}, ${attr} = ${val}`;
-        expressionAttributeNames[attr] = key;
-        expressionAttributeValues[val] = body[key];
-      });
-      const dbParams = {
+      const getParams = {
         TableName,
         Key: { company: CompanyName, createdAt },
-        UpdateExpression: updateExpression,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
-        ConditionExpression: 'attribute_exists(#id) AND #company = :company',
-        ReturnValues: 'ALL_NEW',
       };
-      const item = await DocumentClient.update(dbParams).promise();
-      return res.status(200).json(item.Attributes || {});
+      const currentData = await DocumentClient.get(getParams).promise();
+      const { Item: oldItem } = currentData;
+      const Item = {
+        ...oldItem,
+        ...body,
+        updatedAt: date,
+      };
+      const putParams = { Item, TableName };
+      await DocumentClient.put(putParams).promise();
+      return res.status(200).json(Item);
     } catch (_err) {
       return next(_err);
     }
