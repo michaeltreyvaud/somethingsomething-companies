@@ -23,10 +23,10 @@ class SafetyDatasheetController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -109,10 +109,10 @@ class SafetyDatasheetController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});

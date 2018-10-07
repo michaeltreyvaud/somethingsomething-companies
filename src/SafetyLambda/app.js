@@ -13,7 +13,7 @@ const App = (dependencies, environment) => {
   app.use(BodyParser.json());
   app.use(BodyParser.urlencoded({ extended: true }));
 
-  app.use('/safetydatasheet', SafetyDataSheetRouter(dependencies, environment));
+  app.use('/safety', SafetyDataSheetRouter(dependencies, environment));
   app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
   app.use(ErrorHandler);
   return app;

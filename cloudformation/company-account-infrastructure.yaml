@@ -851,7 +851,6 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          HOT_HOLDING_TABLE: !Ref CompanyOilTable
           COMPANY_NAME: !Ref CompanyName
           OIL_TABLE: !Ref CompanyOilTable
           OIL_TASK_TABLE: !Ref CompanyOilTaskTable
@@ -887,7 +886,6 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          HOT_HOLDING_TABLE: !Ref CompanyPestTable
           COMPANY_NAME: !Ref CompanyName
           PEST_TABLE: !Ref CompanyPestTable
       FunctionName: !Sub "${CompanyName}PestLambda"
@@ -921,7 +919,6 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          HOT_HOLDING_TABLE: !Ref CompanySafetyTable
           COMPANY_NAME: !Ref CompanyName
           SAFETY_TABLE: !Ref CompanySafetyTable
       FunctionName: !Sub "${CompanyName}SafetyLambda"
@@ -988,7 +985,6 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          HOT_HOLDING_TABLE: !Ref CompanyReportTable
           COMPANY_NAME: !Ref CompanyName
           REPORT_TABLE: !Ref CompanyReportTable
       FunctionName: !Sub "${CompanyName}ReportLambda"

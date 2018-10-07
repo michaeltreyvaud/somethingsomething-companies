@@ -33,13 +33,12 @@ const SafetyDatasheetValidator = {
   },
   validateDescribeRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateCreateRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
       user: schemas.USER,
       title: schemas.TITLE,
       file: schemas.FILE,
@@ -50,18 +49,18 @@ const SafetyDatasheetValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
       user: schemas.USER,
       title: schemas.TITLE,
       file: schemas.FILE,
       signature: schemas.SIGNATURE,
       comments: schemas.COMMENTS,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.id,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
