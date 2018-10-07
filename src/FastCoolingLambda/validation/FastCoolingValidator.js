@@ -54,11 +54,10 @@ const FastCoolingValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
       foodItem: schemas.FOOD_ITEM,
       temperature: schemas.TEMPERATURE,
       user: schemas.USER,
-      image: schemas.IMAGE,
       comments: schemas.COMMENTS,
       signature: schemas.SIGNATURE,
     });
