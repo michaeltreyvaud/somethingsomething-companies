@@ -3,18 +3,15 @@ const SSError = require('../../util/SSError');
 
 const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  CLEANING_LOCATION: {
-    id: Joi.string().required().error(new Error('Invalid cleaning location id supplied')),
-    name: Joi.string().required().error(new Error('Invalid cleaning location name supplied')),
-  },
   CLEANING_ITEM: {
-    id: Joi.string().required().error(new Error('Invalid cleaning item id supplied')),
-    name: Joi.string().required().error(new Error('Invalid cleaning item name supplied')),
+    id: Joi.string().required().error(new Error('Invalid cleaning location id supplied')),
+    location: Joi.string().required().error(new Error('Invalid cleaning location name supplied')),
+    item: Joi.string().required().error(new Error('Invalid cleaning item name supplied')),
   },
   USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid user email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid user first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid user last name supplied')),
+    email: Joi.string().email().error(new Error('Invalid user email supplied')),
+    firstName: Joi.string().required().error(new Error('Invalid user first name supplied')),
+    lastName: Joi.string().required().error(new Error('Invalid user last name supplied')),
   },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
@@ -41,13 +38,12 @@ const CleaningLogValidator = {
   },
   validateDescribeRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateCreateRequest(params) {
     const schema = Joi.object().keys({
-      cleaningLocation: schemas.CLEANING_LOCATION,
       cleaningItem: schemas.CLEANING_ITEM,
       user: schemas.USER,
       image: schemas.IMAGE,
@@ -60,19 +56,19 @@ const CleaningLogValidator = {
 
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      cleaningLocation: schemas.CLEANING_LOCATION,
       cleaningItem: schemas.CLEANING_ITEM,
       user: schemas.USER,
       image: schemas.IMAGE,
       comments: schemas.COMMENTS,
       signature: schemas.SIGNATURE,
       status: schemas.STATUS,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },

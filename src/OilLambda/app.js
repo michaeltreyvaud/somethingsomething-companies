@@ -13,7 +13,7 @@ const App = (dependencies, environment) => {
   app.use(BodyParser.json());
   app.use(BodyParser.urlencoded({ extended: true }));
 
-  app.use('/oiltest', OilTestRouter(dependencies, environment));
+  app.use('/oil', OilTestRouter(dependencies, environment));
   app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
   app.use(ErrorHandler);
   return app;
