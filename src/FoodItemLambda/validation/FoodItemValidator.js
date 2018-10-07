@@ -33,6 +33,11 @@ const schemas = {
   LIMIT: Joi.number().error(new Error('Invalid limit supplied')),
   PAGINATED: Joi.boolean().error(new Error('Invalid paginated supplied')),
   ORDER: Joi.string().error(new Error('Invalid order supplied')),
+  USER: Joi.object().keys({
+    email: Joi.string().email().error(new Error('Invalid email supplied to user')),
+    firstName: Joi.string().required().error(new Error('Invalid firstName supplied to user')),
+    lastName: Joi.string().required().error(new Error('Invalid lastName supplied to user')),
+  }),
 };
 
 const FoodItemValidator = {
@@ -55,6 +60,7 @@ const FoodItemValidator = {
       description: schemas.DESCRIPTION,
       expiryDate: schemas.EXPIRY_DATE,
       allergens: schemas.ALLERGENS,
+      user: schemas.USER,
     });
     this.validate(params, schema);
   },

@@ -45,7 +45,8 @@ class FoodItemController {
     try {
       Validator.validateCreateRequest(body);
       const {
-        name, batchNumber, description, expiryDate, allergens,
+        name, batchNumber, description,
+        expiryDate, allergens, user,
       } = body;
       const date = Date.now();
       const Item = {
@@ -58,6 +59,7 @@ class FoodItemController {
         allergens,
         createdAt: date,
         updatedAt: date,
+        user,
       };
       const params = {
         Item,
