@@ -3,25 +3,24 @@ const SSError = require('../../util/SSError');
 
 const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  CLEANING_LOCATION: {
-    id: Joi.string().required().error(new Error('Invalid cleaning location id supplied')),
-    name: Joi.string().required().error(new Error('Invalid cleaning location name supplied')),
-  },
   CLEANING_ITEM: {
-    id: Joi.string().required().error(new Error('Invalid cleaning item id supplied')),
-    name: Joi.string().required().error(new Error('Invalid cleaning item name supplied')),
-  },
-  TEAM: {
-    name: Joi.string().required().error(new Error('Invalid team name supplied')),
+    id: Joi.string().required().error(new Error('Invalid cleaning location id supplied')),
+    location: Joi.string().required().error(new Error('Invalid cleaning location name supplied')),
+    item: Joi.string().required().error(new Error('Invalid cleaning item name supplied')),
   },
   USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+    email: Joi.string().email().error(new Error('Invalid user email supplied')),
+    firstName: Joi.string().required().error(new Error('Invalid user first name supplied')),
+    lastName: Joi.string().required().error(new Error('Invalid user last name supplied')),
+  },
+  TEAM: {
+    id: Joi.string().required().error(new Error('Invalid team id supplied')),
+    name: Joi.string().required().error(new Error('Invalid team name supplied')),
   },
   DAY: Joi.string().required().error(new Error('Invalid day supplied')),
   TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
   DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
   // TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
@@ -42,13 +41,12 @@ const CleaningTaskValidator = {
   },
   validateDescribeRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateCreateRequest(params) {
     const schema = Joi.object().keys({
-      cleaningLocation: schemas.CLEANING_LOCATION,
       cleaningItem: schemas.CLEANING_ITEM,
       team: schemas.TEAM,
       user: schemas.USER,
@@ -60,19 +58,19 @@ const CleaningTaskValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      cleaningLocation: schemas.CLEANING_LOCATION,
       cleaningItem: schemas.CLEANING_ITEM,
       team: schemas.TEAM,
       user: schemas.USER,
       day: schemas.DAY,
       time: schemas.TIME,
       description: schemas.DESCRIPTION,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateDeleteRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },

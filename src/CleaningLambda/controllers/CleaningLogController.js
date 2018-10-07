@@ -23,10 +23,10 @@ class CleaningLogController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -45,13 +45,12 @@ class CleaningLogController {
     try {
       Validator.validateCreateRequest(body);
       const {
-        cleaningLocation, cleaningItem, user, image, comments, signature, status,
+        cleaningItem, user, image, comments, signature, status,
       } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
-        cleaningLocation,
         cleaningItem,
         user,
         image,
@@ -111,10 +110,10 @@ class CleaningLogController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});

@@ -23,10 +23,10 @@ class OilTestTaskController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -45,13 +45,12 @@ class OilTestTaskController {
     try {
       Validator.validateCreateRequest(body);
       const {
-        oilTestLocation, oilTestItem, team, user, day, time, description,
+        oilTestItem, team, user, day, time, description,
       } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
-        oilTestLocation,
         oilTestItem,
         team,
         user,
@@ -111,10 +110,10 @@ class OilTestTaskController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});

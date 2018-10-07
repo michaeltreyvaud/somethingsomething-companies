@@ -3,18 +3,15 @@ const SSError = require('../../util/SSError');
 
 const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  OILTEST_LOCATION: {
-    id: Joi.string().required().error(new Error('Invalid Oil location id supplied')),
-    name: Joi.string().required().error(new Error('Invalid Oil location name supplied')),
-  },
   OILTEST_ITEM: {
-    id: Joi.string().required().error(new Error('Invalid Oil item id supplied')),
-    name: Joi.string().required().error(new Error('Invalid Oil item name supplied')),
+    id: Joi.string().required().error(new Error('Invalid Oil location id supplied')),
+    location: Joi.string().required().error(new Error('Invalid Oil location name supplied')),
+    item: Joi.string().required().error(new Error('Invalid Oil item name supplied')),
   },
   USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid user email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid user first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid user last name supplied')),
+    email: Joi.string().email().error(new Error('Invalid user email supplied')),
+    firstName: Joi.string().required().error(new Error('Invalid user first name supplied')),
+    lastName: Joi.string().required().error(new Error('Invalid user last name supplied')),
   },
   IMAGE: Joi.string().uri().error(new Error('Invalid image supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
@@ -41,13 +38,12 @@ const OilTestLogValidator = {
   },
   validateDescribeRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
   validateCreateRequest(params) {
     const schema = Joi.object().keys({
-      oilTestLocation: schemas.OILTEST_LOCATION,
       oilTestItem: schemas.OILTEST_ITEM,
       user: schemas.USER,
       image: schemas.IMAGE,
@@ -59,13 +55,13 @@ const OilTestLogValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      oilTestLocation: schemas.OILTEST_LOCATION,
       oilTestItem: schemas.OILTEST_ITEM,
       user: schemas.USER,
       image: schemas.IMAGE,
       comments: schemas.COMMENTS,
       signature: schemas.SIGNATURE,
       status: schemas.STATUS,
+      createdAt: schemas.CREATED_AT,
     });
     this.validate(params, schema);
   },
