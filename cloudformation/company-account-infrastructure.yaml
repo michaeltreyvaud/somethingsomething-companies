@@ -6,11 +6,11 @@ Parameters:
     Type: String
     MinLength: 3
     AllowedPattern: "[a-zA-Z0-9]+"
-  CompanyFridgeTableReadThroughput:
+  CompanyFridgeItemTableReadThroughput:
     Description: The Fridge table read throughput
     Type: String
     Default: '5'
-  CompanyFridgeTableWriteThroughput:
+  CompanyFridgeItemTableWriteThroughput:
     Description: The Fridge table write throughput
     Type: String
     Default: '5'
@@ -30,7 +30,7 @@ Parameters:
     Description: The Fridge Log table write throughput
     Type: String
     Default: '5'
-  CompanyFreezerTableReadThroughput:
+  CompanyFreezerItemTableReadThroughput:
     Description: The Freezer table read throughput
     Type: String
     Default: '5'
@@ -50,7 +50,7 @@ Parameters:
     Description: The Freezer Log table write throughput
     Type: String
     Default: '5'
-  CompanyFreezerTableWriteThroughput:
+  CompanyFreezerItemTableWriteThroughput:
     Description: The Freezer table write throughput
     Type: String
     Default: '5'
@@ -1116,8 +1116,8 @@ Resources:
           - dynamodb:DeleteItem
           - dynamodb:Query
           Resource:
-          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable
-          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeItemTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeItemTable/*
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTaskTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeTaskTable/*
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FridgeLogTable
@@ -1162,8 +1162,8 @@ Resources:
           - dynamodb:DeleteItem
           - dynamodb:Query
           Resource:
-          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTable
-          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerItemTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerItemTable/*
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTaskTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerTaskTable/*
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}FreezerLogTable
@@ -1282,7 +1282,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          FRIDGE_TABLE: !Ref CompanyFridgeTable
+          FRIDGE_TABLE: !Ref CompanyFridgeItemTable
           COMPANY_NAME: !Ref CompanyName
           FRIDGE_TASK_TABLE: !Ref CompanyFridgeTaskTable
           FRIDGE_LOG_TABLE: !Ref CompanyFridgeLogTable
@@ -1317,7 +1317,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          FREEZER_TABLE: !Ref CompanyFreezerTable
+          FREEZER_TABLE: !Ref CompanyFreezerItemTable
           COMPANY_NAME: !Ref CompanyName
           FREEZER_TASK_TABLE: !Ref CompanyFreezerTaskTable
           FREEZER_LOG_TABLE: !Ref CompanyFreezerLogTable
@@ -2583,10 +2583,10 @@ Resources:
       ResponseType: UNAUTHORIZED
       RestApiId: !Ref CompanyRootApi
       StatusCode: "401"
-  CompanyFridgeTable:
+  CompanyFridgeItemTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
-      TableName: !Sub ${CompanyName}FridgeTable
+      TableName: !Sub ${CompanyName}FridgeItemTable
       AttributeDefinitions:
       - AttributeName: "company"
         AttributeType: "S"
@@ -2600,8 +2600,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFridgeTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFridgeTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyFridgeItemTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFridgeItemTableWriteThroughput
       LocalSecondaryIndexes:
       - IndexName: "byName"
         KeySchema:
@@ -2645,10 +2645,10 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyFridgeLogTableReadThroughput
         WriteCapacityUnits: !Ref CompanyFridgeLogTableWriteThroughput
-  CompanyFreezerTable:
+  CompanyFreezerItemTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
-      TableName: !Sub ${CompanyName}FreezerTable
+      TableName: !Sub ${CompanyName}FreezerItemTable
       AttributeDefinitions:
       - AttributeName: "company"
         AttributeType: "S"
@@ -2662,8 +2662,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFreezerTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFreezerTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyFreezerItemTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyFreezerItemTableWriteThroughput
       LocalSecondaryIndexes:
       - IndexName: "byName"
         KeySchema:
