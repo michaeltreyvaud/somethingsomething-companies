@@ -8,7 +8,7 @@ const schemas = {
   ILLNESS_TYPE: Joi.string().required().error(new Error('Invalid training type supplied')),
   CERTIFICATION: Joi.string().uri().required().error(new Error('Invalid certification supplied')),
   DETAILS: Joi.string().error(new Error('Invalid details section supplied')),
-  CREATED_AT: Joi.number().required().error(new Error('Invalid expiry createdAt supplied')),
+  CREATED_AT: Joi.number().required().error(new Error('Invalid createdAt supplied')),
   // TO DO - Update for actual schema
   FROM: Joi.object().keys({
     company: Joi.string().required().error(new Error('Invalid company supplied')),
@@ -45,7 +45,6 @@ const MedicalLogValidator = {
   },
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
-      id: schemas.ID,
       fromDate: schemas.FROM_DATE,
       toDate: schemas.TO_DATE,
       illnessType: schemas.ILLNESS_TYPE,
