@@ -5,15 +5,13 @@ const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
   FRIDGE_ITEM: {
     id: Joi.string().required().error(new Error('Invalid fridge id supplied')),
-    name: Joi.string().required().error(new Error('Invalid name supplied')),
+    displayName: Joi.string().required().error(new Error('Invalid name supplied')),
   },
-  TEAM: {
-    name: Joi.string().required().error(new Error('Invalid team name supplied')),
-  },
+  TEAM: Joi.string().required().error(new Error('Invalid team supplied')),
   USER: {
-    EMAIL: Joi.string().email().error(new Error('Invalid email supplied')),
-    FIRST_NAME: Joi.string().required().error(new Error('Invalid first name supplied')),
-    LAST_NAME: Joi.string().required().error(new Error('Invalid last name supplied')),
+    email: Joi.string().email().error(new Error('Invalid email supplied')),
+    firstName: Joi.string().required().error(new Error('Invalid first name supplied')),
+    lastName: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   DAY: Joi.string().required().error(new Error('Invalid day supplied')),
   TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
