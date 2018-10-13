@@ -6,196 +6,12 @@ Parameters:
     Type: String
     MinLength: 3
     AllowedPattern: "[a-zA-Z0-9]+"
-  CompanyFridgeItemTableReadThroughput:
-    Description: The Fridge table read throughput
+  CompanyTableReadThroughput:
+    Description: General Read Throughput
     Type: String
     Default: '5'
-  CompanyFridgeItemTableWriteThroughput:
-    Description: The Fridge table write throughput
-    Type: String
-    Default: '5'
-  CompanyFridgeTaskTableReadThroughput:
-    Description: The Fridge Task table read throughput
-    Type: String
-    Default: '5'
-  CompanyFridgeTaskTableWriteThroughput:
-    Description: The Fridge Task table write throughput
-    Type: String
-    Default: '5'
-  CompanyFridgeLogTableReadThroughput:
-    Description: The Fridge Log table read throughput
-    Type: String
-    Default: '5'
-  CompanyFridgeLogTableWriteThroughput:
-    Description: The Fridge Log table write throughput
-    Type: String
-    Default: '5'
-  CompanyFreezerItemTableReadThroughput:
-    Description: The Freezer table read throughput
-    Type: String
-    Default: '5'
-  CompanyFreezerTaskTableReadThroughput:
-    Description: The Freezer Task table read throughput
-    Type: String
-    Default: '5'
-  CompanyFreezerTaskTableWriteThroughput:
-    Description: The Freezer Task table write throughput
-    Type: String
-    Default: '5'
-  CompanyFreezerLogTableReadThroughput:
-    Description: The Freezer Log table read throughput
-    Type: String
-    Default: '5'
-  CompanyFreezerLogTableWriteThroughput:
-    Description: The Freezer Log table write throughput
-    Type: String
-    Default: '5'
-  CompanyFreezerItemTableWriteThroughput:
-    Description: The Freezer table write throughput
-    Type: String
-    Default: '5'
-  CompanyFoodItemTableReadThroughput:
-    Description: The FoodItem table read throughput
-    Type: String
-    Default: '5'
-  CompanyFoodItemTableWriteThroughput:
-    Description: The FoodItem table write throughput
-    Type: String
-    Default: '5'
-  CompanyHotHoldingTableReadThroughput:
-    Description: The HotHolding table write throughput
-    Type: String
-    Default: '5'
-  CompanyHotHoldingTableWriteThroughput:
-    Description: The HotHolding table write throughput
-    Type: String
-    Default: '5'
-  CompanyFastCoolingTableReadThroughput:
-    Description: The FastCooling table write throughput
-    Type: String
-    Default: '5'
-  CompanyFastCoolingTableWriteThroughput:
-    Description: The FastCooling table write throughput
-    Type: String
-    Default: '5'
-  CompanySupplierTableReadThroughput:
-    Description: The Supplier table write throughput
-    Type: String
-    Default: '5'
-  CompanySupplierTableWriteThroughput:
-    Description: The Supplier table write throughput
-    Type: String
-    Default: '5'
-  CompanyUserMedicalLogTableReadThroughput:
-    Description: The User Medical Log table write throughput
-    Type: String
-    Default: '5'
-  CompanyUserMedicalLogTableWriteThroughput:
-    Description: The User Medical Log table write throughput
-    Type: String
-    Default: '5'
-  CompanyUserTrainingLogTableReadThroughput:
-    Description: The User Training Log table write throughput
-    Type: String
-    Default: '5'
-  CompanyUserTrainingLogTableWriteThroughput:
-    Description: The User Training Log table write throughput
-    Type: String
-    Default: '5'
-  CompanyCleaningTableReadThroughput:
-    Description: The User Cleaning table read throughput
-    Type: String
-    Default: '5'
-  CompanyCleaningTableWriteThroughput:
-    Description: The User Cleaning table write throughput
-    Type: String
-    Default: '5'
-  CompanyCleaningTaskTableReadThroughput:
-    Description: The User CleaningTask table read throughput
-    Type: String
-    Default: '5'
-  CompanyCleaningTaskTableWriteThroughput:
-    Description: The User CleaningTask table write throughput
-    Type: String
-    Default: '5'
-  CompanyCleaningLogTableReadThroughput:
-    Description: The User CleaningLog table read throughput
-    Type: String
-    Default: '5'
-  CompanyCleaningLogTableWriteThroughput:
-    Description: The User CleaningLog table write throughput
-    Type: String
-    Default: '5'
-  CompanyOilTableReadThroughput:
-    Description: The User Oil table read throughput
-    Type: String
-    Default: '5'
-  CompanyOilTableWriteThroughput:
-    Description: The User Oil table write throughput
-    Type: String
-    Default: '5'
-  CompanyOilTaskTableReadThroughput:
-    Description: The User OilTask table read throughput
-    Type: String
-    Default: '5'
-  CompanyOilTaskTableWriteThroughput:
-    Description: The User OilTask table write throughput
-    Type: String
-    Default: '5'
-  CompanyOilLogTableReadThroughput:
-    Description: The User OilLog table read throughput
-    Type: String
-    Default: '5'
-  CompanyOilLogTableWriteThroughput:
-    Description: The User OilLog table write throughput
-    Type: String
-    Default: '5'
-  CompanyReportTableReadThroughput:
-    Description: The User Report table read throughput
-    Type: String
-    Default: '5'
-  CompanyReportTableWriteThroughput:
-    Description: The User Report table write throughput
-    Type: String
-    Default: '5'
-  CompanyPestTableReadThroughput:
-    Description: The User Pest table read throughput
-    Type: String
-    Default: '5'
-  CompanyPestTableWriteThroughput:
-    Description: The User Pest table write throughput
-    Type: String
-    Default: '5'
-  CompanySafetyTableReadThroughput:
-    Description: The User Safety table read throughput
-    Type: String
-    Default: '5'
-  CompanySafetyTableWriteThroughput:
-    Description: The User Safety table write throughput
-    Type: String
-    Default: '5'
-  CompanySafetyTaskTableReadThroughput:
-    Description: The User Safety Task table read throughput
-    Type: String
-    Default: '5'
-  CompanySafetyTaskTableWriteThroughput:
-    Description: The User Safety Task table write throughput
-    Type: String
-    Default: '5'
-  CompanySafetyLogTableReadThroughput:
-    Description: The User Safety Log table read throughput
-    Type: String
-    Default: '5'
-  CompanySafetyLogTableWriteThroughput:
-    Description: The User Safety Log table write throughput
-    Type: String
-    Default: '5'
-  CompanySafetyCategoryTableReadThroughput:
-    Description: The User Safety Category table read throughput
-    Type: String
-    Default: '5'
-  CompanySafetyCategoryTableWriteThroughput:
-    Description: The User Safety Category table write throughput
+  CompanyTableWriteThroughput:
+    Description: General Write Throughput
     Type: String
     Default: '5'
   CompanyContactEmail:
@@ -800,6 +616,157 @@ Resources:
     Properties:
       RetentionInDays: 1
       LogGroupName: !Join ["", ["/aws/lambda/", !Ref FoodItemLambda]]
+  CheckListLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}CheckListLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  CheckListLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}CheckListLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}CheckListLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}CheckListLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CheckListTaskTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CheckListTaskTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CheckListCategoryTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}CheckListCategoryTable/*
+      Roles:
+      - !Ref CheckListLambdaRole
+  CheckListLambda:
+    DependsOn:
+    - CheckListLambdaRole
+    - CheckListLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company CheckList Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          CHECKLIST_TASK_TABLE : !Ref CompanyCheckListTaskTable
+          CHECKLIST_CATEGORY_TABLE : !Ref CompanyCheckListCategoryTable
+      FunctionName: !Sub "${CompanyName}CheckListLambda"
+      Handler: src/CheckListLambda/main.handler
+      Role: !GetAtt CheckListLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  CheckListLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CheckListLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  CheckListLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "CheckListLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref CheckListLambda]]
+  ServicesLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}ServicesLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  ServicesLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${CompanyName}ServicesLambdaPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ServicesLambda
+          - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CompanyName}ServicesLambda*:*
+        - Effect: Allow
+          Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          Resource:
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}ServicesLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}ServicesLogTable/*
+      Roles:
+      - !Ref ServicesLambdaRole
+  ServicesLambda:
+    DependsOn:
+    - ServicesLambdaRole
+    - ServicesLambdaPolicy
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: somethingsomething-company-bucket
+        S3Key: helloWorld.zip
+      Description: Company Services Lambda
+      Environment:
+        Variables:
+          NODE_ENV: production
+          SERVICE_LOG_TABLE  : !Ref CompanyServicesLogTable
+      FunctionName: !Sub "${CompanyName}ServicesLambda"
+      Handler: src/ServicesLambda/main.handler
+      Role: !GetAtt ServicesLambdaRole.Arn
+      Runtime: nodejs8.10
+      Timeout: 30
+  ServicesLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ServicesLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+  ServicesLambdaFunctionLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    DependsOn: "ServicesLambda"
+    Properties:
+      RetentionInDays: 1
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref ServicesLambda]]
   HotHoldingLambda:
     DependsOn:
     - HotHoldingLambdaRole
@@ -1451,6 +1418,30 @@ Resources:
       ParentId: !Ref FoodItemResource
       RestApiId: !Ref CompanyRootApi
       PathPart: "{proxy+}"
+  CheckListResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: checklist
+  CheckListResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref CheckListResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
+  ServicesResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyRootApi.RootResourceId
+      RestApiId: !Ref CompanyRootApi
+      PathPart: services
+  ServicesResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ServicesResource
+      RestApiId: !Ref CompanyRootApi
+      PathPart: "{proxy+}"
   UserResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -1669,6 +1660,38 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FoodItemLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  CheckListMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref CheckListResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CheckListLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  ServicesMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref ServicesResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ServicesLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
   UserMethods:
@@ -1981,6 +2004,62 @@ Resources:
       AuthorizationType: NONE
       RestApiId: !Ref CompanyRootApi
       ResourceId: !Ref FoodItemResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  CheckListOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref CheckListResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+  ServicesOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyRootApi
+      ResourceId: !Ref ServicesResourceProxy
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
@@ -2467,6 +2546,14 @@ Resources:
     - SafetyMethods
     - SafetyMethods
     - SafetyResourceProxy
+    - CheckListResource
+    - CheckListMethods
+    - CheckListMethods
+    - CheckListResourceProxy
+    - ServicesResource
+    - ServicesMethods
+    - ServicesMethods
+    - ServicesResourceProxy
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyRootApi
@@ -2629,8 +2716,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFridgeItemTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFridgeItemTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
       LocalSecondaryIndexes:
       - IndexName: "byName"
         KeySchema:
@@ -2655,8 +2742,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFridgeTaskTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFridgeTaskTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyFridgeLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2672,8 +2759,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFridgeLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFridgeLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyFreezerItemTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2691,8 +2778,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFreezerItemTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFreezerItemTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
       LocalSecondaryIndexes:
       - IndexName: "byName"
         KeySchema:
@@ -2717,8 +2804,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFreezerTaskTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFreezerTaskTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyFreezerLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2734,8 +2821,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFreezerLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFreezerLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyFoodItemTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2753,8 +2840,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFoodItemTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFoodItemTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
       LocalSecondaryIndexes:
       - IndexName: "byExpiryDate"
         KeySchema:
@@ -2779,8 +2866,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyHotHoldingTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyHotHoldingTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyFastCoolingTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2796,8 +2883,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyFastCoolingTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyFastCoolingTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanySupplierTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2813,8 +2900,8 @@ Resources:
       - AttributeName: "name"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanySupplierTableReadThroughput
-        WriteCapacityUnits: !Ref CompanySupplierTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyUserTrainingLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2830,8 +2917,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyUserTrainingLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyUserTrainingLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyUserMedicalLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2847,8 +2934,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyUserMedicalLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyUserMedicalLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyCleaningTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2864,8 +2951,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyCleaningTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyCleaningTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyCleaningTaskTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2881,8 +2968,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyCleaningTaskTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyCleaningTaskTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyCleaningLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2898,8 +2985,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyCleaningLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyCleaningLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyOilTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2915,8 +3002,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyOilTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyOilTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyOilTaskTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2932,8 +3019,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyOilTaskTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyOilTaskTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyOilLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2949,8 +3036,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyOilLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyOilLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyReportTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2966,8 +3053,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyReportTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyReportTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanyPestTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -2983,8 +3070,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanyPestTableReadThroughput
-        WriteCapacityUnits: !Ref CompanyPestTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanySafetyTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -3000,8 +3087,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanySafetyTableReadThroughput
-        WriteCapacityUnits: !Ref CompanySafetyTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanySafetyTaskTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -3017,8 +3104,8 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanySafetyTaskTableReadThroughput
-        WriteCapacityUnits: !Ref CompanySafetyTaskTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanySafetyLogTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -3034,8 +3121,8 @@ Resources:
       - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanySafetyLogTableReadThroughput
-        WriteCapacityUnits: !Ref CompanySafetyLogTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
   CompanySafetyCategoryTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
@@ -3051,5 +3138,56 @@ Resources:
       - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref CompanySafetyCategoryTableReadThroughput
-        WriteCapacityUnits: !Ref CompanySafetyCategoryTableWriteThroughput
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
+  CompanyCheckListTaskTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}CheckListTaskTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
+  CompanyCheckListCategoryTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}CheckListCategoryTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
+  CompanyServicesLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}ServicesLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "createdAt"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanyTableReadThroughput
+        WriteCapacityUnits: !Ref CompanyTableWriteThroughput
