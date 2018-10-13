@@ -45,14 +45,14 @@ class ReportController {
     try {
       Validator.validateCreateRequest(body);
       const {
-        user, title, file, signature, comments,
+        user, type, file, signature, comments,
       } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
         user,
-        title,
+        type,
         file,
         signature,
         comments,

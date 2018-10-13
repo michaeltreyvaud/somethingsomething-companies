@@ -8,7 +8,7 @@ const schemas = {
     firstName: Joi.string().required().error(new Error('Invalid firstName supplied to user')),
     lastName: Joi.string().required().error(new Error('Invalid lastName supplied to user')),
   }),
-  TITLE: Joi.string().required().error(new Error('Invalid title supplied')),
+  TYPE: Joi.string().required().error(new Error('Invalid type supplied')),
   FILE: Joi.string().uri().required().error(new Error('Invalid file supplied')),
   SIGNATURE: Joi.string().uri().required().error(new Error('Invalid signature supplied')),
   COMMENTS: Joi.string().error(new Error('Invalid comments supplied')),
@@ -40,7 +40,7 @@ const ReportValidator = {
   validateCreateRequest(params) {
     const schema = Joi.object().keys({
       user: schemas.USER,
-      title: schemas.TITLE,
+      type: schemas.TYPE,
       file: schemas.FILE,
       signature: schemas.SIGNATURE,
       comments: schemas.COMMENTS,
@@ -50,7 +50,7 @@ const ReportValidator = {
   validateUpdateRequest(params) {
     const schema = Joi.object().keys({
       user: schemas.USER,
-      title: schemas.TITLE,
+      type: schemas.TYPE,
       file: schemas.FILE,
       signature: schemas.SIGNATURE,
       comments: schemas.COMMENTS,
