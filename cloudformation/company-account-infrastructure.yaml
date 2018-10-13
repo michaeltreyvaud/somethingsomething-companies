@@ -174,6 +174,30 @@ Parameters:
     Description: The User Safety table write throughput
     Type: String
     Default: '5'
+  CompanySafetyTaskTableReadThroughput:
+    Description: The User Safety Task table read throughput
+    Type: String
+    Default: '5'
+  CompanySafetyTaskTableWriteThroughput:
+    Description: The User Safety Task table write throughput
+    Type: String
+    Default: '5'
+  CompanySafetyLogTableReadThroughput:
+    Description: The User Safety Log table read throughput
+    Type: String
+    Default: '5'
+  CompanySafetyLogTableWriteThroughput:
+    Description: The User Safety Log table write throughput
+    Type: String
+    Default: '5'
+  CompanySafetyCategoryTableReadThroughput:
+    Description: The User Safety Category table read throughput
+    Type: String
+    Default: '5'
+  CompanySafetyCategoryTableWriteThroughput:
+    Description: The User Safety Category table write throughput
+    Type: String
+    Default: '5'
   CompanyContactEmail:
     Type: String
   CompanyContactFirstName:
@@ -560,6 +584,12 @@ Resources:
           Resource:
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyTable
           - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyTaskTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyTaskTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyCategoryTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyCategoryTable/*
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyLogTable
+          - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompanyName}SafetyLogTable/*
       Roles:
       - !Ref SafetyLambdaRole
   FastCoolingLambdaRole:
@@ -921,6 +951,9 @@ Resources:
           NODE_ENV: production
           COMPANY_NAME: !Ref CompanyName
           SAFETY_TABLE: !Ref CompanySafetyTable
+          SAFETY_TASK_TABLE: !Ref CompanySafetyTaskTable
+          SAFETY_LOG_TABLE: !Ref CompanySafetyLogTable
+          SAFETY_CATEGORY_TABLE: !Ref CompanySafetyCategoryTable
       FunctionName: !Sub "${CompanyName}SafetyLambda"
       Handler: src/SafetyLambda/main.handler
       Role: !GetAtt SafetyLambdaRole.Arn
@@ -2969,3 +3002,54 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanySafetyTableReadThroughput
         WriteCapacityUnits: !Ref CompanySafetyTableWriteThroughput
+  CompanySafetyTaskTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}SafetyTaskTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanySafetyTaskTableReadThroughput
+        WriteCapacityUnits: !Ref CompanySafetyTaskTableWriteThroughput
+  CompanySafetyLogTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}SafetyLogTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "createdAt"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanySafetyLogTableReadThroughput
+        WriteCapacityUnits: !Ref CompanySafetyLogTableWriteThroughput
+  CompanySafetyCategoryTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub ${CompanyName}SafetyCategoryTable
+      AttributeDefinitions:
+      - AttributeName: "company"
+        AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "company"
+        KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref CompanySafetyCategoryTableReadThroughput
+        WriteCapacityUnits: !Ref CompanySafetyCategoryTableWriteThroughput
