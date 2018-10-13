@@ -9,6 +9,9 @@ const DocumentClient = new AWS.DynamoDB.DocumentClient();
 const createEnvironment = () => ({
   COMPANY_NAME: process.env.COMPANY_NAME,
   SAFETY_TABLE: process.env.SAFETY_TABLE,
+  SAFETY_TASK_TABLE: process.env.SAFETY_TASK_TABLE,
+  SAFETY_LOG_TABLE: process.env.SAFETY_LOG_TABLE,
+  SAFETY_CATEGORY_TABLE: process.env.SAFETY_CATEGORY_TABLE,
 });
 const createDependencies = () => ({
   Logger,
