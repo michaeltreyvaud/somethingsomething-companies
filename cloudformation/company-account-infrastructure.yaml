@@ -3031,7 +3031,7 @@ Resources:
       KeySchema:
       - AttributeName: "company"
         KeyType: "HASH"
-      - AttributeName: "id"
+      - AttributeName: "createdAt"
         KeyType: "RANGE"
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanySafetyLogTableReadThroughput
