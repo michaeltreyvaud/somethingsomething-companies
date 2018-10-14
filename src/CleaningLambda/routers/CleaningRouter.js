@@ -1,6 +1,6 @@
 const Express = require('express');
 // TO DO
-// const FreezerItemController = require('../controllers/cleaning/FreezerItemController');
+const CleaningItemController = require('../controllers/CleaningItemController');
 const CleaningLogController = require('../controllers/CleaningLogController');
 const CleaningTaskController = require('../controllers/CleaningTaskController');
 
@@ -10,9 +10,9 @@ const CleaningRouter = (dependencies, environment) => {
   const {
     COMPANY_NAME, CLEANING_TABLE, CLEANING_LOG_TABLE, CLEANING_TASK_TABLE,
   } = environment;
-  // const freezerItemController = new FreezerItemController(
-  //   Logger, DocumentClient, COMPANY_NAME, CLEANING_TABLE,
-  // );
+  const cleaningItemController = new CleaningItemController(
+    Logger, DocumentClient, COMPANY_NAME, CLEANING_TABLE,
+  );
   const cleaningLogController = new CleaningLogController(
     Logger, DocumentClient, COMPANY_NAME, CLEANING_LOG_TABLE,
   );
@@ -20,11 +20,11 @@ const CleaningRouter = (dependencies, environment) => {
     Logger, DocumentClient, COMPANY_NAME, CLEANING_TASK_TABLE,
   );
 
-  // router.post('/item/describe', freezerItemController.describe);
-  // router.post('/item/create', freezerItemController.create);
-  // router.post('/item/update', freezerItemController.update);
-  // router.post('/item/delete', freezerItemController.delete);
-  // router.post('/item/list', freezerItemController.list);
+  router.post('/item/describe', cleaningItemController.describe);
+  router.post('/item/create', cleaningItemController.create);
+  router.post('/item/update', cleaningItemController.update);
+  router.post('/item/delete', cleaningItemController.delete);
+  router.post('/item/list', cleaningItemController.list);
 
   router.post('/log/describe', cleaningLogController.describe);
   router.post('/log/create', cleaningLogController.create);

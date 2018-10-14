@@ -91,6 +91,7 @@ class CheckListTaskController {
       };
       const currentData = await DocumentClient.get(getParams).promise();
       const { Item: oldItem } = currentData;
+      delete oldItem.areaItem;
       const Item = {
         ...oldItem,
         ...body,

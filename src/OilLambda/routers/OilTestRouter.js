@@ -1,6 +1,6 @@
 const Express = require('express');
 // TO DO
-// const FreezerItemController = require('../controllers/oiltest/FreezerItemController');
+const OilItemController = require('../controllers/OilItemController');
 const OilLogController = require('../controllers/OilLogController');
 const OilTaskController = require('../controllers/OilTaskController');
 
@@ -10,9 +10,9 @@ const OilTestRouter = (dependencies, environment) => {
   const {
     COMPANY_NAME, OIL_TABLE, OIL_TASK_TABLE, OIL_LOG_TABLE,
   } = environment;
-  // const freezerItemController = new FreezerItemController(
-  //   Logger, DocumentClient, COMPANY_NAME, OILTEST_TABLE,
-  // );
+  const oilItemController = new OilItemController(
+    Logger, DocumentClient, COMPANY_NAME, OIL_TABLE,
+  );
   const oilLogController = new OilLogController(
     Logger, DocumentClient, COMPANY_NAME, OIL_LOG_TABLE,
   );
@@ -20,11 +20,11 @@ const OilTestRouter = (dependencies, environment) => {
     Logger, DocumentClient, COMPANY_NAME, OIL_TASK_TABLE,
   );
 
-  // router.post('/item/describe', freezerItemController.describe);
-  // router.post('/item/create', freezerItemController.create);
-  // router.post('/item/update', freezerItemController.update);
-  // router.post('/item/delete', freezerItemController.delete);
-  // router.post('/item/list', freezerItemController.list);
+  router.post('/item/describe', oilItemController.describe);
+  router.post('/item/create', oilItemController.create);
+  router.post('/item/update', oilItemController.update);
+  router.post('/item/delete', oilItemController.delete);
+  router.post('/item/list', oilItemController.list);
 
   router.post('/log/describe', oilLogController.describe);
   router.post('/log/create', oilLogController.create);
