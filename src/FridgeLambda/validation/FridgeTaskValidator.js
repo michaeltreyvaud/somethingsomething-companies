@@ -14,7 +14,7 @@ const schemas = {
     lastName: Joi.string().required().error(new Error('Invalid last name supplied')),
   },
   DAY: Joi.string().required().error(new Error('Invalid day supplied')),
-  TIME: Joi.number().required().error(new Error('Invalid expiry time supplied')),
+  TIME: Joi.string().required().error(new Error('Invalid time supplied')),
   DESCRIPTION: Joi.string().required().error(new Error('Invalid description supplied')),
   // TO DO - Update for actual schema
   FROM: Joi.object().keys({
