@@ -673,6 +673,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
+          COMPANY_NAME: !Ref CompanyName
           CHECKLIST_TASK_TABLE : !Ref CompanyCheckListTaskTable
           CHECKLIST_CATEGORY_TABLE : !Ref CompanyCheckListCategoryTable
       FunctionName: !Sub "${CompanyName}CheckListLambda"
@@ -748,6 +749,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
+          COMPANY_NAME: !Ref CompanyName
           SERVICE_LOG_TABLE  : !Ref CompanyServicesLogTable
       FunctionName: !Sub "${CompanyName}ServicesLambda"
       Handler: src/ServicesLambda/main.handler
