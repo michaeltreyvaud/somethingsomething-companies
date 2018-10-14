@@ -3149,12 +3149,12 @@ Resources:
       AttributeDefinitions:
       - AttributeName: "company"
         AttributeType: "S"
-      - AttributeName: "createdAt"
-        AttributeType: "N"
+      - AttributeName: "id"
+        AttributeType: "S"
       KeySchema:
       - AttributeName: "company"
         KeyType: "HASH"
-      - AttributeName: "createdAt"
+      - AttributeName: "id"
         KeyType: "RANGE"
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyTableReadThroughput
