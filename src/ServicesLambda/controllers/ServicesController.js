@@ -1,13 +1,13 @@
 const shortid = require('shortid');
-const SafetyTaskValidator = require('../validation/SafetyTaskValidator');
+const ServicesValidator = require('../validation/ServicesValidator');
 
-class SafetyTaskController {
+class ServicesController {
   constructor(Logger, DocumentClient, CompanyName, TableName) {
     this.Logger = Logger;
     this.CompanyName = CompanyName;
     this.TableName = TableName;
     this.DocumentClient = DocumentClient;
-    this.Validator = SafetyTaskValidator;
+    this.Validator = ServicesValidator;
     this.describe = this.describe.bind(this);
     this.create = this.create.bind(this);
     this.update = this.update.bind(this);
@@ -23,10 +23,10 @@ class SafetyTaskController {
     Logger.info('describe');
     try {
       Validator.validateDescribeRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
@@ -45,21 +45,18 @@ class SafetyTaskController {
     try {
       Validator.validateCreateRequest(body);
       const {
-        team, user, category, taskName, description, startDate, time, isRepeatable, repeat,
+        foodItem, temperature, user, image, comments, signature,
       } = body;
       const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
-        team,
+        foodItem,
+        temperature,
         user,
-        category,
-        taskName,
-        description,
-        startDate,
-        time,
-        isRepeatable,
-        repeat,
+        image,
+        comments,
+        signature,
         createdAt: date,
         updatedAt: date,
       };
@@ -83,11 +80,11 @@ class SafetyTaskController {
     Logger.info('update');
     try {
       Validator.validateUpdateRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const date = Date.now();
       const getParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       const currentData = await DocumentClient.get(getParams).promise();
       const { Item: oldItem } = currentData;
@@ -113,10 +110,10 @@ class SafetyTaskController {
     Logger.info('delete');
     try {
       Validator.validateDeleteRequest(body);
-      const { id } = body;
+      const { createdAt } = body;
       const dbParams = {
         TableName,
-        Key: { company: CompanyName, id },
+        Key: { company: CompanyName, createdAt },
       };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});
@@ -182,4 +179,4 @@ class SafetyTaskController {
   }
 }
 
-module.exports = SafetyTaskController;
+module.exports = ServicesController;

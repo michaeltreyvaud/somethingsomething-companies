@@ -45,8 +45,9 @@ class CheckListTaskController {
     try {
       Validator.validateCreateRequest(body);
       const {
-        team, user, category, taskName, description, date, time, isRepeatable, repeat,
+        team, user, category, taskName, description, startDate, time, isRepeatable, repeat,
       } = body;
+      const date = Date.now();
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
@@ -55,7 +56,7 @@ class CheckListTaskController {
         category,
         taskName,
         description,
-        date,
+        startDate,
         time,
         isRepeatable,
         repeat,
@@ -84,39 +85,20 @@ class CheckListTaskController {
       Validator.validateUpdateRequest(body);
       const { id } = body;
       const date = Date.now();
-      let updateExpression = 'set ';
-      const expressionAttributeNames = {
-        '#updatedAt': 'updatedAt',
-        '#company': 'company',
-        '#id': 'id',
-      };
-      const expressionAttributeValues = {
-        ':updatedAt': date,
-        ':company': CompanyName,
-      };
-      updateExpression = `${updateExpression} #updatedAt = :updatedAt`;
-      delete body.id;
-      delete body.company;
-      delete body.createdAt;
-      delete body.updatedAt;
-      Object.keys(body).forEach((key) => {
-        const attr = `#${key}`;
-        const val = `:${key}`;
-        updateExpression = `${updateExpression}, ${attr} = ${val}`;
-        expressionAttributeNames[attr] = key;
-        expressionAttributeValues[val] = body[key];
-      });
-      const dbParams = {
+      const getParams = {
         TableName,
         Key: { company: CompanyName, id },
-        UpdateExpression: updateExpression,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
-        ConditionExpression: 'attribute_exists(#id) AND #company = :company',
-        ReturnValues: 'ALL_NEW',
       };
-      const item = await DocumentClient.update(dbParams).promise();
-      return res.status(200).json(item.Attributes || {});
+      const currentData = await DocumentClient.get(getParams).promise();
+      const { Item: oldItem } = currentData;
+      const Item = {
+        ...oldItem,
+        ...body,
+        updatedAt: date,
+      };
+      const putParams = { Item, TableName };
+      await DocumentClient.put(putParams).promise();
+      return res.status(200).json(Item);
     } catch (_err) {
       return next(_err);
     }

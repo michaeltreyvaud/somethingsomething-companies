@@ -28,7 +28,7 @@ const schemas = {
   ORDER: Joi.string().error(new Error('Invalid order supplied')),
 };
 
-const HotHoldingValidator = {
+const ServicesValidator = {
   validate(params, schema) {
     const validationResult = Joi.validate(params, schema);
     if (validationResult.error) {
@@ -80,4 +80,4 @@ const HotHoldingValidator = {
   },
 };
 
-module.exports = HotHoldingValidator;
+module.exports = ServicesValidator;
