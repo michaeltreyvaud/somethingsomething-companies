@@ -4,7 +4,7 @@ const SSError = require('../../util/SSError');
 const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
   FOOD_ITEM: Joi.object().keys({
-    id: Joi.string().required().error(new Error('Invalid id supplied to foodItem')),
+    id: Joi.number().required().error(new Error('Invalid id supplied to foodItem')),
     displayName: Joi.string().required().error(new Error('Invalid displayName supplied to foodItem')),
   }),
   TEMPERATURE: Joi.number().required().error(new Error('Invalid temperature supplied')),
