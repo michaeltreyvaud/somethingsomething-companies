@@ -27,8 +27,8 @@ const schemas = {
     type: Joi.string().error(new Error('Invalid repeat type supplied')),
     interval: Joi.number().error(new Error('Invalid interval supplied')),
     day: Joi.alternatives()
-      .when('type', {is: 'WEEKLY', then: Joi.string().error(new Error('Invalid repeat day supplied'))})
-      .when('type', {is: 'MONTHLY', then: Joi.number().error(new Error('Invalid repeat day supplied'))})
+      .when('type', { is: 'WEEKLY', then: Joi.string().error(new Error('Invalid repeat day supplied')) })
+      .when('type', { is: 'MONTHLY', then: Joi.number().error(new Error('Invalid repeat day supplied')) }),
   },
   // TO DO - Update for actual schema
   FROM: Joi.object().keys({
