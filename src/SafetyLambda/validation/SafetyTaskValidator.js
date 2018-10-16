@@ -3,10 +3,6 @@ const SSError = require('../../util/SSError');
 
 const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  Safety_ITEM: {
-    id: Joi.string().required().error(new Error('Invalid Safety id supplied')),
-    displayName: Joi.string().required().error(new Error('Invalid name supplied')),
-  },
   TEAM: Joi.string().required().error(new Error('Invalid team supplied')),
   USER: {
     email: Joi.string().email().error(new Error('Invalid email supplied')),
@@ -27,8 +23,8 @@ const schemas = {
     type: Joi.string().error(new Error('Invalid repeat type supplied')),
     interval: Joi.number().error(new Error('Invalid interval supplied')),
     day: Joi.alternatives()
-      .when('type', {is: 'WEEKLY', then: Joi.string().error(new Error('Invalid repeat day supplied'))})
-      .when('type', {is: 'MONTHLY', then: Joi.number().error(new Error('Invalid repeat day supplied'))})
+      .when('type', { is: 'WEEKLY', then: Joi.string().error(new Error('Invalid repeat day supplied')) })
+      .when('type', { is: 'MONTHLY', then: Joi.number().error(new Error('Invalid repeat day supplied')) }),
   },
   // TO DO - Update for actual schema
   FROM: Joi.object().keys({
