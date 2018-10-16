@@ -3,10 +3,6 @@ const SSError = require('../../util/SSError');
 
 const schemas = {
   ID: Joi.string().required().error(new Error('Invalid id supplied')),
-  Safety_ITEM: {
-    id: Joi.string().required().error(new Error('Invalid Safety id supplied')),
-    displayName: Joi.string().required().error(new Error('Invalid name supplied')),
-  },
   TEAM: Joi.string().required().error(new Error('Invalid team supplied')),
   USER: {
     email: Joi.string().email().error(new Error('Invalid email supplied')),
