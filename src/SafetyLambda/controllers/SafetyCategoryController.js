@@ -49,7 +49,7 @@ class SafetyItemController {
       const Item = {
         company: CompanyName,
         id: shortid.generate(),
-        name,        
+        name,
         createdAt: date,
         updatedAt: date,
       };

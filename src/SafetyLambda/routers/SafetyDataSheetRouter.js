@@ -6,7 +6,9 @@ const SafetyCategoryController = require('../controllers/SafetyCategoryControlle
 
 const SafetyDatasheetRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
-  const { COMPANY_NAME, SAFETY_TABLE, SAFETY_TASK_TABLE, SAFETY_LOG_TABLE, SAFETY_CATEGORY_TABLE } = environment;
+  const {
+    COMPANY_NAME, SAFETY_TABLE, SAFETY_TASK_TABLE, SAFETY_LOG_TABLE, SAFETY_CATEGORY_TABLE,
+  } = environment;
   const { Logger, DocumentClient } = dependencies;
   const safetyController = new SafetyDatasheetController(
     Logger, DocumentClient,
