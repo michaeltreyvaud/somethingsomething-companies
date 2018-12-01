@@ -17,18 +17,14 @@ class ItemController {
   }
 
   async describe(req, res, next) {
-    const {
-      Logger, Validator, DocumentClient, TableName, CompanyName,
-    } = this;
-    const { body } = req;
-    Logger.info('describe');
+    const { Logger, DocumentClient, TableName } = this;
+    const { body, params } = req;
+    const { type } = params;
+    Logger.info(`describe ${type}`);
     try {
-      Validator.validateDescribeRequest(body);
+      //Validator.validateDescribeRequest(body);
       const { createdAt } = body;
-      const dbParams = {
-        TableName,
-        Key: { company: CompanyName, createdAt },
-      };
+      const dbParams = { TableName, Key: { type, createdAt } };
       const response = await DocumentClient.get(dbParams).promise();
       return res.status(200).json(response.Item || {});
     } catch (_err) {
@@ -37,35 +33,22 @@ class ItemController {
   }
 
   async create(req, res, next) {
-    const {
-      Logger, Validator, DocumentClient,
-      TableName, CompanyName,
-    } = this;
-    const { body } = req;
-    Logger.info('create');
+    const { Logger, DocumentClient, TableName } = this;
+    const { body, params } = req;
+    const { type } = params;
+    Logger.info(`create ${type}`);
     try {
-      Validator.validateCreateRequest(body);
-      const {
-        foodItem, temperature, user, image, comments, signature,
-      } = body;
+      //  Validator.validateCreateRequest(body);
       const date = Date.now();
       const Item = {
-        company: CompanyName,
+        type,
         id: shortid.generate(),
-        foodItem,
-        temperature,
-        user,
-        image,
-        comments,
-        signature,
+        ...body,
         createdAt: date,
         updatedAt: date,
       };
-      const params = {
-        Item,
-        TableName,
-      };
-      await DocumentClient.put(params).promise();
+      const dbParams = { Item, TableName };
+      await DocumentClient.put(dbParams).promise();
       return res.status(200).json(Item);
     } catch (_err) {
       return next(_err);
@@ -73,27 +56,18 @@ class ItemController {
   }
 
   async update(req, res, next) {
-    const {
-      Logger, Validator, DocumentClient,
-      TableName, CompanyName,
-    } = this;
-    const { body } = req;
-    Logger.info('update');
+    const { Logger, DocumentClient, TableName } = this;
+    const { body, params } = req;
+    const { type } = params;
+    Logger.info(`update ${type}`);
     try {
-      Validator.validateUpdateRequest(body);
+      //Validator.validateUpdateRequest(body);
       const { createdAt } = body;
       const date = Date.now();
-      const getParams = {
-        TableName,
-        Key: { company: CompanyName, createdAt },
-      };
+      const getParams = { TableName, Key: { type, createdAt } };
       const currentData = await DocumentClient.get(getParams).promise();
       const { Item: oldItem } = currentData;
-      const Item = {
-        ...oldItem,
-        ...body,
-        updatedAt: date,
-      };
+      const Item = { ...oldItem, ...body, updatedAt: date };
       const putParams = { Item, TableName };
       await DocumentClient.put(putParams).promise();
       return res.status(200).json(Item);
@@ -103,19 +77,14 @@ class ItemController {
   }
 
   async delete(req, res, next) {
-    const {
-      Logger, Validator, DocumentClient,
-      TableName, CompanyName,
-    } = this;
-    const { body } = req;
-    Logger.info('delete');
+    const { Logger, DocumentClient, TableName } = this;
+    const { body, params } = req;
+    const { type } = params;
+    Logger.info(`delete ${type}`);
     try {
-      Validator.validateDeleteRequest(body);
+      //Validator.validateDeleteRequest(body);
       const { createdAt } = body;
-      const dbParams = {
-        TableName,
-        Key: { company: CompanyName, createdAt },
-      };
+      const dbParams = { TableName, Key: { type, createdAt } };
       await DocumentClient.delete(dbParams).promise();
       return res.status(200).json({});
     } catch (_err) {
@@ -127,7 +96,7 @@ class ItemController {
     const { Logger, DocumentClient, TableName } = this;
     const { body, params } = req;
     const { type } = params;
-    Logger.info('list');
+    Logger.info(`list ${type}`);
     try {
       //  Validator.validateListRequest(body);
       const { from, limit, order } = body;

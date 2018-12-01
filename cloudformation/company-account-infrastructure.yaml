@@ -41,6 +41,9 @@ Parameters:
     Type: String
     Default: ""
 Resources:
+  ###
+  #   SSM
+  ###
   CompanyProfileInformationSSM:
     Type: "AWS::SSM::Parameter"
     Properties:
@@ -62,9 +65,15 @@ Resources:
           "address3": "${CompanyAddressLine3}",
           "logo": "${CompanyLogoUrl}"
         }
+  ###
+  #   S3
+  ###
   CompanyBucket:
     Type: "AWS::S3::Bucket"
     DeletionPolicy: Retain
+  ###
+  #   Lambda Roles
+  ###
   AuthLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -78,6 +87,22 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
+  CompanyResourceLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${CompanyName}CompanyResourceLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+  ###
+  #   Lambda Policies
+  ###
   AuthLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
@@ -112,19 +137,6 @@ Resources:
           - "*"
       Roles:
       - !Ref AuthLambdaRole
-  CompanyResourceLambdaRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub "${CompanyName}CompanyResourceLambdaRole"
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
   CompanyResourceLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
@@ -164,8 +176,16 @@ Resources:
           - ssm:PutParameter
           Resource:
           - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${CompanyProfileInformationSSM}
+        # TODO: Fix
+        - Effect: Allow
+          Action:
+          - cognito-idp:*
+          Resource: "*"
       Roles:
       - !Ref CompanyResourceLambdaRole
+  ###
+  #   Lambdas
+  ###
   CompanyResourceLambda:
     DependsOn:
     - CompanyResourceLambdaRole
@@ -238,7 +258,6 @@ Resources:
     Properties:
       RetentionInDays: 1
       LogGroupName: !Join ["", ["/aws/lambda/", !Ref AuthLambda]]
-  
   ###
   #   ApiGateway
   ###
@@ -247,6 +266,9 @@ Resources:
     Properties:
       Name: !Sub "${CompanyName}Api"
       Description: Api Gateway for a specific Company
+  ###
+  #   ApiGateway Resources
+  ###
   AuthResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -283,12 +305,52 @@ Resources:
       ParentId: !GetAtt CompanyApiGateway.RootResourceId
       RestApiId: !Ref CompanyApiGateway
       PathPart: item
+  ProfileResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyApiGateway.RootResourceId
+      RestApiId: !Ref CompanyApiGateway
+      PathPart: profile
+  ###
+  #   ApiGateway Resource Proxy
+  ###
+  AuthResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref AuthResource
+      RestApiId: !Ref CompanyApiGateway
+      PathPart: "{proxy+}"
   ItemResourceProxy:
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !Ref ItemResource
       RestApiId: !Ref CompanyApiGateway
       PathPart: "{proxy+}"
+  ProfileResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ProfileResource
+      RestApiId: !Ref CompanyApiGateway
+      PathPart: "{proxy+}"
+  ###
+  #   ApiGateway Methods
+  ###
+  AuthMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyApiGateway
+      ResourceId: !Ref AuthResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
   AuthLoginMethods:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -365,6 +427,25 @@ Resources:
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyResourceLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
+  ProfileMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyApiGateway
+      ResourceId: !Ref ProfileResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyResourceLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  ###
+  #   ApiGateway Options
+  ###
   AuthLoginOptions:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -505,28 +586,34 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
-  AuthResourceProxy:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId: !Ref AuthResource
-      RestApiId: !Ref CompanyApiGateway
-      PathPart: "{proxy+}"
-  AuthMethods:
+  ProfileOptions:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: NONE
       RestApiId: !Ref CompanyApiGateway
-      ResourceId: !Ref AuthResourceProxy
-      HttpMethod: POST
-      AuthorizationType: "COGNITO_USER_POOLS"
-      AuthorizerId: !Ref ApiGatewayAuthorizer
-      MethodResponses:
-      - StatusCode: '200'
+      ResourceId: !Ref ProfileResourceProxy
+      HttpMethod: OPTIONS
       Integration:
-        Type: AWS_PROXY
-        IntegrationHttpMethod: POST
-        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthLambda.Arn}/invocations
         IntegrationResponses:
         - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
   AuthOptions:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -555,6 +642,9 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
+  ###
+  #   ApiGateway Authorizer
+  ###
   ApiGatewayAuthorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties:
@@ -588,6 +678,9 @@ Resources:
     Properties:
       RestApiId: !Ref CompanyApiGateway
       StageName: dev
+  ###
+  #   Cognito UserPool
+  ###
   CompanyUserPool:
     Type: "AWS::Cognito::UserPool"
     Properties:
@@ -730,6 +823,9 @@ Resources:
       ResponseType: UNAUTHORIZED
       RestApiId: !Ref CompanyApiGateway
       StatusCode: "401"
+  ###
+  #   DynamoDB Tables
+  ###
   CompanyResourceItemTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
