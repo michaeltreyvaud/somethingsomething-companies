@@ -15,6 +15,7 @@ const createEnvironment = () => ({
   COMPANY_ITEM_TABLE: process.env.COMPANY_ITEM_TABLE,
   COMPANY_TASK_TABLE: process.env.COMPANY_TASK_TABLE,
   COMPANY_BUCKET: process.env.COMPANY_BUCKET,
+  COMPANY_SETTINGS_SSM_PARAM: process.env.COMPANY_SETTINGS_SSM_PARAM,
 });
 const createDependencies = () => ({
   Logger,
