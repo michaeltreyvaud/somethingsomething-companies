@@ -311,6 +311,12 @@ Resources:
       ParentId: !GetAtt CompanyApiGateway.RootResourceId
       RestApiId: !Ref CompanyApiGateway
       PathPart: profile
+  ManagementResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt CompanyApiGateway.RootResourceId
+      RestApiId: !Ref CompanyApiGateway
+      PathPart: management
   ###
   #   ApiGateway Resource Proxy
   ###
@@ -330,6 +336,12 @@ Resources:
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !Ref ProfileResource
+      RestApiId: !Ref CompanyApiGateway
+      PathPart: "{proxy+}"
+  ManagementResourceProxy:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ManagementResource
       RestApiId: !Ref CompanyApiGateway
       PathPart: "{proxy+}"
   ###
@@ -432,6 +444,22 @@ Resources:
     Properties:
       RestApiId: !Ref CompanyApiGateway
       ResourceId: !Ref ProfileResourceProxy
+      HttpMethod: POST
+      AuthorizationType: "COGNITO_USER_POOLS"
+      AuthorizerId: !Ref ApiGatewayAuthorizer
+      MethodResponses:
+      - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CompanyResourceLambda.Arn}/invocations
+        IntegrationResponses:
+        - StatusCode: '200'
+  ManagementMethods:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CompanyApiGateway
+      ResourceId: !Ref ManagementResourceProxy
       HttpMethod: POST
       AuthorizationType: "COGNITO_USER_POOLS"
       AuthorizerId: !Ref ApiGatewayAuthorizer
@@ -642,6 +670,34 @@ Resources:
           method.response.header.Access-Control-Allow-Headers: false
           method.response.header.Access-Control-Allow-Methods: false
           method.response.header.Access-Control-Allow-Origin: false
+  ManagementOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      RestApiId: !Ref CompanyApiGateway
+      ResourceId: !Ref ManagementResourceProxy
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS,PATCH,POST,PUT,DELETE'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          ResponseTemplates:
+            application/json: ''
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+      - StatusCode: '200'
+        ResponseModels:
+          application/json: Empty
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
   ###
   #   ApiGateway Authorizer
   ###
@@ -674,6 +730,15 @@ Resources:
     - ItemResource
     - ItemResourceProxy
     - ItemMethods
+    - ItemOptions
+    - ProfileResource
+    - ProfileResourceProxy
+    - ProfileMethods
+    - ProfileOptions
+    - ManagementResource
+    - ManagementResourceProxy
+    - ManagementMethods
+    - ManagementOptions
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref CompanyApiGateway

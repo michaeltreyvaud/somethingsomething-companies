@@ -3,6 +3,7 @@ const cors = require('cors');
 const BodyParser = require('body-parser');
 const ItemRouter = require('./routers/itemRouter');
 const ProfileRouter = require('./routers/profileRouter');
+const ManagementRouter = require('./routers/managementRouter');
 
 const App = (dependencies, environment) => {
   const app = Express();
@@ -14,6 +15,7 @@ const App = (dependencies, environment) => {
 
   app.use('/item', ItemRouter(dependencies, environment));
   app.use('/profile', ProfileRouter(dependencies, environment));
+  app.use('/management', ManagementRouter(dependencies, environment));
   app.all('*', (req, res) => res.status(404).json({ Error: 'Not Found' }));
   app.use(ErrorHandler);
   return app;

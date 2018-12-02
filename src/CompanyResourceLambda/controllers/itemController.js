@@ -105,12 +105,8 @@ class ItemController {
         ExclusiveStartKey: from,
         Limit: limit || 50,
         KeyConditionExpression: '#type = :type',
-        ExpressionAttributeNames: {
-          '#type': 'type',
-        },
-        ExpressionAttributeValues: {
-          ':type': type,
-        },
+        ExpressionAttributeNames: { '#type': 'type' },
+        ExpressionAttributeValues: { ':type': type },
         ScanIndexForward: false,
       };
       if (order) {
@@ -121,10 +117,7 @@ class ItemController {
         Logger.info('Query');
         return DocumentClient.query(_params).promise().then((_data) => {
           if (_options.paginated && _data.LastEvaluatedKey) {
-            const updateParams = {
-              ..._params,
-              ExclusiveStartKey: _data.LastEvaluatedKey,
-            };
+            const updateParams = { ..._params, ExclusiveStartKey: _data.LastEvaluatedKey };
             const newData = _data;
             return query(updateParams, _options)
               .then((nextPage) => {
