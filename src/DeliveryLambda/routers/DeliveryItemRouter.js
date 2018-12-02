@@ -1,11 +1,13 @@
 const Express = require('express');
-const DeliveryItemRouter = require('../controllers/DeliveryItemRouter');
+const DeliveryItemController = require('../controllers/DeliveryItemController');
 
 const DeliveryItemRouter = (dependencies, environment) => {
   const router = Express.Router({ mergeParams: true });
   const { COMPANY_NAME, DELIVERY_ITEM_TABLE } = environment;
   const { Logger, DocumentClient } = dependencies;
-  const controller = new DeliveryItemRouter(Logger, DocumentClient, COMPANY_NAME, DELIVERY_ITEM_TABLE);
+  const controller = new DeliveryItemController(
+    Logger, DocumentClient, COMPANY_NAME, DELIVERY_ITEM_TABLE,
+  );
 
   router.post('/describe', controller.describe);
   router.post('/update', controller.update);
