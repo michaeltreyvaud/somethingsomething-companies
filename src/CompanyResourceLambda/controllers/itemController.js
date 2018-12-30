@@ -9,11 +9,6 @@ class ItemController {
     this.TableName = TableName;
     this.DocumentClient = DocumentClient;
     // this.Validator = HotHoldingValidator;
-    this.describe = this.describe.bind(this);
-    this.create = this.create.bind(this);
-    this.update = this.update.bind(this);
-    this.delete = this.delete.bind(this);
-    this.list = this.list.bind(this);
   }
 
   async describe(req, res, next) {
@@ -133,6 +128,22 @@ class ItemController {
       };
       const result = await query(dbParams, body);
       return res.status(200).json(result);
+    } catch (_err) {
+      return next(_err);
+    }
+  }
+
+  async get(req, res, next) {
+    const { Logger, DocumentClient, TableName } = this;
+    const { body, params } = req;
+    const { type } = params;
+    Logger.info(`get ${type}`);
+    try {
+      //Validator.validateUpdateRequest(body);
+      const { createdAt } = body;
+      const getParams = { TableName, Key: { type, createdAt: parseInt(createdAt, 10) } };
+      const item = await DocumentClient.get(getParams).promise();
+      return res.status(200).json(item);
     } catch (_err) {
       return next(_err);
     }
