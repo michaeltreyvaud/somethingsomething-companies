@@ -960,6 +960,8 @@ Resources:
         AttributeType: "S"
       - AttributeName: "createdAt"
         AttributeType: "N"
+      - AttributeName: "id"
+        AttributeType: "S"
       KeySchema:
       - AttributeName: "type"
         KeyType: "HASH"
@@ -968,6 +970,16 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref CompanyResourceTableRead
         WriteCapacityUnits: !Ref CompanyResourceTableWrite
+      GlobalSecondaryIndexes:
+      - IndexName: "byId"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        Projection:
+          ProjectionType: ALL
+        ProvisionedThroughput:
+          ReadCapacityUnits: !Ref CompanyResourceTableRead
+          WriteCapacityUnits: !Ref CompanyResourceTableWrite
   CompanyResourceTaskTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
